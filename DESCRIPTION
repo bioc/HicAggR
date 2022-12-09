@@ -53,5 +53,5 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyDataCompression: xz
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
