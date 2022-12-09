@@ -5,14 +5,14 @@
 \title{Compute quantification on extracted submatrices.}
 \usage{
 GetQuantif(
-  matrices.lst,
+  matrices,
   area.fun = "center",
   operation.fun = "mean_rm0",
   name.chr = NULL
 )
 }
 \arguments{
-\item{matrices.lst}{<List[matrix]>: A matrices list.}
+\item{matrices}{<List[matrix]>: A matrices list.}
 
 \item{area.fun}{<character or function>: A character or function that allow an extraction of an area on each matrix that compose the matrices list (Default "center").
 \itemize{
@@ -38,7 +38,7 @@ GetQuantif(
 \item "mean" or other character: apply a mean
 }}
 
-\item{name.chr}{<character>: The name of a column in GInteraction attributes of matrices.lst used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.}
+\item{name.chr}{<character>: The name of a column in GInteraction attributes of matrices used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.}
 }
 \value{
 A GRange object.
@@ -71,11 +71,11 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_PF.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 GetQuantif(
-    matrices.lst = interactions_PF.mtx_lst,
+    matrices = interactions_PF.mtx_lst,
     area.fun = "center",
     operation.fun = "mean"
 ) |> head()

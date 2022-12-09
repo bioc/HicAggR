@@ -9,19 +9,19 @@ ggAPA(
   title.chr = NULL,
   trimPrct.num = 0,
   bounds.chr = "both",
-  colMin.num = NULL,
+  colMin = NULL,
   colMid.num = NULL,
-  colMax.num = NULL,
+  colMax = NULL,
   colBreaks.num = NULL,
   blurPass.num = 0,
-  blurBox.num = NULL,
+  boxKernel = NULL,
   blurSize.num = NULL,
   blurSd.num = 0.5,
   lowerTri.num = NULL,
   heatmap.col = NULL,
-  na.col = "#F2F2F2",
+  na.value = "#F2F2F2",
   colorScale.chr = "linear",
-  bias.num = 1,
+  bias = 1,
   paletteLength.num = 51
 )
 }
@@ -34,17 +34,17 @@ ggAPA(
 
 \item{bounds.chr}{<character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")}
 
-\item{colMin.num}{<numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
+\item{colMin}{<numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
 \item{colMid.num}{<numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
-\item{colMax.num}{<numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
+\item{colMax}{<numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
 \item{colBreaks.num}{<numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)}
 
 \item{blurPass.num}{<numeric> : Number of blur pass. (Default 0)}
 
-\item{blurBox.num}{<numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)}
+\item{boxKernel}{<numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)}
 
 \item{blurSize.num}{<numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)}
 
@@ -54,11 +54,11 @@ ggAPA(
 
 \item{heatmap.col}{<character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)}
 
-\item{na.col}{<character> : Color of NA values. (Default "#F2F2F2")}
+\item{na.value}{<character> : Color of NA values. (Default "#F2F2F2")}
 
 \item{colorScale.chr}{<character> : Shape of color scale on of "linear" or "density" based. (Default "linear")}
 
-\item{bias.num}{<numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)}
+\item{bias}{<numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)}
 
 \item{paletteLength.num}{<numeric> : The number of color in the palette. (Default 51)}
 }
@@ -90,7 +90,7 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_PF.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 
@@ -132,9 +132,9 @@ ggAPA(
 ggAPA(
     apa.mtx = aggreg.mtx,
     title.chr = "APA [min 200, center 300, max 600]",
-    colMin.num = 200,
+    colMin = 200,
     colMid.num = 300,
-    colMax.num = 600
+    colMax = 600
 )
 
 # Change Color
@@ -142,7 +142,7 @@ ggAPA(
     apa.mtx = aggreg.mtx,
     title.chr = "APA",
     heatmap.col = viridis(6),
-    na.col = "black"
+    na.value = "black"
 )
 ggAPA(
     apa.mtx = aggreg.mtx,
@@ -164,12 +164,12 @@ ggAPA(
 ggAPA(
     apa.mtx = aggreg.mtx,
     title.chr = "APA",
-    bias.num = 2 # (>1 wait on extremums)
+    bias = 2 # (>1 wait on extremums)
 )
 ggAPA(
     apa.mtx = aggreg.mtx,
     title.chr = "APA",
-    bias.num = 0.5 # (<1 wait on center)
+    bias = 0.5 # (<1 wait on center)
 )
 
 # Apply a Blurr

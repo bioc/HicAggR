@@ -4,9 +4,9 @@
 #' @keywords internal
 #' @description Blur a matrix with a one dimensional kernel.
 #' @param mat.mtx <matrix>: Numerical matrix.
-#' @param box.num <numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)
-#' @param boxSize.num <numeric>: If box.num is NULL, size of kernel for 'GaussBox' function. (Default NULL)
-#' @param sd.num <numeric>: If box.num is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)
+#' @param boxKernel <numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)
+#' @param boxSize.num <numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)
+#' @param sd.num <numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)
 #' @return Blurred matrix.
 #' @examples
 #' set.seed(981643)
@@ -15,16 +15,16 @@
 #' heatmap(BoxBlur(mat.mtx), Rowv = NA, Colv = NA)
 #'
 BoxBlur <- function(
-    mat.mtx, box.num = NULL, boxSize.num = NULL,
+    mat.mtx, boxKernel = NULL, boxSize.num = NULL,
     sd.num = 1
 ) {
-    if (is.null(box.num)) {
-        box.num <- GaussBox(
+    if (is.null(boxKernel)) {
+        boxKernel <- GaussBox(
             sd.num = sd.num, scale.chr = "1",
             boxSize.num = boxSize.num
         )
     }
-    pad.num <- (length(box.num) - 1)/2
+    pad.num <- (length(boxKernel) - 1)/2
     mat.mtx <- PadMtx(
         mat.mtx = mat.mtx, padSize.num = pad.num,
         value.num = NULL, side.chr = c("top", "bot", "right", "left")
@@ -33,7 +33,7 @@ BoxBlur <- function(
         ((1 + pad.num):(dim(mat.mtx)[2] - pad.num)),
         function(j) {
             (t(mat.mtx[, (j - pad.num):(j + pad.num)]) *
-                box.num) |>
+                boxKernel) |>
                 apply(2, Plus)
         }
     )
@@ -41,7 +41,7 @@ BoxBlur <- function(
         ((1 + pad.num):(dim(matVsmth.mtx2)[1] - pad.num)),
         function(i) {
             (matVsmth.mtx2[(i - pad.num):(i + pad.num), ] *
-                box.num) |>
+                boxKernel) |>
                 apply(2, Plus) |>
                 t()
         }

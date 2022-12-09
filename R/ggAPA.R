@@ -6,19 +6,19 @@
 #' @param title.chr <character> : The title of plot. (Default NULL)
 #' @param trimPrct.num <numeric> : A number between 0 and 100 that give the percentage of trimming. (Default 0)
 #' @param bounds.chr <character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")
-#' @param colMin.num <numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
+#' @param colMin <numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
 #' @param colMid.num <numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colMax.num <numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
+#' @param colMax <numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
 #' @param colBreaks.num <numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)
 #' @param blurPass.num <numeric> : Number of blur pass. (Default 0)
-#' @param blurBox.num <numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)
+#' @param boxKernel <numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)
 #' @param blurSize.num <numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)
 #' @param blurSd.num <numeric> : SD of gaussian smooth. (Default 0.5)
 #' @param lowerTri.num <numeric> : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)
 #' @param heatmap.col <character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)
-#' @param na.col <character> : Color of NA values. (Default "#F2F2F2")
+#' @param na.value <character> : Color of NA values. (Default "#F2F2F2")
 #' @param colorScale.chr <character> : Shape of color scale on of "linear" or "density" based. (Default "linear")
-#' @param bias.num <numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
+#' @param bias <numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
 #' @param paletteLength.num <numeric> : The number of color in the palette. (Default 51)
 #' @return A ggplot object.
 #' @examples
@@ -40,7 +40,7 @@
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_Ctrl.cmx_lst,
+#'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #'
@@ -82,9 +82,9 @@
 #' ggAPA(
 #'     apa.mtx = aggreg.mtx,
 #'     title.chr = "APA [min 200, center 300, max 600]",
-#'     colMin.num = 200,
+#'     colMin = 200,
 #'     colMid.num = 300,
-#'     colMax.num = 600
+#'     colMax = 600
 #' )
 #'
 #' # Change Color
@@ -92,7 +92,7 @@
 #'     apa.mtx = aggreg.mtx,
 #'     title.chr = "APA",
 #'     heatmap.col = viridis(6),
-#'     na.col = "black"
+#'     na.value = "black"
 #' )
 #' ggAPA(
 #'     apa.mtx = aggreg.mtx,
@@ -114,12 +114,12 @@
 #' ggAPA(
 #'     apa.mtx = aggreg.mtx,
 #'     title.chr = "APA",
-#'     bias.num = 2 # (>1 wait on extremums)
+#'     bias = 2 # (>1 wait on extremums)
 #' )
 #' ggAPA(
 #'     apa.mtx = aggreg.mtx,
 #'     title.chr = "APA",
-#'     bias.num = 0.5 # (<1 wait on center)
+#'     bias = 0.5 # (<1 wait on center)
 #' )
 #'
 #' # Apply a Blurr
@@ -144,28 +144,28 @@
 ggAPA <- function(
     apa.mtx = NULL, title.chr = NULL,
     trimPrct.num = 0, bounds.chr = "both",
-    colMin.num = NULL, colMid.num = NULL,
-    colMax.num = NULL, colBreaks.num = NULL,
-    blurPass.num = 0, blurBox.num = NULL,
+    colMin = NULL, colMid.num = NULL,
+    colMax = NULL, colBreaks.num = NULL,
+    blurPass.num = 0, boxKernel = NULL,
     blurSize.num = NULL,
     blurSd.num = 0.5, lowerTri.num = NULL,
     heatmap.col = NULL,
-    na.col = "#F2F2F2",
+    na.value = "#F2F2F2",
     colorScale.chr = "linear",
-    bias.num = 1, paletteLength.num = 51
+    bias = 1, paletteLength.num = 51
 ) {
     # Trimming
     if (!is.null(colBreaks.num)) {
-        colMin.num <- min(colBreaks.num)
-        colMax.num <- max(colBreaks.num)
+        colMin <- min(colBreaks.num)
+        colMax <- max(colBreaks.num)
     }
     vec.num <- c(apa.mtx)
     if (is.null(trimPrct.num)) {
         trimPrct.num <- 0
     }
     if (trimPrct.num != 0 ||
-        !is.null(colMin.num) ||
-        !is.null(colMax.num)
+        !is.null(colMin) ||
+        !is.null(colMax)
     ) {
         bounds.num_vec <- vec.num |>
             QtlThreshold(
@@ -176,8 +176,8 @@ ggAPA <- function(
         bounds.num_lst <- list(
             bounds.num_vec,
             list(
-                colMin.num,
-                colMax.num
+                colMin,
+                colMax
             )
         )
         bounds.num_lst <- TransposeList(bounds.num_lst)
@@ -198,7 +198,7 @@ ggAPA <- function(
         apa.mtx <- TrimOutliers(
             x.num = apa.mtx,
             tresholds.num = bounds.num_vec,
-            clip.bln = TRUE
+            clip = TRUE
         )
         vec.num <- c(apa.mtx)
     }
@@ -208,7 +208,7 @@ ggAPA <- function(
             apa.mtx <- BoxBlur(
                 mat.mtx = apa.mtx,
                 sd.num = blurSd.num,
-                box.num = blurBox.num,
+                boxKernel = boxKernel,
                 boxSize.num = blurSize.num
             )
         }
@@ -224,14 +224,14 @@ ggAPA <- function(
     if (is.null(colBreaks.num)) {
         colBreaks.num <- BreakVector(
             x.num = vec.num,
-            min.num = colMin.num,
+            x_min = colMin,
             center.num = colMid.num,
-            max.num = colMax.num,
+            x_max = colMax,
             n.num = paletteLength.num,
-            method.chr = colorScale.chr
+            method = colorScale.chr
         )
-        colMin.num <- min(colBreaks.num)
-        colMax.num <- max(colBreaks.num)
+        colMin <- min(colBreaks.num)
+        colMax <- max(colBreaks.num)
     }
     # Colors
     if (is.null(heatmap.col)) {
@@ -239,23 +239,23 @@ ggAPA <- function(
             !is.null(colMid.num) && max(colBreaks.num) <= colMid.num ~
                 rev(YlGnBu(
                     paletteLength.num = paletteLength.num,
-                    bias = bias.num
+                    bias = bias
                 )),
             !is.null(colMid.num) && colMid.num <= min(colBreaks.num) ~
                 YlOrRd(
                     paletteLength.num = paletteLength.num,
-                    bias = bias.num
+                    bias = bias
                 ),
             TRUE ~
                 c(
                     rev(YlGnBu(
                         paletteLength.num = floor((paletteLength.num -1)/2),
-                        bias = bias.num
+                        bias = bias
                     )),
                     "#FFFFD8",
                     YlOrRd(
                         paletteLength.num = ceiling((paletteLength.num -1)/2),
-                        bias = bias.num
+                        bias = bias
                     )
                 )
         )
@@ -272,10 +272,10 @@ ggAPA <- function(
     ggplot2::scale_fill_gradientn(
         colours  = heatmap.col,
         values   = MinMaxScale(colBreaks.num),
-        na.value = na.col,
+        na.value = na.value,
         limits   = c(
-            colMin.num,
-            colMax.num
+            colMin,
+            colMax
         )
     ) +
     ggplot2::scale_y_reverse(

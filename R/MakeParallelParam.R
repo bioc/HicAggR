@@ -3,26 +3,26 @@
 #' MakeParallelParam
 #' @keywords internal
 #' @description Create BiocParallel parameter according to OS.
-#' @param cores.num <numerical> : An integer to specify the number of cores. (Default 1)
-#' @param verbose.bln <logical>: A logical value. If TRUE show the progression in console. (Default TRUE)
+#' @param cores <numerical> : An integer to specify the number of cores. (Default 1)
+#' @param verbose <logical>: A logical value. If TRUE show the progression in console. (Default TRUE)
 #' @return Parrallel parameter according number of cores and OS to use with BiocParallel package.
 #' @examples
 #' multicoreParam <- MakeParallelParam(2)
 #' BiocParallel::bplapply(BPPARAM = multicoreParam, seq_len(3), sqrt)
 #'
 MakeParallelParam <- function(
-    cores.num = 1, verbose.bln = FALSE
+    cores = 1, verbose = FALSE
 ) {
-    if (!is.numeric(cores.num) |
-        cores.num < 2 |
+    if (!is.numeric(cores) |
+        cores < 2 |
         .Platform$OS.type == "windows"
     ) {
-        return(BiocParallel::SerialParam(progressbar = verbose.bln))
+        return(BiocParallel::SerialParam(progressbar = verbose))
     } else {
         return(
             BiocParallel::MulticoreParam(
-                workers = cores.num,
-                progressbar = verbose.bln
+                workers = cores,
+                progressbar = verbose
             )
         )
     }

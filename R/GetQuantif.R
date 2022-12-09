@@ -2,7 +2,7 @@
 #'
 #' GetQuantif
 #' @description Function that computes quantification of contact frequencies in a given area and returns it in a named vector.
-#' @param matrices.lst <List[matrix]>: A matrices list.
+#' @param matrices <List[matrix]>: A matrices list.
 #' @param area.fun <character or function>: A character or function that allow an extraction of an area on each matrix that compose the matrices list (Default "center").
 #' \itemize{
 #' \item "C" or "CENTER": pixel at the intersection between anchor and bait.
@@ -25,7 +25,7 @@
 #' \item "sum": apply a sum
 #' \item "mean" or other character: apply a mean
 #' }
-#' @param name.chr <character>: The name of a column in GInteraction attributes of matrices.lst used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.
+#' @param name.chr <character>: The name of a column in GInteraction attributes of matrices used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.
 #' @return A GRange object.
 #' @examples
 #' # Data
@@ -49,17 +49,17 @@
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_Ctrl.cmx_lst,
+#'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #' GetQuantif(
-#'     matrices.lst = interactions_PF.mtx_lst,
+#'     matrices = interactions_PF.mtx_lst,
 #'     area.fun = "center",
 #'     operation.fun = "mean"
 #' ) |> head()
 #'
 GetQuantif <- function(
-    matrices.lst, area.fun = "center",
+    matrices, area.fun = "center",
     operation.fun = "mean_rm0", name.chr = NULL
 ) {
     # Define operation function
@@ -87,9 +87,9 @@ GetQuantif <- function(
         operation.fun <- WrapFunction(operation.fun)
     }
     # Define extraction function
-    matriceDim.num <- attributes(matrices.lst)$matriceDim
+    matriceDim.num <- attributes(matrices)$matriceDim
     if (!is.function(area.fun) &&
-        attributes(matrices.lst)$referencePoint == "pf"
+        attributes(matrices)$referencePoint == "pf"
     ) {
         # Compute rows and cols index Center
         center.num <- c(
@@ -175,9 +175,9 @@ GetQuantif <- function(
             paste0("function(matrice.mtx){ matrice.mtx[", area.fun, "] }")
         )
     } else if (!is.function(area.fun) &&
-        attributes(matrices.lst)$referencePoint == "rf"
+        attributes(matrices)$referencePoint == "rf"
     ) {
-        shiftFactor <- attributes(matrices.lst)$shiftFactor
+        shiftFactor <- attributes(matrices)$shiftFactor
         # Compute rows and cols index Anchor
         anchorStart.num <- max(1,
             floor((matriceDim.num-2)*shiftFactor/(1+2*shiftFactor))+
@@ -314,7 +314,7 @@ GetQuantif <- function(
     }
     # Compute quantif
     quantif.num <- lapply(
-        matrices.lst, function(mtx) {
+        matrices, function(mtx) {
             mtxQuantif.num <- operation.fun(area.fun(mtx)) |>
                 stats::setNames(NULL)
             rownames(mtxQuantif.num) <- NULL
@@ -325,7 +325,7 @@ GetQuantif <- function(
     # Get Names
     if (!is.null(name.chr)) {
         interactions.dtf <- data.frame(
-            S4Vectors::mcols(attributes(matrices.lst)$interactions)
+            S4Vectors::mcols(attributes(matrices)$interactions)
             )
         names.chr_lst <- dplyr::arrange(
             interactions.dtf,
@@ -348,10 +348,10 @@ GetQuantif <- function(
     quantif.num <- unlist(quantif.num[repeted.ndx]) |>
         stats::setNames(unlist(names.chr_lst)) |>
         AddAttr(
-            c(
-                attributes(matrices.lst),
+            attrs = c(
+                attributes(matrices),
                 interactions =
-                    attributes(matrices.lst)$interactions[repeted.ndx],
+                    attributes(matrices)$interactions[repeted.ndx],
                 operation = operation.fun,
                 area = area.fun,
                 duplicated = which(duplicated(repeted.ndx))

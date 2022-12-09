@@ -2,25 +2,25 @@
 #'
 #' Aggregation
 #' @description Aggregates all the matrices of a list (or two lists in case of differential aggregation) into a single matrix. This function allows to apply different aggregation (average, sum, ...), transformation (rank, percentage, ...) and differential (subtraction, ratio, ...) functions.
-#' @param ctrlMatrices.lst <list[matrix]>: The matrices list to aggregate as control.
-#' @param matrices.lst <list[matrix]>: The matrices list to aggregate.
-#' @param minDist.num <numeric>: The minimal distance between anchor and bait.
-#' @param maxDist.num <numeric>: The maximal distance between anchor and bait.
-#' @param agg.fun <function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
+#' @param ctrlMatrices <list[matrix]>: The matrices list to aggregate as control.
+#' @param matrices <list[matrix]>: The matrices list to aggregate.
+#' @param minDist <numeric>: The minimal distance between anchor and bait.
+#' @param maxDist <numeric>: The maximal distance between anchor and bait.
+#' @param aggFun <function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
 #' \itemize{
 #' \item "50%" or "median" apply the median
 #' \item "+" or "sum" apply the sum
 #' \item other (Default) apply the mean
 #' }
-#' @param rm0.bln <logical>: Whether 0 are replace with NA. (Default FALSE)
-#' @param diff.fun <function or chracter>: The function use to compute differential. If the parameter is character so:
+#' @param rm0 <logical>: Whether 0 are replace with NA. (Default FALSE)
+#' @param diffFun <function or chracter>: The function use to compute differential. If the parameter is character so:
 #' \itemize{
 #' \item "-", "substract" or "substraction" apply a substraction
 #' \item "/" or "ratio" apply a ratio
 #' \item "log2","log2-","log2/" or "log2ratio" apply a log2 on ratio
 #' \item other (Default) apply a log2 on 1+ratio
 #' }
-#' @param trans.fun <function or chracter>: The function use to transforme or scale values in each submatrix before aggregation. If the parameter is character so:
+#' @param transFun <function or chracter>: The function use to transforme or scale values in each submatrix before aggregation. If the parameter is character so:
 #' \itemize{
 #' \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 #' \item "percentile" or "prct" apply percentile.
@@ -30,9 +30,9 @@
 #' \item "mu" apply a HicAggR::MeanScale.
 #' \item other or NULL don't apply transformation (Default).
 #' }
-#' @param scaleCorrection.bln <logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)
-#' @param correctionArea.lst <list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)
-#' @param statCompare.bln <logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.
+#' @param scaleCorrection <logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)
+#' @param correctionArea <list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)
+#' @param statCompare <logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.
 #' @param orientate <logical>: Whether matrices must be orientate before the aggregation.
 #' @return A matrix
 #' @examples
@@ -55,12 +55,12 @@
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_Ctrl.cmx_lst,
+#'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #' interactions_HS.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_HS.cmx_lst,
+#'     hicLst = HiC_HS.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #'
@@ -69,110 +69,110 @@
 #'
 #' # Differential Aggregation
 #' aggregDiff.mtx <- Aggregation(
-#'     ctrlMatrices.lst = interactions_Ctrl.mtx_lst,
-#'     matrices.lst = interactions_HS.mtx_lst
+#'     ctrlMatrices = interactions_Ctrl.mtx_lst,
+#'     matrices = interactions_HS.mtx_lst
 #' )
 #'
 Aggregation <- function(
-    ctrlMatrices.lst = NULL, matrices.lst = NULL, minDist.num = NULL,
-    maxDist.num = NULL, trans.fun = NULL, agg.fun = "mean", rm0.bln = FALSE,
-    diff.fun = "substraction", scaleCorrection.bln = FALSE,
-    correctionArea.lst = NULL, statCompare.bln = FALSE, orientate=TRUE
+    ctrlMatrices = NULL, matrices = NULL, minDist = NULL,
+    maxDist = NULL, transFun = NULL, aggFun = "mean", rm0 = FALSE,
+    diffFun = "substraction", scaleCorrection = FALSE,
+    correctionArea = NULL, statCompare = FALSE, orientate=TRUE
 ) {
     # subFunctions
     .PrepareMtxList <- function(
-        matrices.lst, minDist.num = NULL, maxDist.num = NULL, rm0.bln = FALSE,
-        trans.fun = NULL, orientate=FALSE
+        matrices, minDist = NULL, maxDist = NULL, rm0 = FALSE,
+        transFun = NULL, orientate=FALSE
     ) {
-        interactions.gni <- attributes(matrices.lst)$interactions
+        interactions.gni <- attributes(matrices)$interactions
         # Filter on distances
-        if (!is.na(minDist.num)) {
-            if (is.character(minDist.num)) {
-                minDist.num <- GenomicSystem(minDist.num)
+        if (!is.na(minDist)) {
+            if (is.character(minDist)) {
+                minDist <- GenomicSystem(minDist)
             }
-            matrices.lst <- matrices.lst[
+            matrices <- matrices[
                 S4Vectors::mcols(interactions.gni)$submatrix.name[which(
-                    S4Vectors::mcols(interactions.gni)$distance >= minDist.num
+                    S4Vectors::mcols(interactions.gni)$distance >= minDist
                 )]
             ]
         }
-        if (!is.na(maxDist.num)) {
-            if (is.character(maxDist.num)) {
-                maxDist.num <- GenomicSystem(maxDist.num)
+        if (!is.na(maxDist)) {
+            if (is.character(maxDist)) {
+                maxDist <- GenomicSystem(maxDist)
             }
-            matrices.lst <- matrices.lst[
+            matrices <- matrices[
                 S4Vectors::mcols(interactions.gni)$submatrix.name[which(
-                    S4Vectors::mcols(interactions.gni)$distance <= maxDist.num
+                    S4Vectors::mcols(interactions.gni)$distance <= maxDist
                 )]
             ]
         }
-        matrices.lst <- matrices.lst[!is.na(names(matrices.lst))]
+        matrices <- matrices[!is.na(names(matrices))]
         # Orientation
         if(orientate){
-            matrices.lst  <- OrientateMatrix(matrices.lst)
+            matrices  <- OrientateMatrix(matrices)
         }
         # Convert sparse matrix in dense matrix and convert 0 in NA
-        # if rm0.bln is TRUE
-        matrices.lst <- lapply(
-            matrices.lst, function(mat.spm) {
+        # if rm0 is TRUE
+        matrices <- lapply(
+            matrices, function(mat.spm) {
                 mat.mtx <- as.matrix(mat.spm)
-                if (rm0.bln) {
+                if (rm0) {
                     mat.mtx[mat.mtx == 0] <- NA
                 }
-                if (!is.null(trans.fun)) {
-                    mat.mtx <- trans.fun(mat.mtx)
+                if (!is.null(transFun)) {
+                    mat.mtx <- transFun(mat.mtx)
                 }
                 return(mat.mtx)
             }
         )
-        return(matrices.lst)
+        return(matrices)
     }
     # Put list on correct variable
-    if (!is.null(ctrlMatrices.lst) && is.null(matrices.lst)) {
-        matrices.lst <- ctrlMatrices.lst
-        ctrlMatrices.lst <- NULL
+    if (!is.null(ctrlMatrices) && is.null(matrices)) {
+        matrices <- ctrlMatrices
+        ctrlMatrices <- NULL
     }
     # Get attributes
-    matDim.num <- attributes(matrices.lst)$matriceDim
-    totMtx.num <- length(matrices.lst)
-    attributes.lst <- attributes(matrices.lst)
+    matDim.num <- attributes(matrices)$matriceDim
+    totMtx.num <- length(matrices)
+    attributes.lst <- attributes(matrices)
     if ("names" %in% names(attributes.lst)) {
         attributes.lst <- attributes.lst[-which(
             names(attributes.lst) == "names"
         )]
     }
     # Differential Function
-    if (!is.function(diff.fun) &&
-        !is.null(ctrlMatrices.lst)) {
-        diff.fun <- dplyr::case_when(
-            tolower(diff.fun) %in% c("-", "substract", "substraction") ~
+    if (!is.function(diffFun) &&
+        !is.null(ctrlMatrices)) {
+        diffFun <- dplyr::case_when(
+            tolower(diffFun) %in% c("-", "substract", "substraction") ~
                 "function(mat.mtx,ctrl.mtx){mat.mtx - ctrl.mtx}",
-            tolower(diff.fun) %in% c("/", "ratio") ~
+            tolower(diffFun) %in% c("/", "ratio") ~
                 "function(mat.mtx,ctrl.mtx){mat.mtx / ctrl.mtx}",
-            tolower(diff.fun) %in% c("log2", "log2-", "log2/", "log2ratio") ~
+            tolower(diffFun) %in% c("log2", "log2-", "log2/", "log2ratio") ~
                 "function(mat.mtx,ctrl.mtx){log2(mat.mtx)-log2(ctrl.mtx)}",
             TRUE ~
                 "function(mat.mtx,ctrl.mtx){log2(mat.mtx+1)-log2(ctrl.mtx+1)}"
         )
-        diff.fun <- WrapFunction(diff.fun)
+        diffFun <- WrapFunction(diffFun)
     }
     # Aggregation Function
-    if (!is.function(agg.fun)) {
-        agg.fun <- dplyr::case_when(
-            tolower(agg.fun) %in% c("50%", "median") ~
+    if (!is.function(aggFun)) {
+        aggFun <- dplyr::case_when(
+            tolower(aggFun) %in% c("50%", "median") ~
                 "function(pxl){stats::median(pxl,na.rm=TRUE)}",
-            tolower(agg.fun) %in% c("+", "sum") ~
+            tolower(aggFun) %in% c("+", "sum") ~
                 "function(pxl){sum(pxl,na.rm=TRUE)}",
             TRUE ~
                 "function(pxl){mean(pxl,na.rm=TRUE,trim=0.01)}"
         )
-        agg.fun <- WrapFunction(agg.fun)
+        aggFun <- WrapFunction(aggFun)
     }
     # Transformation Function
-    if (!is.function(trans.fun) &
-        !is.null(trans.fun)) {
-        trans.fun <- dplyr::case_when(
-            tolower(trans.fun) %in% c("quantile", "qtl") ~
+    if (!is.function(transFun) &
+        !is.null(transFun)) {
+        transFun <- dplyr::case_when(
+            tolower(transFun) %in% c("quantile", "qtl") ~
                 "function(mat.mtx){
                     matrix(
                         dplyr::ntile(mat.mtx,500),
@@ -180,7 +180,7 @@ Aggregation <- function(
                         dim(mat.mtx)[[2]]
                     )
                 }",
-            tolower(trans.fun) %in% c("percentile", "prct") ~
+            tolower(transFun) %in% c("percentile", "prct") ~
                 "function(mat.mtx){
                     matrix(
                         rank(mat.mtx,na.last='keep')/
@@ -189,7 +189,7 @@ Aggregation <- function(
                         dim(mat.mtx)[[2]]
                     )
                 }",
-            tolower(trans.fun) %in% c("rank") ~
+            tolower(transFun) %in% c("rank") ~
                 "function(mat.mtx){
                     matrix(
                         rank(mat.mtx,na.last='keep'),
@@ -197,7 +197,7 @@ Aggregation <- function(
                         dim(mat.mtx)[[2]]
                     )
                 }",
-            tolower(trans.fun) %in% c("zscore") ~
+            tolower(transFun) %in% c("zscore") ~
                 "function(mat.mtx){
                     matrix(
                         scale(c(mat.mtx)),
@@ -205,7 +205,7 @@ Aggregation <- function(
                         dim(mat.mtx)[[2]]
                     )
                 }",
-            tolower(trans.fun) %in% c("minmax") ~
+            tolower(transFun) %in% c("minmax") ~
                 "function(mat.mtx){
                     matrix(
                         MinMaxScale(c(mat.mtx)),
@@ -213,7 +213,7 @@ Aggregation <- function(
                         dim(mat.mtx)[[2]]
                     )
                 }",
-            tolower(trans.fun) %in% c("mu") ~
+            tolower(transFun) %in% c("mu") ~
                 "function(mat.mtx){
                     matrix(
                         MeanScale(c(mat.mtx)),
@@ -224,64 +224,64 @@ Aggregation <- function(
             TRUE ~
                 "NULL"
         )
-        trans.fun <- WrapFunction(trans.fun)
+        transFun <- WrapFunction(transFun)
     }
     # Prepare Matrix List
-    if (is.null(minDist.num)) {
-        minDist.num <- NA
+    if (is.null(minDist)) {
+        minDist <- NA
     }
-    if (is.null(maxDist.num)) {
-        maxDist.num <- NA
+    if (is.null(maxDist)) {
+        maxDist <- NA
     }
-    matrices.lst <- .PrepareMtxList(
-        matrices.lst = matrices.lst, minDist.num = minDist.num,
-        maxDist.num = maxDist.num, rm0.bln = rm0.bln, trans.fun = trans.fun
+    matrices <- .PrepareMtxList(
+        matrices = matrices, minDist = minDist,
+        maxDist = maxDist, rm0 = rm0, transFun = transFun
     )
     # Aggregate
     agg.mtx <- apply(
-        simplify2array(matrices.lst),
+        simplify2array(matrices),
         seq_len(2),
-        agg.fun
+        aggFun
     )
     gc()
     # Differential Case else Return
-    if (!is.null(ctrlMatrices.lst)) {
+    if (!is.null(ctrlMatrices)) {
         # Prepare Matrix List
-        ctrlMatrices.lst <- .PrepareMtxList(
-            matrices.lst = ctrlMatrices.lst, minDist.num = minDist.num,
-            maxDist.num = maxDist.num, rm0.bln = rm0.bln, trans.fun = trans.fun
+        ctrlMatrices <- .PrepareMtxList(
+            matrices = ctrlMatrices, minDist = minDist,
+            maxDist = maxDist, rm0 = rm0, transFun = transFun
         )
         # Aggregate
         aggCtrl.mtx <- apply(
-            simplify2array(ctrlMatrices.lst),
+            simplify2array(ctrlMatrices),
             seq_len(2),
-            agg.fun
+            aggFun
         )
         gc()
         # Scale mat on Ctrl median
-        if (scaleCorrection.bln) {
-            if (is.null(correctionArea.lst) ||
-            sum(unlist(correctionArea.lst) > matDim.num)) {
-                correctionArea.lst <- list(
+        if (scaleCorrection) {
+            if (is.null(correctionArea) ||
+            sum(unlist(correctionArea) > matDim.num)) {
+                correctionArea <- list(
                     i = seq_len(round(matDim.num * 0.3)),
                     j = (matDim.num - round(matDim.num * 0.3) + 1):matDim.num
                 )
             }
             correctionValue.num <- stats::median(
-                    aggCtrl.mtx[correctionArea.lst[[1]],
-                    correctionArea.lst[[2]]]) -
+                    aggCtrl.mtx[correctionArea[[1]],
+                    correctionArea[[2]]]) -
                 stats::median(
-                    agg.mtx[correctionArea.lst[[1]],
-                    correctionArea.lst[[2]]])
+                    agg.mtx[correctionArea[[1]],
+                    correctionArea[[2]]])
             aggCorrected.mtx <- agg.mtx + correctionValue.num
         } else {
             correctionValue.num <- NULL
             aggCorrected.mtx <- NULL
         }
         # Stat compare
-        if (statCompare.bln) {
-            mtx.nlst <- simplify2array(lapply(matrices.lst, c))
-            ctrlMtx.nlst <- simplify2array(lapply(ctrlMatrices.lst, c))
+        if (statCompare) {
+            mtx.nlst <- simplify2array(lapply(matrices, c))
+            ctrlMtx.nlst <- simplify2array(lapply(ctrlMatrices, c))
             pval.mtx <- lapply(
                 seq_len(dim(mtx.nlst)[[1]]),
                 function(ndx) {
@@ -314,33 +314,33 @@ Aggregation <- function(
             pval.mtx <- -log10(pval.mtx)
         }
         # Differential at submatrix and aggregated scale
-        diffmatrices.lst <- lapply(
-            seq_along(ctrlMatrices.lst),
+        diffmatrices <- lapply(
+            seq_along(ctrlMatrices),
             function(mtx.ndx) {
-                diff.mtx <- diff.fun(
-                    matrices.lst[[mtx.ndx]],
-                    ctrlMatrices.lst[[mtx.ndx]])
+                diff.mtx <- diffFun(
+                    matrices[[mtx.ndx]],
+                    ctrlMatrices[[mtx.ndx]])
                 diff.mtx[is.infinite(diff.mtx)] <- NA
                 return(as.matrix(diff.mtx))
             }
         )
-        aggDelta.mtx <- diff.fun(agg.mtx, aggCtrl.mtx)
-        if (!is.null(correctionArea.lst)) {
-            aggCorrectedDelta.mtx <- diff.fun(aggCorrected.mtx, aggCtrl.mtx)
+        aggDelta.mtx <- diffFun(agg.mtx, aggCtrl.mtx)
+        if (!is.null(correctionArea)) {
+            aggCorrectedDelta.mtx <- diffFun(aggCorrected.mtx, aggCtrl.mtx)
         } else {
             aggCorrectedDelta.mtx <- NULL
         }
         # Aggregation of differential list
         aggDiff.mtx <- apply(
-            simplify2array(diffmatrices.lst),
+            simplify2array(diffmatrices),
             seq_len(2),
-            agg.fun
+            aggFun
         )
         gc()
         # Filter aggregated differential by pval.mtx
-        if (statCompare.bln) {
+        if (statCompare) {
             aggDiff.vec <- c(aggDiff.mtx)
-            aggDiff.vec[is.na(c(pval.mtx))] <- diff.fun(1, 1)
+            aggDiff.vec[is.na(c(pval.mtx))] <- diffFun(1, 1)
             aggDiffPvalFilt.mtx <- matrix(
                 aggDiff.vec,
                 nrow = matDim.num,
@@ -351,16 +351,16 @@ Aggregation <- function(
         }
         # Return
         aggDiff.mtx <- AddAttr(
-            var.any = aggDiff.mtx,
-            overwrite.bln = TRUE,
-            attribute.lst = c(
+            x = aggDiff.mtx,
+            overwrite = TRUE,
+            attrs = c(
                 totalMatrixNumber = totMtx.num,
-                filteredMatrixNumber = length(matrices.lst),
-                minimalDistance = minDist.num, maximalDistance = maxDist.num,
-                transformationMethod = trans.fun, aggregationMethod = agg.fun,
-                differentialMethod = diff.fun, zeroRemoved = rm0.bln,
+                filteredMatrixNumber = length(matrices),
+                minimalDistance = minDist, maximalDistance = maxDist,
+                transformationMethod = transFun, aggregationMethod = aggFun,
+                differentialMethod = diffFun, zeroRemoved = rm0,
                 correctedFact = correctionValue.num,
-                correctionArea = correctionArea.lst,
+                correctionArea = correctionArea,
                 matrices = list(list(
                     agg = agg.mtx, aggCtrl = aggCtrl.mtx,
                     aggDelta = aggDelta.mtx, aggCorrected = aggCorrected.mtx,
@@ -373,13 +373,13 @@ Aggregation <- function(
         return(aggDiff.mtx)
     } else {
         agg.mtx <- AddAttr(
-            var.any = agg.mtx,
-            attribute.lst = c(
+            x = agg.mtx,
+            attrs = c(
                 totalMatrixNumber = totMtx.num,
-                filteredMatrixNumber = length(matrices.lst),
-                minimalDistance = minDist.num, maximalDistance = maxDist.num,
-                transformationMethod = trans.fun, aggregationMethod = agg.fun,
-                zeroRemoved = rm0.bln, attributes.lst
+                filteredMatrixNumber = length(matrices),
+                minimalDistance = minDist, maximalDistance = maxDist,
+                transformationMethod = transFun, aggregationMethod = aggFun,
+                zeroRemoved = rm0, attributes.lst
             )
         )
         return(agg.mtx)

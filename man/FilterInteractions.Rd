@@ -5,7 +5,7 @@
 \title{Submatrix or Interactions filtering.}
 \usage{
 FilterInteractions(
-  matrices.lst = NULL,
+  matrices = NULL,
   interarctions.gni = NULL,
   target.lst = NULL,
   selection.fun = function() {
@@ -14,7 +14,7 @@ FilterInteractions(
 )
 }
 \arguments{
-\item{matrices.lst}{<List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.}
+\item{matrices}{<List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.}
 
 \item{interarctions.gni}{<GInteractions>: The GInteraction object on which compute the filter.}
 
@@ -50,7 +50,7 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_PF.mtx_lst  <- ExtractSubmatrix(
     feature.gn         = Beaf_Beaf.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 
@@ -83,7 +83,7 @@ FilterInteractions(
 
 # Filtration on Matrices List (Beaf32 <-> Beaf32 Extracted matrices)
 FilterInteractions(
-    matrices.lst      = interactions_PF.mtx_lst,
+    matrices      = interactions_PF.mtx_lst,
     target.lst        = target.lst,
     selection.fun     = NULL
 ) |> str(max.level = 1)
@@ -100,11 +100,11 @@ FilterInteractions(
 
 # Add the selection on Matrices List Filtration
 FilterInteractions(
-    matrices.lst = interactions_PF.mtx_lst,
+    matrices = interactions_PF.mtx_lst,
     target.lst = target.lst,
     selection.fun = selection.fun
 ) |> str(max.level = 1)
-# This return the filtred matrices.lst, i.e the matrices.lst for which
+# This return the filtred matrices, i.e the matrices for which
 # the Beaf32<->Beaf32 interactions satisfy both targeting criteria.
 
 # Filtration with InteractionsSet as filtration criteria

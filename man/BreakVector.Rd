@@ -6,25 +6,25 @@
 \usage{
 BreakVector(
   x.num = NULL,
-  min.num = NULL,
+  x_min = NULL,
   center.num = NULL,
-  max.num = NULL,
+  x_max = NULL,
   n.num = 10,
-  method.chr = "linear"
+  method = "linear"
 )
 }
 \arguments{
 \item{x.num}{<numeric>: Numerical vector.}
 
-\item{min.num}{<numeric>: Minimal fixed value.}
+\item{x_min}{<numeric>: Minimal fixed value.}
 
 \item{center.num}{<numeric>: Center fixed value.}
 
-\item{max.num}{<numeric>: Maximal fixed value.}
+\item{x_max}{<numeric>: Maximal fixed value.}
 
 \item{n.num}{<numeric>: Number of tile (return n.num+1 breaks).}
 
-\item{method.chr}{<character>: Kind of breaking. "linear" or "density". (Default "linear")}
+\item{method}{<character>: Kind of breaking. "linear" or "density". (Default "linear")}
 }
 \value{
 Numerical vector of breaks.

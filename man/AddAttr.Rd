@@ -4,14 +4,14 @@
 \alias{AddAttr}
 \title{Add list as attributes.}
 \usage{
-AddAttr(var.any = NULL, attribute.lst = NULL, overwrite.bln = FALSE)
+AddAttr(x = NULL, attrs = NULL, overwrite = FALSE)
 }
 \arguments{
-\item{var.any}{<any>: An object to which attributes are to be added.}
+\item{x}{<any>: An object to which attributes are to be added.}
 
-\item{attribute.lst}{<list>: A named list of new attributes.}
+\item{attrs}{<list>: A named list of new attributes.}
 
-\item{overwrite.bln}{<logical>: Whether an overwrite is required on attributes with the same name.(Default FALSE)}
+\item{overwrite}{<logical>: Whether an overwrite is required on attributes with the same name.(Default FALSE)}
 }
 \value{
 The object with new attributes.
@@ -28,7 +28,7 @@ x <- AddAttr(x, list(dim = c(2, 5)))
 x
 x <- AddAttr(x, list(dim = c(5, 2)))
 x
-x <- AddAttr(x, list(dim = c(5, 2)), overwrite.bln = TRUE)
+x <- AddAttr(x, list(dim = c(5, 2)), overwrite = TRUE)
 x
 
 }

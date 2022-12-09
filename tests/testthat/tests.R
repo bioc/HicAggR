@@ -13,25 +13,25 @@ chromSize.dtf  <- data.frame(
 )
 
 # Test BalanceHiC
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type=c("cis", "trans"), method.chr="ICE")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type=c("cis", "trans"), method.chr="VC")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type=c("cis", "trans"), method.chr="VC_SQRT")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="trans", method.chr="ICE")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="trans", method.chr="VC")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="trans", method.chr="VC_SQRT")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="cis", method.chr="ICE")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="cis", method.chr="VC")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="cis", method.chr="VC_SQRT")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="all", method.chr="ICE")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="all", method.chr="VC")
-BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="all", method.chr="VC_SQRT")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType=c("cis", "trans"), method="ICE")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType=c("cis", "trans"), method="VC")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType=c("cis", "trans"), method="VC_SQRT")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="trans", method="ICE")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="trans", method="VC")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="trans", method="VC_SQRT")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="cis", method="ICE")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="cis", method="VC")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="cis", method="VC_SQRT")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="all", method="ICE")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="all", method="VC")
+BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="all", method="VC_SQRT")
 
-HiC_Ctrl.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst, interaction.type="cis")
-HiC_HS.cmx_lst   <- BalanceHiC(HiC_HS.cmx_lst,   interaction.type="cis")
+HiC_Ctrl.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst, interactionType="cis")
+HiC_HS.cmx_lst   <- BalanceHiC(HiC_HS.cmx_lst,   interactionType="cis")
 
 # Test OverExpectedHiC
 HiC_Ctrl.cmx_lst <- OverExpectedHiC(HiC_Ctrl.cmx_lst)
-HiC_HS.cmx_lst   <- OverExpectedHiC(HiC_HS.cmx_lst, cores.num = 2)
+HiC_HS.cmx_lst   <- OverExpectedHiC(HiC_HS.cmx_lst, cores = 2)
 
 # Test SwitchMatrix
 SwitchMatrix(HiC_Ctrl.cmx_lst, matrixKind.chr="norm")
@@ -43,90 +43,90 @@ Beaf32_Index.gnr <- IndexFeatures(
     constraint.gnr        = TADs_Domains.gnr,
     chromSize.dtf         = chromSize.dtf,
     binSize.num           = 100000,
-    method.chr            = "max",
+    method            = "max",
     variablesName.chr_vec = "score",
-    cores.num             = 2,
-    verbose.bln           = TRUE
+    cores             = 2,
+    verbose           = TRUE
 )
 TSS_Index.gnr <- IndexFeatures(
     gRange.gnr_lst        = list(TSS=TSS_Peaks.gnr), 
     constraint.gnr        = TADs_Domains.gnr,
     chromSize.dtf         = chromSize.dtf,
     binSize.num           = 100000,
-    method.chr            = "max",
+    method            = "max",
     variablesName.chr_vec = "score",
-    cores.num             = 2,
-    verbose.bln           = TRUE
+    cores             = 2,
+    verbose           = TRUE
 )
 IndexFeatures(
     gRange.gnr_lst        = list(TSS_1=TSS_Peaks.gnr, TSS_2=TSS_Peaks.gnr), 
     constraint.gnr        = NULL,
     chromSize.dtf         = chromSize.dtf,
     binSize.num           = 100000,
-    cores.num             = 1,
-    verbose.bln           = TRUE
+    cores             = 1,
+    verbose           = TRUE
 )
 # Test SearchPairs
 Beaf_TSS.gni <- SearchPairs(
     indexAnchor.gnr = Beaf32_Index.gnr,
     indexBait.gnr   = TSS_Index.gnr,
-    minDist.num     = NULL, 
-    maxDist.num     = NULL,
-    cores.num       = 1,
-    verbose.bln     = TRUE
+    minDist     = NULL, 
+    maxDist     = NULL,
+    cores       = 1,
+    verbose     = TRUE
 )
 SearchPairs(
     indexAnchor.gnr = Beaf32_Index.gnr,
-    minDist.num     = "1", 
-    maxDist.num     = "1MB",
-    cores.num       = 1,
-    verbose.bln     = TRUE
+    minDist     = "1", 
+    maxDist     = "1MB",
+    cores       = 1,
+    verbose     = TRUE
 )
 SearchPairs(
     indexAnchor.gnr = Beaf32_Index.gnr,
     indexBait.gnr   = TSS_Index.gnr,
-    minDist.num     = 1, 
-    maxDist.num     = 1000000,
-    cores.num       = 2,
-    verbose.bln     = TRUE
+    minDist     = 1, 
+    maxDist     = 1000000,
+    cores       = 2,
+    verbose     = TRUE
 )
 
 
 # Test ExtractSubmatrix
 submatrixPF_Ctrl.mtx_lst <- ExtractSubmatrix(
     feature.gn         = Beaf_TSS.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     res.num            = NULL,
     referencePoint.chr = "pf",
     matriceDim.num     = 21,
-    cores.num          = 1,
-    verbose.bln        = TRUE
+    cores          = 1,
+    verbose        = TRUE
 )
 submatrixPF_HS.mtx_lst <- ExtractSubmatrix(
     feature.gn         = Beaf_TSS.gni,
-    hic.cmx_lst        = HiC_HS.cmx_lst,
+    hicLst        = HiC_HS.cmx_lst,
     res.num            = NULL,
     referencePoint.chr = "pf",
     matriceDim.num     = 21,
-    cores.num          = 1,
-    verbose.bln        = TRUE
+    cores          = 1,
+    verbose        = TRUE
 )
 submatrixRF_Ctrl.mtx_lst <- ExtractSubmatrix(
     feature.gn         = Beaf_TSS.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     res.num            = NULL,
     referencePoint.chr = "rf",
     matriceDim.num     = 21,
-    cores.num          = 1,
-    verbose.bln        = TRUE
+    cores          = 1,
+    verbose        = TRUE
 )
 ExtractSubmatrix(
     feature.gn         = TADs_Domains.gnr,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "rf",
     matriceDim.num     = 101,
-    cores.num          = 2,
-    verbose.bln        = FALSE
+    cores          = 2,
+    verbose        = FALSE
 )
 
 
@@ -139,7 +139,7 @@ selection.fun = function(){
     Reduce(union, list(anchor.Beaf.name, bait.TSS.name) )
 }
 FilterInteractions(
-    matrices.lst      = submatrixPF_Ctrl.mtx_lst,
+    matrices      = submatrixPF_Ctrl.mtx_lst,
     target.lst        = target.lst,
     selection.fun     = selection.fun
 )
@@ -163,12 +163,12 @@ FilterInteractions(
 
 # Test GetQuantif
 GetQuantif(
-    matrices.lst  = submatrixRF_Ctrl.mtx_lst,
+    matrices  = submatrixRF_Ctrl.mtx_lst,
     area.fun      = "center",
     operation.fun = "mean"
 )
 GetQuantif(
-    matrices.lst  = submatrixPF_Ctrl.mtx_lst,
+    matrices  = submatrixPF_Ctrl.mtx_lst,
     area.fun      = "center",
     operation.fun = "mean"
 )
@@ -178,33 +178,33 @@ OrientateMatrix(submatrixPF_Ctrl.mtx_lst)
 
 # Test Aggregation
 Aggregation(
-    matrices.lst = submatrixRF_Ctrl.mtx_lst, 
-    agg.fun      = "sum",
-    trans.fun    = "qtl", 
-    rm0.bln      = FALSE
+    matrices = submatrixRF_Ctrl.mtx_lst, 
+    aggFun      = "sum",
+    transFun    = "qtl", 
+    rm0      = FALSE
     )
 diffAggreg.mtx <- Aggregation(
-    ctrlMatrices.lst    = submatrixPF_Ctrl.mtx_lst,
-    matrices.lst        = submatrixPF_HS.mtx_lst,
+    ctrlMatrices    = submatrixPF_Ctrl.mtx_lst,
+    matrices        = submatrixPF_HS.mtx_lst,
     minDist             = 1,
     maxDist             = "5Mb",
-    agg.fun             = "mean",
-    rm0.bln             = FALSE,
-    diff.fun            = "substraction",
-    scaleCorrection.bln = TRUE,
-        correctionArea.lst  =  list(
+    aggFun             = "mean",
+    rm0             = FALSE,
+    diffFun            = "substraction",
+    scaleCorrection = TRUE,
+        correctionArea  =  list(
         i = c(1:30),
         j = c(72:101)
     ),
-    statCompare.bln = TRUE
+    statCompare = TRUE
 )
 
 # Test ggAPA and PlotAPA
 ggAPA(
     apa.mtx      = diffAggreg.mtx,
     title.chr    = "APA",
-    colMin.num   = 0,
-    colMax.num   = 10,
+    colMin   = 0,
+    colMax   = 10,
     trimPrct.num = 20,
     bounds.chr   = "both",
     blurPass.num = 1,
@@ -237,7 +237,7 @@ Hue(paletteLength.num=2)
 PadMtx(mat.mtx=matrix(1:25,5,5), padSize.num=1, value.num=0, side.chr=c('top','bot','right','left') )
 ReduceRun(first.rle=rle(c("A","A","B")), second.rle=rle(c("A","B","B")), reduceFun.chr="paste", sep="_" )
 MeanScale(rnorm(500,500))
-BreakVector(x.num=rnorm(500,500), n.num=50, method.chr="density")
+BreakVector(x.num=rnorm(500,500), n.num=50, method="density")
 BreakVector(x.num=rnorm(500,500), n.num=50, center.num=-500)
 set.seed(123)
 mat.spm = as(matrix(floor(runif(7*13,0,2)),7,13), "dgCMatrix")

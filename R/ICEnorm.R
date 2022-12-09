@@ -3,16 +3,16 @@
 #' ICEnorm
 #' @description Compute Iterative Correction (Vanilla Count) on hic maps.
 #' @param hic.cmx <contactMatrix>: The HiC maps chunk to normalize.
-#' @param qtlTh.num <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
-#' @param maxIter.num <numerical>: The maximum iteration number.
+#' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
+#' @param maxIter <numerical>: The maximum iteration number.
 #' @return A normalized contactMatrix
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #' HiC_Ctrl_ICE.cmx <- ICEnorm(HiC_Ctrl.cmx_lst[['2L_2L']])
 #'
-ICEnorm <- function(hic.cmx, qtlTh.num = 0.15, maxIter.num = 50) {
+ICEnorm <- function(hic.cmx, qtlTh = 0.15, maxIter = 50) {
     # Removed Low counts bins
-    if (qtlTh.num) {
+    if (qtlTh) {
         if (hic.cmx@metadata$symmetric) {
             rowBias.num <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
                 Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
@@ -23,11 +23,11 @@ ICEnorm <- function(hic.cmx, qtlTh.num = 0.15, maxIter.num = 50) {
             colBias.num <- Matrix::colSums(hic.cmx@matrix, na.rm = TRUE)
         }
         row.ndx <- which(
-            rowBias.num < stats::quantile(rowBias.num, qtlTh.num) &
+            rowBias.num < stats::quantile(rowBias.num, qtlTh) &
             rowBias.num > 0
         )
         col.ndx <- which(
-            colBias.num < stats::quantile(colBias.num, qtlTh.num) &
+            colBias.num < stats::quantile(colBias.num, qtlTh) &
             colBias.num > 0
         )
         meltedHic.dtf <- MeltSpm(hic.cmx@matrix)
@@ -55,27 +55,27 @@ ICEnorm <- function(hic.cmx, qtlTh.num = 0.15, maxIter.num = 50) {
         )
     }
     observed.num <- hic.cmx@matrix@x
-    bias.num <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
+    bias <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
         Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
         Matrix::diag(hic.cmx@matrix)
     iter.num <- 1
     fit.lm <- stats::lm(c(
-        stats::var(bias.num[which(bias.num != 0)]),0) ~ c(iter.num,maxIter.num)
+        stats::var(bias[which(bias != 0)]),0) ~ c(iter.num,maxIter)
     )
     slope.num <- stats::coef(fit.lm)[2]
     angle.num <- 90 - tan(slope.num) *
         pi/180
     intercept.num <- stats::coef(fit.lm)[1]
     max_gain.num <- -Inf
-    while (iter.num < maxIter.num) {
-        hic.cmx <- VCnorm(hic.cmx, qtlTh.num = 0, sqrt.bln = FALSE)
-        bias.num <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
+    while (iter.num < maxIter) {
+        hic.cmx <- VCnorm(hic.cmx, qtlTh = 0, sqrt.bln = FALSE)
+        bias <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
             Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
             Matrix::diag(hic.cmx@matrix)
         vertical_distances.num <- abs(
             slope.num * iter.num +
             intercept.num -
-            stats::var(bias.num[which(bias.num != 0)])
+            stats::var(bias[which(bias != 0)])
         )
         perpendicular_distance.num <- sin(angle.num) *
             vertical_distances.num
@@ -84,7 +84,7 @@ ICEnorm <- function(hic.cmx, qtlTh.num = 0.15, maxIter.num = 50) {
             max_gain.num <- gain.num
             i_max <- iter.num
             hicNorm.cmx <- hic.cmx
-        } else if (i_max + floor(maxIter.num * 0.1) <= iter.num) {
+        } else if (i_max + floor(maxIter * 0.1) <= iter.num) {
             break
         }
         iter.num <- iter.num + 1

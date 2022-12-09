@@ -8,12 +8,12 @@ BinGRanges(
   gRange.gnr = NULL,
   chromSize.dtf = NULL,
   binSize.num = NULL,
-  method.chr = "mean",
+  method = "mean",
   variablesName.chr_vec = NULL,
   na.rm = TRUE,
-  cores.num = 1,
+  cores = 1,
   reduce.bln = TRUE,
-  verbose.bln = FALSE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -23,17 +23,17 @@ BinGRanges(
 
 \item{binSize.num}{<numerical>: Width of the bins.}
 
-\item{method.chr}{<character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')}
+\item{method}{<character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')}
 
 \item{variablesName.chr_vec}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.}
 
 \item{na.rm}{<logical> : A logical value indicating whether 'NA' values should be stripped before the computation proceeds. (Default TRUE)}
 
-\item{cores.num}{<numerical> : The number of cores. (Default 1)}
+\item{cores}{<numerical> : The number of cores. (Default 1)}
 
 \item{reduce.bln}{<logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A binned GRanges.
@@ -60,7 +60,7 @@ BinGRanges(
     gRange.gnr = GRange.gnr,
     chromSize.dtf = data.frame(c("chr1", "chr2"), c(350, 100)),
     binSize.num = 100,
-    method.chr = "mean",
+    method = "mean",
     variablesName.chr_vec = "score",
     na.rm = TRUE
 )

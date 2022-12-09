@@ -4,12 +4,12 @@
 \alias{CutHiC}
 \title{Cut HiC map in chunks.}
 \usage{
-CutHiC(megaHic.cmx, verbose.bln = FALSE)
+CutHiC(megaHic.cmx, verbose = FALSE)
 }
 \arguments{
 \item{megaHic.cmx}{<contactMatrix>: The HiC megamap.}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A matrices list.

@@ -4,14 +4,14 @@
 \alias{TrimOutliers}
 \title{Remove outliers.}
 \usage{
-TrimOutliers(x.num, tresholds.num = SdThreshold(x.num), clip.bln = FALSE)
+TrimOutliers(x.num, tresholds.num = SdThreshold(x.num), clip = FALSE)
 }
 \arguments{
 \item{x.num}{<numeric>: Numeric vector.}
 
 \item{tresholds.num}{<numeric>: Numeric vector of length 2. first value is minimal threshold, second value maximal threshold (Default find threshold based on standarrd deviation. see `SdThreshold` function)}
 
-\item{clip.bln}{<logical>: If TRUE the value out of bounds are replace with threshodls values. If FALSE the Values out of bound are replace with NA (Default FALSE).}
+\item{clip}{<logical>: If TRUE the value out of bounds are replace with threshodls values. If FALSE the Values out of bound are replace with NA (Default FALSE).}
 }
 \value{
 Trimed Numerical vector.

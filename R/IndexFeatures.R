@@ -7,9 +7,9 @@
 #' @param chromSize.dtf <data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).
 #' @param binSize.num <integer>: Bin size in bp - corresponds to HiC matrix resolution.
 #' @param variablesName.chr_vec <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.
-#' @param method.chr <character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')
-#' @param cores.num <integer> : Number of cores used. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param method <character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')
+#' @param cores <integer> : Number of cores used. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A GRanges object.
 #' @examples
 #' data(Beaf32_Peaks.gnr)
@@ -24,8 +24,8 @@
 #'
 IndexFeatures <- function(
     gRange.gnr_lst = NULL, constraint.gnr = NULL, chromSize.dtf = NULL,
-    binSize.num = NULL, method.chr = "mean", variablesName.chr_vec = NULL,
-    cores.num = 1, verbose.bln = FALSE
+    binSize.num = NULL, method = "mean", variablesName.chr_vec = NULL,
+    cores = 1, verbose = FALSE
 ) {
     # Constraint Informations
     if (is.null(constraint.gnr)) {
@@ -55,9 +55,9 @@ IndexFeatures <- function(
         gRange.gnr = constraint.gnr,
         chromSize.dtf = chromSize.dtf,
         binSize.num = binSize.num,
-        verbose.bln = verbose.bln,
+        verbose = verbose,
         reduce.bln = FALSE,
-        cores.num = cores.num
+        cores = cores
     )
     # Feature Names
     if (inherits(gRange.gnr_lst, "GRanges")) {
@@ -78,7 +78,7 @@ IndexFeatures <- function(
     feature.chr_vec <- names(gRange.gnr_lst)
     # GRanges Binning
     binnedFeature.lst <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose.bln),
+        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
         seq_along(gRange.gnr_lst),
         function(feature.ndx) {
             feature.chr <- feature.chr_vec[[feature.ndx]]
@@ -89,10 +89,10 @@ IndexFeatures <- function(
             GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
                 gRange.gnr = feature.gnr, chromSize.dtf = chromSize.dtf,
-                binSize.num = binSize.num, method.chr = method.chr,
+                binSize.num = binSize.num, method = method,
                 variablesName.chr_vec = variablesName.chr_vec,
-                verbose.bln = verbose.bln, reduce.bln = TRUE,
-                cores.num = cores.num
+                verbose = verbose, reduce.bln = TRUE,
+                cores = cores
             )
             binnedFeat.tbl <- tibble::tibble(
                 BinnedFeature.ndx = seq_along(binnedFeature.gnr),
@@ -135,8 +135,8 @@ IndexFeatures <- function(
                 stats::setNames(c("Constraint.name", "BinnedFeature.ndx")) |>
                 dplyr::left_join(binnedConstraint.tbl, by = "Constraint.name")
             multicoreParam <- MakeParallelParam(
-                cores.num = cores.num,
-                verbose.bln = FALSE
+                cores = cores,
+                verbose = FALSE
             )
             binnedFeature.gnr_lst <- BiocParallel::bplapply(
                 BPPARAM = multicoreParam, seq_len(nrow(featConstOvlp.tbl)),
@@ -216,8 +216,8 @@ IndexFeatures <- function(
             binnedIndexNoDuplicated.dtf
         )
         multicoreParam <- MakeParallelParam(
-            cores.num = cores.num,
-            verbose.bln = verbose.bln
+            cores = cores,
+            verbose = verbose
         )
         binnedIndexDuplicated.lst <- BiocParallel::bplapply(
             BPPARAM = multicoreParam, seq_len(nrow(binnedIndexDuplicated.tbl)),

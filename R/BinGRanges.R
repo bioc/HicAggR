@@ -5,12 +5,12 @@
 #' @param gRange.gnr <GRanges>: A GRanges to bin.
 #' @param chromSize.dtf <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
 #' @param binSize.num <numerical>: Width of the bins.
-#' @param method.chr <character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')
+#' @param method <character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')
 #' @param variablesName.chr_vec <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.
 #' @param na.rm <logical> : A logical value indicating whether 'NA' values should be stripped before the computation proceeds. (Default TRUE)
-#' @param cores.num <numerical> : The number of cores. (Default 1)
+#' @param cores <numerical> : The number of cores. (Default 1)
 #' @param reduce.bln <logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A binned GRanges.
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(
@@ -28,15 +28,15 @@
 #'     gRange.gnr = GRange.gnr,
 #'     chromSize.dtf = data.frame(c("chr1", "chr2"), c(350, 100)),
 #'     binSize.num = 100,
-#'     method.chr = "mean",
+#'     method = "mean",
 #'     variablesName.chr_vec = "score",
 #'     na.rm = TRUE
 #' )
 #'
 BinGRanges <- function(
     gRange.gnr = NULL, chromSize.dtf = NULL, binSize.num = NULL,
-    method.chr = "mean", variablesName.chr_vec = NULL, na.rm = TRUE,
-    cores.num = 1, reduce.bln = TRUE, verbose.bln = FALSE
+    method = "mean", variablesName.chr_vec = NULL, na.rm = TRUE,
+    cores = 1, reduce.bln = TRUE, verbose = FALSE
 ) {
     if (is.null(chromSize.dtf)) {
         seqlengths.lst <- GenomeInfoDb::seqlengths(gRange.gnr)
@@ -81,8 +81,8 @@ BinGRanges <- function(
             bin = dup_binnedGRange.tbl$bin) |>
             tidyr::nest()
         multicoreParam <- MakeParallelParam(
-            cores.num = cores.num,
-            verbose.bln = verbose.bln)
+            cores = cores,
+            verbose = verbose)
         dup_binnedGRange.lst <- BiocParallel::bplapply(
             BPPARAM = multicoreParam, seq_len(nrow(dup_binnedGRange.tbl)),
             function(row.ndx) {
@@ -95,7 +95,7 @@ BinGRanges <- function(
                     colName.chr %in% variablesName.chr_vec) {
                         return(
                             as.numeric(
-                                eval(parse(text = method.chr))(
+                                eval(parse(text = method))(
                                     as.numeric(col),
                                     na.rm = na.rm)
                             )
@@ -119,11 +119,11 @@ BinGRanges <- function(
             strand = as.factor(dup_binnedGRange.tbl$strand)
         )
         for (colName.chr in names(dup_binnedGRange.tbl)) {
-            method.chr <- dplyr::pull(
+            method <- dplyr::pull(
                 dup_binnedGRange.tbl,
                 dplyr::all_of(colName.chr)) |>
                 class()
-            method.fun <- eval(parse(text = paste0("as.", method.chr)))
+            method.fun <- eval(parse(text = paste0("as.", method)))
             nodup_binnedGRange.tbl <- nodup_binnedGRange.tbl |>
                 dplyr::mutate(
                     dplyr::across(

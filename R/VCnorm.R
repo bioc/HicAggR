@@ -3,7 +3,7 @@
 #' VCnorm
 #' @description Compute Vanilla Count or Vanilla Count square root correction normalization on hic maps.
 #' @param hic.cmx <contactMatrix>: The HiC maps chunk to normalize.
-#' @param qtlTh.num <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
+#' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
 #' @param sqrt.bln <logical>: Whether the square root must be apply. (Default TRUE)
 #' @return A matrices list.
 #' @examples
@@ -15,13 +15,13 @@
 #'
 VCnorm <- function(
     hic.cmx = NULL,
-    qtlTh.num = 0.15,
+    qtlTh = 0.15,
     sqrt.bln = TRUE
 ) {
     pow.num <- ifelse(sqrt.bln, 0.5, 1)
     hic.spm <- hic.cmx@matrix
     # Removed Low counts bins
-    if (qtlTh.num) {
+    if (qtlTh) {
         if (hic.cmx@metadata$symmetric) {
             rowBias.num <- Matrix::rowSums(hic.spm, na.rm = TRUE) +
                 Matrix::colSums(hic.spm, na.rm = TRUE) -
@@ -32,11 +32,11 @@ VCnorm <- function(
             colBias.num <- Matrix::colSums(hic.spm, na.rm = TRUE)
         }
         row.ndx <- which(
-            rowBias.num < stats::quantile(rowBias.num, qtlTh.num) &
+            rowBias.num < stats::quantile(rowBias.num, qtlTh) &
             rowBias.num > 0
         )
         col.ndx <- which(
-            colBias.num < stats::quantile(colBias.num, qtlTh.num) &
+            colBias.num < stats::quantile(colBias.num, qtlTh) &
             colBias.num > 0
         )
         meltedHic.dtf <- MeltSpm(hic.spm)

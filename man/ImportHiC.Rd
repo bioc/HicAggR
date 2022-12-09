@@ -10,8 +10,8 @@ ImportHiC(
   chromSize.dtf = NULL,
   chrom_1.chr = NULL,
   chrom_2.chr = NULL,
-  verbose.bln = FALSE,
-  cores.num = 1
+  verbose = FALSE,
+  cores = 1
 )
 }
 \arguments{
@@ -25,9 +25,9 @@ ImportHiC(
 
 \item{chrom_2.chr}{<numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1.chr (Defalt NULL)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores.num}{<numerical> : An integer to specify the number of cores. (Default 1)}
+\item{cores}{<numerical> : An integer to specify the number of cores. (Default 1)}
 }
 \value{
 A matrices list.

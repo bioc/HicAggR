@@ -2,65 +2,65 @@
 #'
 #' BalanceHiC
 #' @description Apply a matrix-balancing normalization method to a list of contacts matrix.
-#' @param hic.cmx_lst <List[contactMatrix]>: The HiC maps list.
-#' @param method.chr <character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
-#' @param interaction.type <character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)
-#' @param maxIter.num <numerical>: The maximum iteration number.
-#' @param qtlTh.num <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
-#' @param cores.num <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @param method <character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
+#' @param interactionType <character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)
+#' @param maxIter <numerical>: The maximum iteration number.
+#' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
+#' @param cores <numerical> : Number of cores to be used. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #'
 #' HiC_Ctrl_ICE.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-#'     interaction.type = "cis",
-#'     method.chr = "ICE"
+#'     interactionType = "cis",
+#'     method = "ICE"
 #' )
 #'
 #' HiC_Ctrl_VC.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-#'     interaction.type = c("cis", "trans"),
-#'     method.chr = "VC"
+#'     interactionType = c("cis", "trans"),
+#'     method = "VC"
 #' )
 #'
 #' HiC_Ctrl_VC_SQRT.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-#'     interaction.type = "all",
-#'     method.chr = "VC_SQRT"
+#'     interactionType = "all",
+#'     method = "VC_SQRT"
 #' )
 #'
 BalanceHiC <- function(
-    hic.cmx_lst, method.chr = "ICE", interaction.type = NULL, maxIter.num = 50,
-    qtlTh.num = 0.15, cores.num = 1, verbose.bln = FALSE
+    hicLst, method = "ICE", interactionType = NULL, maxIter = 50,
+    qtlTh = 0.15, cores = 1, verbose = FALSE
 ) {
-    if (!is.null(interaction.type) &&
-        "all" %in% interaction.type
+    if (!is.null(interactionType) &&
+        "all" %in% interactionType
     ) {
-        megaHic.cmx <- JoinHiC(hic.cmx_lst)
-        if (method.chr == "VC") {
+        megaHic.cmx <- JoinHiC(hicLst)
+        if (method == "VC") {
             megaHic.cmx <- VCnorm(
                 megaHic.cmx,
-                qtlTh.num = qtlTh.num,
+                qtlTh = qtlTh,
                 sqrt.bln = FALSE
             )
-        } else if (method.chr == "VC_SQRT") {
+        } else if (method == "VC_SQRT") {
             megaHic.cmx <- VCnorm(
                 megaHic.cmx,
-                qtlTh.num = qtlTh.num,
+                qtlTh = qtlTh,
                 sqrt.bln = TRUE
             )
-        } else if (method.chr == "ICE") {
+        } else if (method == "ICE") {
             megaHic.cmx <- ICEnorm(
                 megaHic.cmx,
-                qtlTh.num = qtlTh.num,
-                maxIter.num = maxIter.num
+                qtlTh = qtlTh,
+                maxIter = maxIter
             )
         }
-        hic.cmx_lst <- CutHiC(megaHic.cmx, verbose.bln = verbose.bln)
-    } else if (!is.null(interaction.type) &&
-        "cis" %in% interaction.type &&
-        NotIn("trans", interaction.type)
+        hicLst <- CutHiC(megaHic.cmx, verbose = verbose)
+    } else if (!is.null(interactionType) &&
+        "cis" %in% interactionType &&
+        NotIn("trans", interactionType)
     ) {
-        matricesKind.tbl <- attributes(hic.cmx_lst)$matricesKind
+        matricesKind.tbl <- attributes(hicLst)$matricesKind
         if ("cis" %in% matricesKind.tbl$type) {
             cisMatricesNames.chr <- dplyr::filter(
                     matricesKind.tbl,
@@ -69,30 +69,30 @@ BalanceHiC <- function(
                 dplyr::pull("name")
             if (length(cisMatricesNames.chr)) {
                 multicoreParam <- MakeParallelParam(
-                    cores.num = cores.num,
-                    verbose.bln = verbose.bln
+                    cores = cores,
+                    verbose = verbose
                 )
-                hic.cmx_lst[cisMatricesNames.chr] <- BiocParallel::bplapply(
+                hicLst[cisMatricesNames.chr] <- BiocParallel::bplapply(
                     BPPARAM = multicoreParam, seq_along(cisMatricesNames.chr),
                     function(ele.ndx) {
                         matrixName.chr <- cisMatricesNames.chr[[ele.ndx]]
-                        if (method.chr == "VC") {
+                        if (method == "VC") {
                             hic.cmx <- VCnorm(
-                                hic.cmx_lst[[matrixName.chr]],
-                                qtlTh.num = qtlTh.num,
+                                hicLst[[matrixName.chr]],
+                                qtlTh = qtlTh,
                                 sqrt.bln = FALSE
                             )
-                        } else if (method.chr == "VC_SQRT") {
+                        } else if (method == "VC_SQRT") {
                             hic.cmx <- VCnorm(
-                                hic.cmx_lst[[matrixName.chr]],
-                                qtlTh.num = qtlTh.num,
+                                hicLst[[matrixName.chr]],
+                                qtlTh = qtlTh,
                                 sqrt.bln = TRUE
                             )
-                        } else if (method.chr == "ICE") {
+                        } else if (method == "ICE") {
                             hic.cmx <- ICEnorm(
-                                hic.cmx_lst[[matrixName.chr]],
-                                qtlTh.num = qtlTh.num,
-                                maxIter.num = maxIter.num
+                                hicLst[[matrixName.chr]],
+                                qtlTh = qtlTh,
+                                maxIter = maxIter
                             )
                         }
                         return(hic.cmx)
@@ -109,7 +109,7 @@ BalanceHiC <- function(
             )
             message(mess.chr)
             if (length(transMatricesNames.chr)) {
-                attr.lst <- attributes(hic.cmx_lst)
+                attr.lst <- attributes(hicLst)
                 attr.lst$matricesKind <- dplyr::filter(
                     attr.lst$matricesKind,
                     NotIn(attr.lst$matricesKind$name, transMatricesNames.chr)
@@ -122,10 +122,10 @@ BalanceHiC <- function(
                     attr.lst$chromSize,
                     attr.lst$chromSize$name == chroms.chr
                 )
-                hic.cmx_lst <- hic.cmx_lst[-which(
-                    names(hic.cmx_lst) %in% transMatricesNames.chr
+                hicLst <- hicLst[-which(
+                    names(hicLst) %in% transMatricesNames.chr
                 )] |>
-                    AddAttr(attr.lst)
+                    AddAttr(attrs=attr.lst)
             }
         } else {
             mess.chr <-paste0(
@@ -134,10 +134,10 @@ BalanceHiC <- function(
             )
             message(mess.chr)
         }
-    } else if (!is.null(interaction.type) &&
-        "trans" %in% interaction.type && NotIn("cis", interaction.type)
+    } else if (!is.null(interactionType) &&
+        "trans" %in% interactionType && NotIn("cis", interactionType)
     ) {
-        matricesKind.tbl <- attributes(hic.cmx_lst)$matricesKind
+        matricesKind.tbl <- attributes(hicLst)$matricesKind
         if ("trans" %in% matricesKind.tbl$type) {
             transMatricesNames.chr <- dplyr::filter(
                     matricesKind.tbl,
@@ -147,39 +147,39 @@ BalanceHiC <- function(
                 strsplit("_") |>
                 unlist() |>
                 unique()
-            chromSize.tbl <- attributes(hic.cmx_lst)$chromSize
+            chromSize.tbl <- attributes(hicLst)$chromSize
             chromSize.tbl <- dplyr::filter(
                 chromSize.tbl,
                 chromSize.tbl$name %in% chromNames.chr
             )
-            trans.cmx_lst <- hic.cmx_lst[transMatricesNames.chr] |>
-                AddAttr(list(
-                    resolution = attributes(hic.cmx_lst)$resolution,
+            trans.cmx_lst <- hicLst[transMatricesNames.chr] |>
+                AddAttr(attrs = list(
+                    resolution = attributes(hicLst)$resolution,
                     chromSize = chromSize.tbl,
                     matricesKind = matricesKind.tbl
                 ))
             megaHic.cmx <- JoinHiC(trans.cmx_lst)
-            if (method.chr == "VC") {
+            if (method == "VC") {
                 megaHic.cmx <- VCnorm(
                     megaHic.cmx,
-                    qtlTh.num = qtlTh.num,
+                    qtlTh = qtlTh,
                     sqrt.bln = FALSE
                 )
-            } else if (method.chr == "VC_SQRT") {
+            } else if (method == "VC_SQRT") {
                 megaHic.cmx <- VCnorm(
                     megaHic.cmx,
-                    qtlTh.num = qtlTh.num,
+                    qtlTh = qtlTh,
                     sqrt.bln = TRUE
                 )
-            } else if (method.chr == "ICE") {
+            } else if (method == "ICE") {
                 megaHic.cmx <- ICEnorm(
                     megaHic.cmx,
-                    qtlTh.num = qtlTh.num,
-                    maxIter.num = maxIter.num
+                    qtlTh = qtlTh,
+                    maxIter = maxIter
                 )
             }
-            trans.cmx_lst <- CutHiC(megaHic.cmx, verbose.bln = verbose.bln)
-            hic.cmx_lst[transMatricesNames.chr] <-
+            trans.cmx_lst <- CutHiC(megaHic.cmx, verbose = verbose)
+            hicLst[transMatricesNames.chr] <-
                 trans.cmx_lst[transMatricesNames.chr]
             cisMatricesNames.chr <- dplyr::filter(
                     matricesKind.tbl,
@@ -192,7 +192,7 @@ BalanceHiC <- function(
             )
             message(mess.chr)
             if (length(cisMatricesNames.chr)) {
-                attr.lst <- attributes(hic.cmx_lst)
+                attr.lst <- attributes(hicLst)
                 attr.lst$matricesKind <- dplyr::filter(
                     attr.lst$matricesKind,
                     NotIn(attr.lst$matricesKind$name, cisMatricesNames.chr)
@@ -205,10 +205,10 @@ BalanceHiC <- function(
                     attr.lst$chromSize,
                     attr.lst$chromSize$name == chroms.chr
                 )
-                hic.cmx_lst <- hic.cmx_lst[-which(
-                    names(hic.cmx_lst) %in% cisMatricesNames.chr
+                hicLst <- hicLst[-which(
+                    names(hicLst) %in% cisMatricesNames.chr
                 )] |>
-                    AddAttr(attr.lst)
+                    AddAttr(attrs = attr.lst)
             }
         } else {
             mess.chr <- paste0(
@@ -218,9 +218,9 @@ BalanceHiC <- function(
             message(mess.chr)
         }
     } else {
-        matricesKind.tbl <- attributes(hic.cmx_lst)$matricesKind
-        if (is.null(interaction.type) |
-            "cis" %in% interaction.type
+        matricesKind.tbl <- attributes(hicLst)$matricesKind
+        if (is.null(interactionType) |
+            "cis" %in% interactionType
         ) {
             if ("cis" %in% matricesKind.tbl$type) {
                 cisMatricesNames.chr <- dplyr::filter(
@@ -230,32 +230,32 @@ BalanceHiC <- function(
                     dplyr::pull("name")
                 if (length(cisMatricesNames.chr)) {
                     multicoreParam <- MakeParallelParam(
-                        cores.num = cores.num,
-                        verbose.bln = verbose.bln
+                        cores = cores,
+                        verbose = verbose
                     )
-                    hic.cmx_lst[cisMatricesNames.chr] <-
+                    hicLst[cisMatricesNames.chr] <-
                         BiocParallel::bplapply(
                             BPPARAM = multicoreParam,
                             seq_along(cisMatricesNames.chr),
                             function(ele.ndx) {
                             matrixName.chr <- cisMatricesNames.chr[[ele.ndx]]
-                            if (method.chr == "VC") {
+                            if (method == "VC") {
                                 hic.cmx <- VCnorm(
-                                    hic.cmx_lst[[matrixName.chr]],
-                                    qtlTh.num = qtlTh.num,
+                                    hicLst[[matrixName.chr]],
+                                    qtlTh = qtlTh,
                                     sqrt.bln = FALSE
                                 )
-                            } else if (method.chr == "VC_SQRT") {
+                            } else if (method == "VC_SQRT") {
                                 hic.cmx <- VCnorm(
-                                    hic.cmx_lst[[matrixName.chr]],
-                                    qtlTh.num = qtlTh.num,
+                                    hicLst[[matrixName.chr]],
+                                    qtlTh = qtlTh,
                                     sqrt.bln = TRUE
                                 )
-                            } else if (method.chr == "ICE") {
+                            } else if (method == "ICE") {
                                 hic.cmx <- ICEnorm(
-                                    hic.cmx_lst[[matrixName.chr]],
-                                    qtlTh.num = qtlTh.num,
-                                    maxIter.num = maxIter.num
+                                    hicLst[[matrixName.chr]],
+                                    qtlTh = qtlTh,
+                                    maxIter = maxIter
                                 )
                             }
                             return(hic.cmx)
@@ -270,8 +270,8 @@ BalanceHiC <- function(
                 message(mess.chr)
             }
         }
-        if (is.null(interaction.type) |
-            "trans" %in% interaction.type
+        if (is.null(interactionType) |
+            "trans" %in% interactionType
         ) {
             if ("trans" %in% matricesKind.tbl$type) {
                 transMatricesNames.chr <- dplyr::filter(
@@ -283,39 +283,39 @@ BalanceHiC <- function(
                     strsplit("_") |>
                     unlist() |>
                     unique()
-                chromSize.tbl <- attributes(hic.cmx_lst)$chromSize
+                chromSize.tbl <- attributes(hicLst)$chromSize
                 chromSize.tbl <- dplyr::filter(
                     chromSize.tbl,
                     chromSize.tbl$name %in% chromNames.chr
                 )
-                trans.cmx_lst <- hic.cmx_lst[transMatricesNames.chr] |>
-                    AddAttr(list(
-                        resolution = attributes(hic.cmx_lst)$resolution,
+                trans.cmx_lst <- hicLst[transMatricesNames.chr] |>
+                    AddAttr(attrs = list(
+                        resolution = attributes(hicLst)$resolution,
                         chromSize = chromSize.tbl,
                         matricesKind = matricesKind.tbl
                     ))
                 megaHic.cmx <- JoinHiC(trans.cmx_lst)
-                if (method.chr == "VC") {
+                if (method == "VC") {
                     megaHic.cmx <- VCnorm(
                         megaHic.cmx,
-                        qtlTh.num = qtlTh.num,
+                        qtlTh = qtlTh,
                         sqrt.bln = FALSE
                     )
-                } else if (method.chr == "VC_SQRT") {
+                } else if (method == "VC_SQRT") {
                     megaHic.cmx <- VCnorm(
                         megaHic.cmx,
-                        qtlTh.num = qtlTh.num,
+                        qtlTh = qtlTh,
                         sqrt.bln = TRUE
                     )
-                } else if (method.chr == "ICE") {
+                } else if (method == "ICE") {
                     megaHic.cmx <- ICEnorm(
                         megaHic.cmx,
-                        qtlTh.num = qtlTh.num,
-                        maxIter.num = maxIter.num
+                        qtlTh = qtlTh,
+                        maxIter = maxIter
                     )
                 }
-                trans.cmx_lst <- CutHiC(megaHic.cmx, verbose.bln = verbose.bln)
-                hic.cmx_lst[transMatricesNames.chr] <-
+                trans.cmx_lst <- CutHiC(megaHic.cmx, verbose = verbose)
+                hicLst[transMatricesNames.chr] <-
                     trans.cmx_lst[transMatricesNames.chr]
             } else {
                 mess.chr <- paste0(
@@ -326,5 +326,5 @@ BalanceHiC <- function(
             }
         }
     }
-    return(hic.cmx_lst)
+    return(hicLst)
 }

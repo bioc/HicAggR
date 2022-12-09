@@ -2,7 +2,7 @@
 #'
 #' FilterInteractions
 #' @description Search in a GInteraction object which interactions correspond ti a target list and return a list of index or filter a matrices list according to target and a selection function.
-#' @param matrices.lst <List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.
+#' @param matrices <List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.
 #' @param interarctions.gni <GInteractions>: The GInteraction object on which compute the filter.
 #' @param target.lst <List>: A nammed list that describe the target.
 #' @param selection.fun <function>: A function that described how the target must be cross. (Defaul intersection of all targets)
@@ -26,7 +26,7 @@
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst  <- ExtractSubmatrix(
 #'     feature.gn         = Beaf_Beaf.gni,
-#'     hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+#'     hicLst        = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #'
@@ -59,7 +59,7 @@
 #'
 #' # Filtration on Matrices List (Beaf32 <-> Beaf32 Extracted matrices)
 #' FilterInteractions(
-#'     matrices.lst      = interactions_PF.mtx_lst,
+#'     matrices      = interactions_PF.mtx_lst,
 #'     target.lst        = target.lst,
 #'     selection.fun     = NULL
 #' ) |> str(max.level = 1)
@@ -76,11 +76,11 @@
 #'
 #' # Add the selection on Matrices List Filtration
 #' FilterInteractions(
-#'     matrices.lst = interactions_PF.mtx_lst,
+#'     matrices = interactions_PF.mtx_lst,
 #'     target.lst = target.lst,
 #'     selection.fun = selection.fun
 #' ) |> str(max.level = 1)
-#' # This return the filtred matrices.lst, i.e the matrices.lst for which
+#' # This return the filtred matrices, i.e the matrices for which
 #' # the Beaf32<->Beaf32 interactions satisfy both targeting criteria.
 #'
 #' # Filtration with InteractionsSet as filtration criteria
@@ -101,12 +101,12 @@
 #' ) |> str(max.level = 1)
 #'
 FilterInteractions <- function(
-    matrices.lst = NULL, interarctions.gni = NULL, target.lst = NULL,
+    matrices = NULL, interarctions.gni = NULL, target.lst = NULL,
     selection.fun = function() {Reduce(intersect, interarctions.ndx_lst)}
 ) {
-    if (!is.null(matrices.lst) &&
-        !is.null(attributes(matrices.lst)$interactions)) {
-        interarctions.gni <- attributes(matrices.lst)$interactions
+    if (!is.null(matrices) &&
+        !is.null(attributes(matrices)$interactions)) {
+        interarctions.gni <- attributes(matrices)$interactions
     }
     interarctions.ndx_lst <- lapply(
         seq_along(target.lst),
@@ -163,16 +163,16 @@ FilterInteractions <- function(
     } else {
         return(interarctions.ndx_lst)
     }
-    if (!is.null(matrices.lst)) {
-        matrices.filt.lst <- matrices.lst[interarctions.ndx]
+    if (!is.null(matrices)) {
+        matrices.filt.lst <- matrices[interarctions.ndx]
         attributes(matrices.filt.lst)$interactions <-
-            attributes(matrices.lst)$interactions[interarctions.ndx]
+            attributes(matrices)$interactions[interarctions.ndx]
         attributes(matrices.filt.lst)$resolution <-
-            attributes(matrices.lst)$resolution
+            attributes(matrices)$resolution
         attributes(matrices.filt.lst)$referencePoint <-
-            attributes(matrices.lst)$referencePoint
+            attributes(matrices)$referencePoint
         attributes(matrices.filt.lst)$matriceDim <-
-            attributes(matrices.lst)$matriceDim
+            attributes(matrices)$matriceDim
         attributes(matrices.filt.lst)$target <- target.lst
         attributes(matrices.filt.lst)$selection <- selection.fun
         return(matrices.filt.lst)

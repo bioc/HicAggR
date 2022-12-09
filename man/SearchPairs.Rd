@@ -7,10 +7,10 @@
 SearchPairs(
   indexAnchor.gnr = NULL,
   indexBait.gnr = NULL,
-  minDist.num = NULL,
-  maxDist.num = NULL,
-  verbose.bln = FALSE,
-  cores.num = 1
+  minDist = NULL,
+  maxDist = NULL,
+  verbose = FALSE,
+  cores = 1
 )
 }
 \arguments{
@@ -18,13 +18,13 @@ SearchPairs(
 
 \item{indexBait.gnr}{<GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor.gnr is used instead (Default NULL)}
 
-\item{minDist.num}{<numeric>: Minimal distance between anchors and baits. (Default NULL)}
+\item{minDist}{<numeric>: Minimal distance between anchors and baits. (Default NULL)}
 
-\item{maxDist.num}{<numeric>: Maximal distance between anchors and baits. (Default NULL)}
+\item{maxDist}{<numeric>: Maximal distance between anchors and baits. (Default NULL)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores.num}{<integer> : Number of cores to use. (Default 1)}
+\item{cores}{<integer> : Number of cores to use. (Default 1)}
 }
 \value{
 A GInteractions object.

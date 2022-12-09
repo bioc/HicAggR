@@ -5,30 +5,30 @@
 \title{Aggregation of matrices list.}
 \usage{
 Aggregation(
-  ctrlMatrices.lst = NULL,
-  matrices.lst = NULL,
-  minDist.num = NULL,
-  maxDist.num = NULL,
-  trans.fun = NULL,
-  agg.fun = "mean",
-  rm0.bln = FALSE,
-  diff.fun = "substraction",
-  scaleCorrection.bln = FALSE,
-  correctionArea.lst = NULL,
-  statCompare.bln = FALSE,
+  ctrlMatrices = NULL,
+  matrices = NULL,
+  minDist = NULL,
+  maxDist = NULL,
+  transFun = NULL,
+  aggFun = "mean",
+  rm0 = FALSE,
+  diffFun = "substraction",
+  scaleCorrection = FALSE,
+  correctionArea = NULL,
+  statCompare = FALSE,
   orientate = TRUE
 )
 }
 \arguments{
-\item{ctrlMatrices.lst}{<list[matrix]>: The matrices list to aggregate as control.}
+\item{ctrlMatrices}{<list[matrix]>: The matrices list to aggregate as control.}
 
-\item{matrices.lst}{<list[matrix]>: The matrices list to aggregate.}
+\item{matrices}{<list[matrix]>: The matrices list to aggregate.}
 
-\item{minDist.num}{<numeric>: The minimal distance between anchor and bait.}
+\item{minDist}{<numeric>: The minimal distance between anchor and bait.}
 
-\item{maxDist.num}{<numeric>: The maximal distance between anchor and bait.}
+\item{maxDist}{<numeric>: The maximal distance between anchor and bait.}
 
-\item{trans.fun}{<function or chracter>: The function use to transforme or scale values in each submatrix before aggregation. If the parameter is character so:
+\item{transFun}{<function or chracter>: The function use to transforme or scale values in each submatrix before aggregation. If the parameter is character so:
 \itemize{
 \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 \item "percentile" or "prct" apply percentile.
@@ -39,16 +39,16 @@ Aggregation(
 \item other or NULL don't apply transformation (Default).
 }}
 
-\item{agg.fun}{<function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
+\item{aggFun}{<function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
 \itemize{
 \item "50%" or "median" apply the median
 \item "+" or "sum" apply the sum
 \item other (Default) apply the mean
 }}
 
-\item{rm0.bln}{<logical>: Whether 0 are replace with NA. (Default FALSE)}
+\item{rm0}{<logical>: Whether 0 are replace with NA. (Default FALSE)}
 
-\item{diff.fun}{<function or chracter>: The function use to compute differential. If the parameter is character so:
+\item{diffFun}{<function or chracter>: The function use to compute differential. If the parameter is character so:
 \itemize{
 \item "-", "substract" or "substraction" apply a substraction
 \item "/" or "ratio" apply a ratio
@@ -56,11 +56,11 @@ Aggregation(
 \item other (Default) apply a log2 on 1+ratio
 }}
 
-\item{scaleCorrection.bln}{<logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)}
+\item{scaleCorrection}{<logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)}
 
-\item{correctionArea.lst}{<list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)}
+\item{correctionArea}{<list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)}
 
-\item{statCompare.bln}{<logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.}
+\item{statCompare}{<logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.}
 
 \item{orientate}{<logical>: Whether matrices must be orientate before the aggregation.}
 }
@@ -93,12 +93,12 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 interactions_HS.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_HS.cmx_lst,
+    hicLst = HiC_HS.cmx_lst,
     referencePoint.chr = "pf"
 )
 
@@ -107,8 +107,8 @@ aggreg.mtx <- Aggregation(interactions_Ctrl.mtx_lst)
 
 # Differential Aggregation
 aggregDiff.mtx <- Aggregation(
-    ctrlMatrices.lst = interactions_Ctrl.mtx_lst,
-    matrices.lst = interactions_HS.mtx_lst
+    ctrlMatrices = interactions_Ctrl.mtx_lst,
+    matrices = interactions_HS.mtx_lst
 )
 
 }

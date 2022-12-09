@@ -4,12 +4,12 @@
 \alias{MakeParallelParam}
 \title{Configure parallel parameters.}
 \usage{
-MakeParallelParam(cores.num = 1, verbose.bln = FALSE)
+MakeParallelParam(cores = 1, verbose = FALSE)
 }
 \arguments{
-\item{cores.num}{<numerical> : An integer to specify the number of cores. (Default 1)}
+\item{cores}{<numerical> : An integer to specify the number of cores. (Default 1)}
 
-\item{verbose.bln}{<logical>: A logical value. If TRUE show the progression in console. (Default TRUE)}
+\item{verbose}{<logical>: A logical value. If TRUE show the progression in console. (Default TRUE)}
 }
 \value{
 Parrallel parameter according number of cores and OS to use with BiocParallel package.

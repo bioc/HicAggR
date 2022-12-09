@@ -4,8 +4,8 @@
 #' @keywords internal
 #' @description Scale values on min-max range.
 #' @param x.num <numeric>: Numerical vector.
-#' @param min.num <numeric>: Minimal value after scaling.
-#' @param max.num <numeric>: Maximal value after scaling.
+#' @param x_min <numeric>: Minimal value after scaling.
+#' @param x_max <numeric>: Maximal value after scaling.
 #' @return Scaled numeric vector.
 #' @examples
 #' set.seed(655213)
@@ -22,11 +22,11 @@
 #' lines(density(MinMaxScale(y.num)), col = "green")
 #'
 MinMaxScale <- function(
-    x.num, min.num = (0), max.num = 1
+    x.num, x_min = (0), x_max = 1
 ) {
-    min.num +
+    x_min +
     (
-        ((x.num - min(x.num, na.rm = TRUE)) * (max.num - min.num)) /
+        ((x.num - min(x.num, na.rm = TRUE)) * (x_max - x_min)) /
         (max(x.num, na.rm = TRUE ) - min(x.num, na.rm = TRUE))
     )
 }

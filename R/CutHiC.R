@@ -3,7 +3,7 @@
 #' CutHiC
 #' @description Cut a mega contactMatrix (join of multiple chromosomic maps) inq a list of contactMatrix.
 #' @param megaHic.cmx <contactMatrix>: The HiC megamap.
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
@@ -11,7 +11,7 @@
 #' CutHiC(Mega_Ctrl.cmx)
 #'
 CutHiC <- function(
-megaHic.cmx, verbose.bln = FALSE
+megaHic.cmx, verbose = FALSE
 ) {
     res.num <- megaHic.cmx@metadata$resolution
     mtx.chr <- megaHic.cmx@metadata$mtx
@@ -28,7 +28,7 @@ megaHic.cmx, verbose.bln = FALSE
     attributes.tbl <- megaHic.cmx@metadata$matricesKind
     chromComb.lst <- attributes.tbl$name
     hic.lst_cmx <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose.bln),
+        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
         seq_along(chromComb.lst),
         function(ele.ndx) {
             # Chromosomes
@@ -136,7 +136,7 @@ megaHic.cmx, verbose.bln = FALSE
     hic.lst_cmx <- hic.lst_cmx |>
         stats::setNames(chromComb.lst) |>
         AddAttr(
-            list(
+            attrs = list(
                 resolution = res.num, mtx = mtx.chr,
                 chromSize = tibble::as_tibble(chromSize.dtf),
                 matricesKind = attributes.tbl

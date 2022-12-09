@@ -1,6 +1,6 @@
 ---
 title: "HicAggR - In depth tutorial"
-author: "Nicolas Chanard"
+author: "Nicolas Chanard, David Depierre & Olivier Cuvier"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 description: >
@@ -192,8 +192,8 @@ HiC_HS.cmx_lst <- BalanceHiC(HiC_HS.cmx_lst)
 
 ### Tips
 
-1. In the interaction.type parameter it is required to define "cis" or "trans". Then the function will return only ContactMatrices in the corresponding category ("cis" or "trans"). All other categories will be removed from the result.
-2. In the interaction.type parameter if you type c("cis","trans") the function will normalize separetly "cis" or "trans". If you type "all" the function will normalize "cis" and "trans" matrices together.
+1. In the interactionType parameter it is required to define "cis" or "trans". Then the function will return only ContactMatrices in the corresponding category ("cis" or "trans"). All other categories will be removed from the result.
+2. In the interactionType parameter if you type c("cis","trans") the function will normalize separetly "cis" or "trans". If you type "all" the function will normalize "cis" and "trans" matrices together.
 
 
 
@@ -228,7 +228,7 @@ attributes(HiC_Ctrl.cmx_lst)
         - *dimension* : the sequence length in number of bins. 
 4. **matricesKind** : the kind of matrix that composes the list in the tibble format.  
         - *name* : the matrix name. 
-        - *type* : interaction type. *"Cis"* for interactions on the same chromosome and *"Trans"* for interactions on different chromosomes.  
+        - *type* : interactionType. *"Cis"* for interactions on the same chromosome and *"Trans"* for interactions on different chromosomes.  
         - *kind* : the matrix kind. U for upper triangle matrices, L for lower triangle matrices, NA for rectangular or square matrices.
         - *symmetric* : a boolean that indicates whether the matrix is symmetric (lower triangle identical to upper triangle).  
 5. **mtx** : the kind of values in matrix. For exemple observed counts, normalized counts, observed/expected, etc.
@@ -241,7 +241,7 @@ S4Vectors::metadata(HiC_Ctrl.cmx_lst[["2L_2L"]])
 ```
 
 1. **name** : the name of the ContactMatrix.
-2. **type** : interaction type. *"Cis"* for interactions on the same chromosome and *"Trans"* for interactions on different chromosomes (or arms).  
+2. **type** : interactionType. *"Cis"* for interactions on the same chromosome and *"Trans"* for interactions on different chromosomes (or arms).  
 3. **kind** : the matrix kind. U for upper triangle matrices, L for lower triangle matrices, NA for rectangular or square
 4. **symmetric** : a boolean that indicates whether the matrix is symmetric (lower triangle identical to upper triangle).  
 5. **resolution** : resolution of the HiC map.  
@@ -266,7 +266,7 @@ anchors_Index.gnr <- IndexFeatures(
     chromSize.dtf         = chromSize.dtf,
     binSize.num           = binSize.num,
     variablesName.chr_vec = "score",
-    method.chr            = "max"
+    method            = "max"
     )
 ```
 <details>  
@@ -287,7 +287,7 @@ baits_Index.gnr <- IndexFeatures(
     chromSize.dtf         = chromSize.dtf,
     binSize.num           = binSize.num,
     variablesName.chr_vec = "score",
-    method.chr            = "max"
+    method            = "max"
     )
 ```
 <details>  
@@ -321,7 +321,7 @@ baits_Index.gnr |>
 ## Tips
 1. It is possible to index multiple features at the same time by submitting a named list of GRanges. Names given in the list of GRanges can then be used to filter indexed features and pairs.  
 2. If constraint.gnr is defined, then anchors and baits will be paired when located within the same region only. If contraint.gnr is NULL, entire chromosomes (or arms) are used as constraints.  
-3. When multiple ranges are in a same bin (ex: 3 ChIP-seq peaks in the same 10kb bin), associated numeric variables in metadata (`variablesName.chr_vec`) can be summarized according to the defined method (`method.chr`), Example: Max peak score of the bin is kept in metadata column `score`.  
+3. When multiple ranges are in a same bin (ex: 3 ChIP-seq peaks in the same 10kb bin), associated numeric variables in metadata (`variablesName.chr_vec`) can be summarized according to the defined method (`method`), Example: Max peak score of the bin is kept in metadata column `score`.  
 
 ___
 # Search Pairs 
@@ -393,7 +393,7 @@ knitr::include_graphics("images/LRI_GInteractions.png")
 ```{r, eval = FALSE}
 interactions_PFmatrix.lst <- ExtractSubmatrix(
     feature.gn         = interactions.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf",
     matriceDim.num     = 41
     )
@@ -408,7 +408,7 @@ knitr::include_graphics("images/LRI_GRanges.png")
 ```{r, eval = TRUE}
 domains_PFmatrix.lst <- ExtractSubmatrix(
     feature.gn         = TADs_Domains.gnr,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf",
     matriceDim.num     = 41
     )
@@ -431,7 +431,7 @@ knitr::include_graphics("images/Regions_GInteractions.png")
 ```{r, eval = TRUE}
 interactions_RFmatrix_ctrl.lst  <- ExtractSubmatrix(
     feature.gn         = interactions.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     res.num            = NULL,
     referencePoint.chr = "rf",
     matriceDim.num     = 101
@@ -448,11 +448,11 @@ knitr::include_graphics("images/Regions_GRanges.png")
 ```{r, eval = FALSE}
 domains_RFmatrix.lst <- ExtractSubmatrix(
     feature.gn         = TADs_Domains.gnr,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "rf",
     matriceDim.num     = 101,
-    cores.num          = 1,
-    verbose.bln        = FALSE
+    cores          = 1,
+    verbose        = FALSE
     )
 ```
 
@@ -478,7 +478,7 @@ sort()
 domains_Border_Bin.gnr <- BinGRanges(
     gRange.gnr  = domains_Border.gnr,
     binSize.num = binSize.num,
-    verbose.bln = FALSE
+    verbose = FALSE
     )
 domains_Border_Bin.gnr$subname <- domains_Border_Bin.gnr$name
 domains_Border_Bin.gnr$name    <- domains_Border_Bin.gnr$bin
@@ -537,7 +537,7 @@ knitr::include_graphics("images/Ponctuals_Interactions_GRanges.png")
 ```{r, eval = FALSE}
 border_PFmatrix.lst <- ExtractSubmatrix(
     feature.gn         = domains_Border_Bin.gnr,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf",
     matriceDim.num     = 101
 )
@@ -550,14 +550,14 @@ knitr::include_graphics("images/Ponctuals_Interactions_GInteractions.png")
 ```{r, eval = FALSE}
 border_PFmatrix.lst <- ExtractSubmatrix(
     feature.gn         = domains_Border_Bin.gni,
-    hic.cmx_lst        = HiC_Ctrl.cmx_lst,
+    hicLst        = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf",
     matriceDim.num     = 101
 )
 ```
 
 ## Tips
-1. If `res.num` is NULL, the function will atuomatically use the resolution of the `hic.cmx_lst` attributes.
+1. If `res.num` is NULL, the function will atuomatically use the resolution of the `hicLst` attributes.
 2. referencePoint.chr is automatically set as "pf" if every anchors and baits are on the same bin (see examples).
 
 ___
@@ -672,7 +672,7 @@ With a matrices list as input, `FilterInteractions` will return the filtered mat
 With the target.lst and selection.fun defined above:
 ```{r, eval = TRUE}
 filtred_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
-    matrices.lst  = interactions_RFmatrix_ctrl.lst,
+    matrices  = interactions_RFmatrix_ctrl.lst,
     target.lst    = target.lst,
     selection.fun = selection.fun
     )
@@ -697,7 +697,7 @@ FilterInteractions(
 ### Matrices list filtration
 ```{r, eval = TRUE}
 first100_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
-    matrices.lst  = interactions_RFmatrix_ctrl.lst,
+    matrices  = interactions_RFmatrix_ctrl.lst,
     target.lst    = first100_target.lst,
     selection.fun = NULL
     )
@@ -725,7 +725,7 @@ FilterInteractions(
 ### Matrices list sampling
 ```{r, eval = TRUE}
 sampled_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
-    matrices.lst  = interactions_RFmatrix_ctrl.lst,
+    matrices  = interactions_RFmatrix_ctrl.lst,
     target.lst    = target.lst,
     selection.fun = NULL
     )
@@ -760,7 +760,7 @@ FilterInteractions(
 ### Matrices list filtration
 ```{r, eval = TRUE}
 FilterInteractions(
-    matrices.lst      = interactions_RFmatrix_ctrl.lst,
+    matrices      = interactions_RFmatrix_ctrl.lst,
     target.lst        = target.lst,
     selection.fun     = NULL
     ) |>
@@ -864,7 +864,7 @@ Example: Average of the values in the centered 3x3 square.
 
 ```{r, eval = TRUE}
 center.num <- GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = "center",
     operation.fun = "mean"
     )
@@ -880,7 +880,7 @@ Example: Interactions values on the matrice.mtx[33:35,67:69] area, averaged afte
 
 ```{r, eval = TRUE}
 GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = function(matrice.mtx){matrice.mtx[33:35,67:69]},
     operation.fun = function(area.mtx){
         area.mtx[which(area.mtx==0)]<-NA;
@@ -905,7 +905,7 @@ Example: Named quantifications with `anchor.Beaf.name`
 
 ```{r, eval = TRUE}
 namedCenter.num <- GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = "center",
     operation.fun = "mean",
     name.chr      = "anchor.Beaf.name"
@@ -937,7 +937,7 @@ attributes(namedCenter.num)$duplicated
 
 ```{r, eval = TRUE}
 GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = function(matrice.mtx){matrice.mtx[5,5]},
     operation.fun = function(area.mtx){area.mtx}
     ) |>
@@ -947,7 +947,7 @@ head()
 
 ```{r, eval = TRUE}
 GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
     operation.fun = function(area){area}
     ) |>
@@ -959,7 +959,7 @@ head()
 
 ```{r, eval = TRUE}
 GetQuantif(
-    matrices.lst  = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
     area.fun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
     operation.fun = NULL
     ) |>
@@ -979,9 +979,9 @@ ___
 
 ```{r, eval = TRUE}
 agg_sum.mtx <- Aggregation(
-    matrices.lst = oriented_first100_interactions_RFmatrix_ctrl.lst, 
-    agg.fun      = "sum",
-    rm0.bln      = FALSE
+    matrices = oriented_first100_interactions_RFmatrix_ctrl.lst, 
+    aggFun      = "sum",
+    rm0      = FALSE
     )
 ```
 
@@ -991,8 +991,8 @@ Defining a custom aggregation function: example below shows the mean function af
 
 ```{r, eval = TRUE}
 agg_mean.mtx <- Aggregation(
-    matrices.lst = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    agg.fun      = function(x){mean(x,na.rm=TRUE)}
+    matrices = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    aggFun      = function(x){mean(x,na.rm=TRUE)}
     )
 ```
 
@@ -1010,7 +1010,7 @@ first100_target.lst = list(
     submatrix.name = names(interactions_RFmatrix_ctrl.lst)[1:100]
     )
 first100_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
-    matrices.lst  = interactions_RFmatrix_ctrl.lst,
+    matrices  = interactions_RFmatrix_ctrl.lst,
     target.lst    = first100_target.lst,
     selection.fun = NULL
     )
@@ -1025,7 +1025,7 @@ oriented_first100_interactions_RFmatrix_ctrl.lst <- OrientateMatrix(first100_int
 ```{r, eval = TRUE}
 interactions_RFmatrix.lst  <- ExtractSubmatrix(
     feature.gn         = interactions.gni,
-    hic.cmx_lst        = HiC_HS.cmx_lst,
+    hicLst        = HiC_HS.cmx_lst,
     referencePoint.chr = "rf",
     matriceDim.num     = 101
     )
@@ -1033,7 +1033,7 @@ interactions_RFmatrix.lst  <- ExtractSubmatrix(
 **Filtration**  
 ```{r, eval = TRUE}
 first100_interactions_RFmatrix.lst <- FilterInteractions(
-    matrices.lst  = interactions_RFmatrix.lst,
+    matrices  = interactions_RFmatrix.lst,
     target.lst    = first100_target.lst,
     selection.fun = NULL
     )
@@ -1046,28 +1046,28 @@ oriented_first100_interactions_RFmatrix.lst <- OrientateMatrix(first100_interact
 ### Aggregate
 ```{r, eval = TRUE}
 diffAggreg.mtx <- Aggregation(
-    ctrlMatrices.lst    = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    matrices.lst        = oriented_first100_interactions_RFmatrix.lst,
+    ctrlMatrices    = oriented_first100_interactions_RFmatrix_ctrl.lst,
+    matrices        = oriented_first100_interactions_RFmatrix.lst,
     minDist             = NULL,
     maxDist             = NULL,
-    agg.fun             = "mean",
-    rm0.bln             = FALSE,
-    diff.fun            = "substraction",
-    scaleCorrection.bln = TRUE,
-    correctionArea.lst  =  list(
+    aggFun             = "mean",
+    rm0             = FALSE,
+    diffFun            = "substraction",
+    scaleCorrection = TRUE,
+    correctionArea  =  list(
         i = c(1:30),
         j = c(72:101)
         ),
-    statCompare.bln = TRUE)
+    statCompare = TRUE)
 ```
 
 ## Tips
 
-1. When aggregation is performed using one sample only, use either `matrices.lst` or `ctrlMatrices.lst` parameters
-2. If `rm0.bln` is `TRUE` all zeros in matrices list will be replaced by NA. 
+1. When aggregation is performed using one sample only, use either `matrices` or `ctrlMatrices` parameters
+2. If `rm0` is `TRUE` all zeros in matrices list will be replaced by NA. 
 3. It is possible to filter submatrices list by minimal or maximal distance during the aggregation function.
 4. It is possible to orientate submatrices during the aggregation function.
-5. The `statCompare.bln` may not be set `TRUE` every time (due to memory requirement).
+5. The `statCompare` may not be set `TRUE` every time (due to memory requirement).
 6. `Aggregation` on one sample keeps former attributes of the matrices list and add new ones:
     * totalMatrixNumber: total number of matrices.  
     * filteredMatrixNumber: number of matrices after distance filtering.  
@@ -1091,34 +1091,34 @@ ___
 1. Control aggregation with no orientation
 ```{r}
 aggreg.mtx <- Aggregation(
-        ctrlMatrices.lst=interactions_RFmatrix_ctrl.lst,
-        agg.fun="mean",
-        rm0.bln=FALSE
+        ctrlMatrices=interactions_RFmatrix_ctrl.lst,
+        aggFun="mean",
+        rm0=FALSE
 )
 ```
 2. Control aggregation with orientation
 ```{r}
 oriented_interactions_RFmatrix_ctrl.lst <- OrientateMatrix(interactions_RFmatrix_ctrl.lst)
 orientedAggreg.mtx <- Aggregation(
-        ctrlMatrices.lst=oriented_interactions_RFmatrix_ctrl.lst,
-        agg.fun="mean",
-        rm0.bln=FALSE
+        ctrlMatrices=oriented_interactions_RFmatrix_ctrl.lst,
+        aggFun="mean",
+        rm0=FALSE
 )
 ```
 3. Differential aggregation
 ```{r}
 oriented_interactions_RFmatrix.lst <- OrientateMatrix(interactions_RFmatrix.lst)
 diffAggreg.mtx <- Aggregation(
-        ctrlMatrices.lst    = oriented_interactions_RFmatrix_ctrl.lst,
-        matrices.lst        = oriented_interactions_RFmatrix.lst,
+        ctrlMatrices    = oriented_interactions_RFmatrix_ctrl.lst,
+        matrices        = oriented_interactions_RFmatrix.lst,
         minDist             = NULL,
         maxDist             = NULL,
-        agg.fun             = "mean",
-        rm0.bln             = FALSE,
-        diff.fun            = "log2+1",
-        scaleCorrection.bln = TRUE,
-        correctionArea.lst  = list( i=c(1:30) , j=c(72:101) ),
-        statCompare.bln     = TRUE
+        aggFun             = "mean",
+        rm0             = FALSE,
+        diffFun            = "log2+1",
+        scaleCorrection = TRUE,
+        correctionArea  = list( i=c(1:30) , j=c(72:101) ),
+        statCompare     = TRUE
 )
 ```
 
@@ -1173,8 +1173,8 @@ Example of user-defined min and max color scale
 ggAPA(
         apa.mtx         = aggreg.mtx,
         title.chr       = "APA [0-1]",
-        colMin.num = 0,
-        colMax.num = 1
+        colMin = 0,
+        colMax = 1
 )
 ```
 
@@ -1221,12 +1221,12 @@ ggAPA(
 ggAPA(
         apa.mtx     = aggreg.mtx,
         title.chr   = "APA",
-        bias.num    = 2
+        bias    = 2
 )
 ggAPA(
         apa.mtx     = aggreg.mtx,
         title.chr   = "APA",
-        bias.num    = 0.5
+        bias    = 0.5
 )
 ```
 
@@ -1238,7 +1238,7 @@ ggAPA(
         apa.mtx     = aggreg.mtx,
         title.chr   = "APA",
         heatmap.col = viridis(6),
-        na.col      = "black"
+        na.value      = "black"
 )
 ```
 

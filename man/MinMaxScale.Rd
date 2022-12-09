@@ -4,14 +4,14 @@
 \alias{MinMaxScale}
 \title{Scales values on min-max range.}
 \usage{
-MinMaxScale(x.num, min.num = (0), max.num = 1)
+MinMaxScale(x.num, x_min = (0), x_max = 1)
 }
 \arguments{
 \item{x.num}{<numeric>: Numerical vector.}
 
-\item{min.num}{<numeric>: Minimal value after scaling.}
+\item{x_min}{<numeric>: Minimal value after scaling.}
 
-\item{max.num}{<numeric>: Maximal value after scaling.}
+\item{x_max}{<numeric>: Maximal value after scaling.}
 }
 \value{
 Scaled numeric vector.

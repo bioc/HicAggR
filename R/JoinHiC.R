@@ -3,17 +3,17 @@
 #'
 #' JoinHiC
 #' @description Create mega contactMatrix from a list of contactMatrix.
-#' @param hic.cmx_lst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[contactMatrix]>: The HiC maps list.
 #' @return A contactMatrix.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #' Mega_Ctrl.cmx <- JoinHiC(HiC_Ctrl.cmx_lst)
 #'
 JoinHiC <- function(
-    hic.cmx_lst
+    hicLst
 ) {
-    chromSize.dtf <- attributes(hic.cmx_lst)$chromSize
-    mapNames <- names(hic.cmx_lst)
+    chromSize.dtf <- attributes(hicLst)$chromSize
+    mapNames <- names(hicLst)
     mapPosition <- data.frame(apply(
         mapNames |>
             strsplit("_") |>
@@ -36,7 +36,7 @@ JoinHiC <- function(
             if (j > 1) { addJ <- sum(chromSize.dtf$dimension[seq_len(j) -1]) }
             if (length(which(mapPosition$i == i & mapPosition$j == j))) {
                 map.dtf <- MeltSpm(
-                    hic.cmx_lst[[
+                    hicLst[[
                         which(mapPosition$i == i & mapPosition$j == j )
                     ]]@matrix
                 )
@@ -56,7 +56,7 @@ JoinHiC <- function(
         stats::setNames(chromSize.dtf$name)
     binnedGenome.gnr <- GenomicRanges::tileGenome(
         seqlengths.lst,
-        tilewidth = attributes(hic.cmx_lst)$resolution,
+        tilewidth = attributes(hicLst)$resolution,
         cut.last.tile.in.chrom = TRUE
     )
     megaHic.cmx <- InteractionSet::ContactMatrix(
@@ -64,8 +64,8 @@ JoinHiC <- function(
         binnedGenome.gnr,
         binnedGenome.gnr
     )
-    megaHic.cmx@metadata <- attributes(hic.cmx_lst)[-which(
-        names(attributes(hic.cmx_lst)) == "names"
+    megaHic.cmx@metadata <- attributes(hicLst)[-which(
+        names(attributes(hicLst)) == "names"
     )]
     megaHic.cmx@metadata$kind <- "U"
     megaHic.cmx@metadata$symmetric <- TRUE

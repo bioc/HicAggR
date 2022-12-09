@@ -6,31 +6,31 @@
 \usage{
 ExtractSubmatrix(
   feature.gn = NULL,
-  hic.cmx_lst = NULL,
+  hicLst = NULL,
   referencePoint.chr = "pf",
   res.num = NULL,
   matriceDim.num = 21,
   shiftFactor.num = 1,
-  cores.num = 1,
-  verbose.bln = FALSE
+  cores = 1,
+  verbose = FALSE
 )
 }
 \arguments{
 \item{feature.gn}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.}
 
-\item{hic.cmx_lst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
 \item{referencePoint.chr}{<character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")}
 
-\item{res.num}{<numeric>: The resoulution in used in hic.cmx_lst. If NULL automatically find in resolution attributes of hic.cmx_lst. (Default NULL)}
+\item{res.num}{<numeric>: The resoulution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)}
 
 \item{matriceDim.num}{<numeric>: The size of matrices in output. (Default 21).}
 
 \item{shiftFactor.num}{<numeric>: Only when "referencePoint.chr" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shiftFactor.num=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.}
 
-\item{cores.num}{<integer> : An integer to specify the number of cores. (Default 1)}
+\item{cores}{<integer> : An integer to specify the number of cores. (Default 1)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A matrices list.
@@ -60,14 +60,14 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
 interactions_RF.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "rf"
 )
 
 # Matrices extractions center on Beaf32 <-> Beaf32 pointinteraction
 interactions_PF.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 

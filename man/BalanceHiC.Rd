@@ -5,29 +5,29 @@
 \title{Compute HiC matrix-balancing.}
 \usage{
 BalanceHiC(
-  hic.cmx_lst,
-  method.chr = "ICE",
-  interaction.type = NULL,
-  maxIter.num = 50,
-  qtlTh.num = 0.15,
-  cores.num = 1,
-  verbose.bln = FALSE
+  hicLst,
+  method = "ICE",
+  interactionType = NULL,
+  maxIter = 50,
+  qtlTh = 0.15,
+  cores = 1,
+  verbose = FALSE
 )
 }
 \arguments{
-\item{hic.cmx_lst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
-\item{method.chr}{<character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")}
+\item{method}{<character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")}
 
-\item{interaction.type}{<character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)}
+\item{interactionType}{<character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)}
 
-\item{maxIter.num}{<numerical>: The maximum iteration number.}
+\item{maxIter}{<numerical>: The maximum iteration number.}
 
-\item{qtlTh.num}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
+\item{qtlTh}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
 
-\item{cores.num}{<numerical> : Number of cores to be used. (Default 1)}
+\item{cores}{<numerical> : Number of cores to be used. (Default 1)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A matrices list.
@@ -42,18 +42,18 @@ BalanceHiC
 data(HiC_Ctrl.cmx_lst)
 
 HiC_Ctrl_ICE.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-    interaction.type = "cis",
-    method.chr = "ICE"
+    interactionType = "cis",
+    method = "ICE"
 )
 
 HiC_Ctrl_VC.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-    interaction.type = c("cis", "trans"),
-    method.chr = "VC"
+    interactionType = c("cis", "trans"),
+    method = "VC"
 )
 
 HiC_Ctrl_VC_SQRT.cmx_lst <- BalanceHiC(HiC_Ctrl.cmx_lst,
-    interaction.type = "all",
-    method.chr = "VC_SQRT"
+    interactionType = "all",
+    method = "VC_SQRT"
 )
 
 }

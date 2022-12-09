@@ -6,9 +6,9 @@
 \usage{
 Hue(
   paletteLength.num = 9,
-  rotation.num = NULL,
+  rotation = NULL,
   hueRange.num = c(0, 360),
-  saturation.num = 0.65,
+  saturation = 0.65,
   lightness.num = 0.65,
   alpha.num = 1,
   alpha.bln = FALSE
@@ -17,11 +17,11 @@ Hue(
 \arguments{
 \item{paletteLength.num}{<numeric>: Color number.}
 
-\item{rotation.num}{<numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange.num parameter. (Default NULL)}
+\item{rotation}{<numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange.num parameter. (Default NULL)}
 
 \item{hueRange.num}{<numeric>: Degree range in color space between 0 and 360. (Default c(0,360))}
 
-\item{saturation.num}{<numeric>: Saturation value between 0 and 1. (Default 0.65)}
+\item{saturation}{<numeric>: Saturation value between 0 and 1. (Default 0.65)}
 
 \item{lightness.num}{<numeric>: Lightness value between 0 and 1. (Default 0.65)}
 

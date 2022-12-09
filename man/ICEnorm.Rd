@@ -4,14 +4,14 @@
 \alias{ICEnorm}
 \title{Compute Iterative Correction.}
 \usage{
-ICEnorm(hic.cmx, qtlTh.num = 0.15, maxIter.num = 50)
+ICEnorm(hic.cmx, qtlTh = 0.15, maxIter = 50)
 }
 \arguments{
 \item{hic.cmx}{<contactMatrix>: The HiC maps chunk to normalize.}
 
-\item{qtlTh.num}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
+\item{qtlTh}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
 
-\item{maxIter.num}{<numerical>: The maximum iteration number.}
+\item{maxIter}{<numerical>: The maximum iteration number.}
 }
 \value{
 A normalized contactMatrix

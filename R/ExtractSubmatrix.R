@@ -3,13 +3,13 @@
 #' ExtractSubmatrix
 #' @description Extract matrices in the HiC maps list around genomic features.
 #' @param feature.gn <GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.
-#' @param hic.cmx_lst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[contactMatrix]>: The HiC maps list.
 #' @param referencePoint.chr <character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")
-#' @param res.num <numeric>: The resoulution in used in hic.cmx_lst. If NULL automatically find in resolution attributes of hic.cmx_lst. (Default NULL)
+#' @param res.num <numeric>: The resoulution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)
 #' @param matriceDim.num <numeric>: The size of matrices in output. (Default 21).
 #' @param shiftFactor.num <numeric>: Only when "referencePoint.chr" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shiftFactor.num=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.
-#' @param cores.num <integer> : An integer to specify the number of cores. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param cores <integer> : An integer to specify the number of cores. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' # Data
@@ -30,21 +30,21 @@
 #' # Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
 #' interactions_RF.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_Ctrl.cmx_lst,
+#'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "rf"
 #' )
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 pointinteraction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
 #'     feature.gn = Beaf_Beaf.gni,
-#'     hic.cmx_lst = HiC_Ctrl.cmx_lst,
+#'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint.chr = "pf"
 #' )
 #'
 ExtractSubmatrix <- function(
-    feature.gn = NULL, hic.cmx_lst = NULL, referencePoint.chr = "pf",
-    res.num = NULL, matriceDim.num = 21, shiftFactor.num = 1, cores.num = 1,
-    verbose.bln = FALSE
+    feature.gn = NULL, hicLst = NULL, referencePoint.chr = "pf",
+    res.num = NULL, matriceDim.num = 21, shiftFactor.num = 1, cores = 1,
+    verbose = FALSE
 ) {
     .GInteractionFormatting <- function(
         feature.gn, res.num
@@ -133,8 +133,8 @@ ExtractSubmatrix <- function(
         return(feature.gni)
     }
     # Run Check Resolution
-    if (!is.null(attr(hic.cmx_lst, "resolution"))) {
-        res.num <- attr(hic.cmx_lst, "resolution")
+    if (!is.null(attr(hicLst, "resolution"))) {
+        res.num <- attr(hicLst, "resolution")
     } else if (is.character(res.num)) {
         res.num <- GenomicSystem(res.num)
     }
@@ -262,8 +262,8 @@ ExtractSubmatrix <- function(
     )
     featureNoDup.gni <- featureNoDup.gni[order.num]
     chromosomesCombinaison.rle <- chromosomesCombinaison.rle[order.num]
-    matAnchors.gnr_lst <- lapply(hic.cmx_lst, InteractionSet::anchors)
-    # Keep combinaison that are present in hic.cmx_lst
+    matAnchors.gnr_lst <- lapply(hicLst, InteractionSet::anchors)
+    # Keep combinaison that are present in hicLst
     present.ndx <- which(
         as.vector(chromosomesCombinaison.rle) %in% names(matAnchors.gnr_lst) |
             as.vector(chromosomesCombinaison.rle) %in% unlist(
@@ -285,7 +285,7 @@ ExtractSubmatrix <- function(
     baits.gnr <- InteractionSet::anchors(featureNoDup.gni)$second
     # Extraction
     submatrix.spm_lst <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose.bln),
+        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
         seq_along(S4Vectors::runValue(chromosomesCombinaison.rle)),
         function(combinaison.ndx) {
             combinaisonName.chr <-
@@ -301,7 +301,7 @@ ExtractSubmatrix <- function(
                     S4Vectors::runLength(chromosomesCombinaison.rle)
                 )[[combinaison.ndx]]
             if (combinaisonName.chr %in% names(matAnchors.gnr_lst)) {
-                mat.ndx <- which(names(hic.cmx_lst) == combinaisonName.chr)
+                mat.ndx <- which(names(hicLst) == combinaisonName.chr)
                 ovl_row <- data.frame(GenomicRanges::findOverlaps(
                     anchors.gnr[combinaisonStart.ndx:combinaisonEnd.ndx],
                     matAnchors.gnr_lst[[mat.ndx]]$row
@@ -327,7 +327,7 @@ ExtractSubmatrix <- function(
                 rev() |>
                 paste(collapse = "_")} %in% names(matAnchors.gnr_lst)) {
                     mat.ndx <- which(
-                        names(hic.cmx_lst) == {
+                        names(hicLst) == {
                             combinaisonName.chr |>
                             strsplit("_") |>
                             unlist() |>
@@ -355,8 +355,8 @@ ExtractSubmatrix <- function(
                     ovl_col <- tidyr::nest(ovl_col)
             }
             multicoreParam <- MakeParallelParam(
-                cores.num = cores.num,
-                verbose.bln = FALSE
+                cores = cores,
+                verbose = FALSE
             )
             tempSubmatrix.spm_lst <- BiocParallel::bplapply(
                 BPPARAM = multicoreParam,
@@ -370,7 +370,7 @@ ExtractSubmatrix <- function(
                         ovl_col[[range.ndx, "data"]],
                         use.names = FALSE
                     )
-                    if (S4Vectors::metadata(hic.cmx_lst[[mat.ndx]])$type ==
+                    if (S4Vectors::metadata(hicLst[[mat.ndx]])$type ==
                         "cis"
                     ) {
                         gap.num <-
@@ -380,10 +380,10 @@ ExtractSubmatrix <- function(
                     }
                     if (gap.num < 0) {
                         mat.spm <-
-                            hic.cmx_lst[[mat.ndx]][col.ndx, row.ndx]@matrix
+                            hicLst[[mat.ndx]][col.ndx, row.ndx]@matrix
                     } else {
                         mat.spm <-
-                            hic.cmx_lst[[mat.ndx]][row.ndx, col.ndx]@matrix
+                            hicLst[[mat.ndx]][row.ndx, col.ndx]@matrix
                     }
                     if (dim(mat.spm)[1] != matriceDim.num) {
                         mat.spm <- ResizeMatrix(

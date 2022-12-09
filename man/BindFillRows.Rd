@@ -4,10 +4,10 @@
 \alias{BindFillRows}
 \title{Data frames row binding.}
 \usage{
-BindFillRows(data.lst_df, ...)
+BindFillRows(df_Lst, ...)
 }
 \arguments{
-\item{data.lst_df}{<data.frames or list[data.frame]>: Data frames to bind or list of data.frames. If is a data.frame create a list with arguments `data.lst_df` and `...`, else `...` are ignored.}
+\item{df_Lst}{<data.frames or list[data.frame]>: Data frames to bind or list of data.frames. If is a data.frame create a list with arguments `df_Lst` and `...`, else `...` are ignored.}
 
 \item{...}{<data.frames or list[data.frame]>: Data frames to bind or list of data.frames.}
 }

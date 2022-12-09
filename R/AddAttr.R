@@ -3,9 +3,9 @@
 #' AddAttr
 #' @keywords internal
 #' @description Add list as attributes to any object with or without overwrite.
-#' @param var.any <any>: An object to which attributes are to be added.
-#' @param attribute.lst <list>: A named list of new attributes.
-#' @param overwrite.bln <logical>: Whether an overwrite is required on attributes with the same name.(Default FALSE)
+#' @param x <any>: An object to which attributes are to be added.
+#' @param attrs <list>: A named list of new attributes.
+#' @param overwrite <logical>: Whether an overwrite is required on attributes with the same name.(Default FALSE)
 #' @return The object with new attributes.
 #' @examples
 #' x <- seq_len(10)
@@ -13,37 +13,37 @@
 #' x
 #' x <- AddAttr(x, list(dim = c(5, 2)))
 #' x
-#' x <- AddAttr(x, list(dim = c(5, 2)), overwrite.bln = TRUE)
+#' x <- AddAttr(x, list(dim = c(5, 2)), overwrite = TRUE)
 #' x
 #'
 AddAttr <- function(
-    var.any = NULL, attribute.lst = NULL,
-    overwrite.bln = FALSE
+    x = NULL, attrs = NULL,
+    overwrite = FALSE
 ) {
     intersectAttr <- intersect(
-        names(attributes(var.any)),
-        names(attribute.lst)
+        names(attributes(x)),
+        names(attrs)
     )
-    if (overwrite.bln & length(intersectAttr)) {
-        attribute.lst <- c(
-            attributes(var.any)[
-                which(names(attributes(var.any)) != intersectAttr)
+    if (overwrite & length(intersectAttr)) {
+        attrs <- c(
+            attributes(x)[
+                which(names(attributes(x)) != intersectAttr)
             ],
-            attribute.lst
+            attrs
         )
     } else if (length(intersectAttr)) {
-        attribute.lst <- c(
-            attributes(var.any),
-            attribute.lst[
-                which(names(attribute.lst) != intersectAttr)
+        attrs <- c(
+            attributes(x),
+            attrs[
+                which(names(attrs) != intersectAttr)
             ]
         )
     } else {
-        attribute.lst <- c(
-            attributes(var.any),
-            attribute.lst
+        attrs <- c(
+            attributes(x),
+            attrs
         )
     }
-    attributes(var.any) <- attribute.lst
-    return(var.any)
+    attributes(x) <- attrs
+    return(x)
 }

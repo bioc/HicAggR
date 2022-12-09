@@ -4,12 +4,12 @@
 \alias{VCnorm}
 \title{Compute Vanilla Count Correction.}
 \usage{
-VCnorm(hic.cmx = NULL, qtlTh.num = 0.15, sqrt.bln = TRUE)
+VCnorm(hic.cmx = NULL, qtlTh = 0.15, sqrt.bln = TRUE)
 }
 \arguments{
 \item{hic.cmx}{<contactMatrix>: The HiC maps chunk to normalize.}
 
-\item{qtlTh.num}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
+\item{qtlTh}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
 
 \item{sqrt.bln}{<logical>: Whether the square root must be apply. (Default TRUE)}
 }

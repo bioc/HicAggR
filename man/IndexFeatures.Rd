@@ -9,10 +9,10 @@ IndexFeatures(
   constraint.gnr = NULL,
   chromSize.dtf = NULL,
   binSize.num = NULL,
-  method.chr = "mean",
+  method = "mean",
   variablesName.chr_vec = NULL,
-  cores.num = 1,
-  verbose.bln = FALSE
+  cores = 1,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -24,13 +24,13 @@ IndexFeatures(
 
 \item{binSize.num}{<integer>: Bin size in bp - corresponds to HiC matrix resolution.}
 
-\item{method.chr}{<character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
+\item{method}{<character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
 
 \item{variablesName.chr_vec}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.}
 
-\item{cores.num}{<integer> : Number of cores used. (Default 1)}
+\item{cores}{<integer> : Number of cores used. (Default 1)}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A GRanges object.

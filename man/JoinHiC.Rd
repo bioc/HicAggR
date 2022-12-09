@@ -4,10 +4,10 @@
 \alias{JoinHiC}
 \title{Merge HiC chunk.}
 \usage{
-JoinHiC(hic.cmx_lst)
+JoinHiC(hicLst)
 }
 \arguments{
-\item{hic.cmx_lst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 }
 \value{
 A contactMatrix.

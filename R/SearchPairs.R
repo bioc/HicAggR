@@ -4,10 +4,10 @@
 #' @description Creates pairs of coordinates from indexed anchor and bait genomic coordinates according to distance constraints.
 #' @param indexAnchor.gnr <GRanges>: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).
 #' @param indexBait.gnr <GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor.gnr is used instead (Default NULL)
-#' @param minDist.num <numeric>: Minimal distance between anchors and baits. (Default NULL)
-#' @param maxDist.num <numeric>: Maximal distance between anchors and baits. (Default NULL)
-#' @param cores.num <integer> : Number of cores to use. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param minDist <numeric>: Minimal distance between anchors and baits. (Default NULL)
+#' @param maxDist <numeric>: Maximal distance between anchors and baits. (Default NULL)
+#' @param cores <integer> : Number of cores to use. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A GInteractions object.
 #' @examples
 #' # Data
@@ -24,14 +24,14 @@
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
 #'
 SearchPairs <- function(
-    indexAnchor.gnr = NULL, indexBait.gnr = NULL, minDist.num = NULL,
-    maxDist.num = NULL, verbose.bln = FALSE, cores.num = 1
+    indexAnchor.gnr = NULL, indexBait.gnr = NULL, minDist = NULL,
+    maxDist = NULL, verbose = FALSE, cores = 1
 ) {
-    if (is.character(minDist.num)) {
-        minDist.num <- GenomicSystem(minDist.num)
+    if (is.character(minDist)) {
+        minDist <- GenomicSystem(minDist)
     }
-    if (is.character(maxDist.num)) {
-        maxDist.num <- GenomicSystem(maxDist.num)
+    if (is.character(maxDist)) {
+        maxDist <- GenomicSystem(maxDist)
     }
     if (is.null(indexBait.gnr)) {
         indexBait.gnr <- indexAnchor.gnr
@@ -41,8 +41,8 @@ SearchPairs <- function(
         indexBait.gnr$constraint
     )
     multicoreParam <- MakeParallelParam(
-        cores.num = cores.num,
-        verbose.bln = verbose.bln
+        cores = cores,
+        verbose = verbose
     )
     pairs.gni_lst <- BiocParallel::bplapply(
         BPPARAM = multicoreParam,
@@ -68,14 +68,14 @@ SearchPairs <- function(
                 subIndexBait.gnr[pairsCombination.dtf[, "Var2"]]
             )
             subPairs.gni$distance <- InteractionSet::pairdist(subPairs.gni)
-            if (!is.null(minDist.num)) {
+            if (!is.null(minDist)) {
                 subPairs.gni <- subPairs.gni[which(
-                    subPairs.gni@elementMetadata$distance >= minDist.num
+                    subPairs.gni@elementMetadata$distance >= minDist
                 )]
             }
-            if (!is.null(maxDist.num)) {
+            if (!is.null(maxDist)) {
                 subPairs.gni <- subPairs.gni[which(
-                    subPairs.gni@elementMetadata$distance <= maxDist.num
+                    subPairs.gni@elementMetadata$distance <= maxDist
                 )]
             }
             return(subPairs.gni)

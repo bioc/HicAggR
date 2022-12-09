@@ -2,7 +2,7 @@
 #'
 #' SwitchMatrix
 #' @description Change values in matrix with observed, balanced, observed/expected or expected values according to what are be done in hic.
-#' @param hic.cmx_lst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[contactMatrix]>: The HiC maps list.
 #' @param matrixKind.chr <character>: The kind of matrix you want.
 #' @return A contactMatrix list.
 #' @examples
@@ -12,8 +12,8 @@
 #' # Preprocess HiC
 #' HiC.cmx_lst <- HiC_Ctrl.cmx_lst |>
 #'     BalanceHiC(
-#'         interaction.type = "cis",
-#'         method.chr = "ICE"
+#'         interactionType = "cis",
+#'         method = "ICE"
 #'     ) |>
 #'     OverExpectedHiC()
 #'
@@ -24,7 +24,7 @@
 #' HiC_Ctrl_exp.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind.chr = "exp")
 #'
 SwitchMatrix <- function(
-    hic.cmx_lst,
+    hicLst,
     matrixKind.chr = c("obs", "norm", "o/e", "exp")
 ) {
     if (!(matrixKind.chr %in% c("obs", "norm", "o/e", "exp"))) {
@@ -34,25 +34,25 @@ SwitchMatrix <- function(
         )
         stop(err.chr)
     }
-    if (attributes(hic.cmx_lst)$mtx != matrixKind.chr) {
-        lapply(names(hic.cmx_lst), function(hicName.chr) {
-            hic.cmx_lst[[hicName.chr]]@matrix@x <<- dplyr::case_when(
+    if (attributes(hicLst)$mtx != matrixKind.chr) {
+        lapply(names(hicLst), function(hicName.chr) {
+            hicLst[[hicName.chr]]@matrix@x <<- dplyr::case_when(
                 matrixKind.chr == "obs" ~
-                    (hic.cmx_lst[[hicName.chr]]@metadata$observed),
+                    (hicLst[[hicName.chr]]@metadata$observed),
                 matrixKind.chr == "norm" ~
-                    (hic.cmx_lst[[hicName.chr]]@metadata$observed *
-                    hic.cmx_lst[[hicName.chr]]@metadata$normalizer),
+                    (hicLst[[hicName.chr]]@metadata$observed *
+                    hicLst[[hicName.chr]]@metadata$normalizer),
                 matrixKind.chr == "o/e" ~
-                    (hic.cmx_lst[[hicName.chr]]@metadata$observed *
-                    hic.cmx_lst[[hicName.chr]]@metadata$normalizer /
-                    hic.cmx_lst[[hicName.chr]]@metadata$expected),
+                    (hicLst[[hicName.chr]]@metadata$observed *
+                    hicLst[[hicName.chr]]@metadata$normalizer /
+                    hicLst[[hicName.chr]]@metadata$expected),
                 matrixKind.chr == "exp" ~
-                    (hic.cmx_lst[[hicName.chr]]@metadata$expected)
+                    (hicLst[[hicName.chr]]@metadata$expected)
             )
         })
-        attributes(hic.cmx_lst)$mtx <- matrixKind.chr
-        return(hic.cmx_lst)
+        attributes(hicLst)$mtx <- matrixKind.chr
+        return(hicLst)
     } else {
-        message("\nhic.cmx_lst is already ", matrixKind.chr, ".\n")
+        message("\nhicLst is already ", matrixKind.chr, ".\n")
     }
 }

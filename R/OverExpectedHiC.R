@@ -2,9 +2,9 @@
 #'
 #' OverExpectedHiC
 #' @description Function that normalises HiC matrices by expected values computing by genomic distance.
-#' @param hic.cmx_lst <List[contactMatrix]>: The HiC maps list.
-#' @param cores.num <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @param cores <numerical> : Number of cores to be used. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' # Note: run HicAggR::BalanceHiC before OverExpectedHiC calculation.
@@ -12,20 +12,20 @@
 #' OverExpectedHiC(HiC_Ctrl.cmx_lst)
 #'
 OverExpectedHiC <- function(
-    hic.cmx_lst, verbose.bln = FALSE, cores.num = 1
+    hicLst, verbose = FALSE, cores = 1
 ) {
-    resolution.num <- attributes(hic.cmx_lst)$resolution
-    matricesNames.chr <- names(hic.cmx_lst)
+    resolution.num <- attributes(hicLst)$resolution
+    matricesNames.chr <- names(hicLst)
     multicoreParam <- MakeParallelParam(
-        cores.num = cores.num,
-        verbose.bln = verbose.bln
+        cores = cores,
+        verbose = verbose
     )
     expected.lst <- BiocParallel::bplapply(
         BPPARAM = multicoreParam, seq_along(matricesNames.chr),
         function(matrixName.ndx) {
             matrixName.chr <- matricesNames.chr[matrixName.ndx]
-            if (hic.cmx_lst[[matrixName.chr]]@metadata$type == "cis") {
-                hic.dtf <- MeltSpm(hic.cmx_lst[[matrixName.chr]]@matrix)
+            if (hicLst[[matrixName.chr]]@metadata$type == "cis") {
+                hic.dtf <- MeltSpm(hicLst[[matrixName.chr]]@matrix)
                 hic.dtf <- dplyr::mutate(
                     hic.dtf,
                     distance = 1 + (hic.dtf$j - hic.dtf$i) * resolution.num) |>
@@ -42,8 +42,8 @@ OverExpectedHiC <- function(
                 )
             } else {
                 expected.num <- list(
-                    expected = sum(hic.cmx_lst[[matrixName.chr]]@matrix@x)/
-                        Reduce(`*`, hic.cmx_lst[[matrixName.chr]]@matrix@Dim)
+                    expected = sum(hicLst[[matrixName.chr]]@matrix@x)/
+                        Reduce(`*`, hicLst[[matrixName.chr]]@matrix@Dim)
                 )
             }
             expected.lst <- list(expected.num) |>
@@ -53,21 +53,21 @@ OverExpectedHiC <- function(
     ) |> do.call(what = "c")
     cisNames.chr <- NULL
     for (matrixName.chr in matricesNames.chr) {
-        hic.cmx_lst[[matrixName.chr]]@metadata$expected <-
+        hicLst[[matrixName.chr]]@metadata$expected <-
             expected.lst[[matrixName.chr]]$expected
-        hic.cmx_lst[[matrixName.chr]]@matrix@x <-
-            hic.cmx_lst[[matrixName.chr]]@matrix@x/
+        hicLst[[matrixName.chr]]@matrix@x <-
+            hicLst[[matrixName.chr]]@matrix@x/
             expected.lst[[matrixName.chr]]$expected
-        if (hic.cmx_lst[[matrixName.chr]]@metadata$type == "cis") {
+        if (hicLst[[matrixName.chr]]@metadata$type == "cis") {
             cisNames.chr <- c(cisNames.chr, matrixName.chr)
         }
     }
-    attributes(hic.cmx_lst)$mtx <- "o/e"
+    attributes(hicLst)$mtx <- "o/e"
     expected.dtf <- expected.lst[cisNames.chr] |>
         do.call(what = rbind)
-    attributes(hic.cmx_lst)$expected <- dplyr::group_by(
+    attributes(hicLst)$expected <- dplyr::group_by(
         expected.dtf,
         distance = expected.dtf$distance) |>
         dplyr::summarise_at(.vars = "expected", .funs = list(expected = mean))
-    return(hic.cmx_lst)
+    return(hicLst)
 }

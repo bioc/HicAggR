@@ -7,8 +7,8 @@
 #' @param chromSize.dtf <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
 #' @param chrom_1.chr <numeric>: The seqnames of firsts chromosmes (rows in matrix).
 #' @param chrom_2.chr <numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1.chr (Defalt NULL)
-#' @param cores.num <numerical> : An integer to specify the number of cores. (Default 1)
-#' @param verbose.bln <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param cores <numerical> : An integer to specify the number of cores. (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' \donttest{
@@ -55,7 +55,7 @@
 #'
 ImportHiC <- function(
     file.pth = NULL, res.num = NULL, chromSize.dtf = NULL, chrom_1.chr = NULL,
-    chrom_2.chr = NULL, verbose.bln = FALSE, cores.num = 1
+    chrom_2.chr = NULL, verbose = FALSE, cores = 1
 ) {
     # Resolution Format
     options(scipen = 999)
@@ -173,8 +173,8 @@ ImportHiC <- function(
     )
     # Dump file
     multicoreParam <- MakeParallelParam(
-        cores.num = cores.num,
-        verbose.bln = verbose.bln
+        cores = cores,
+        verbose = verbose
     )
     hic.lst_cmx <- BiocParallel::bplapply(
         BPPARAM = multicoreParam, seq_along(chromComb.lst),
@@ -306,7 +306,7 @@ ImportHiC <- function(
     hic.lst_cmx <- hic.lst_cmx |>
         stats::setNames(chromComb.lst) |>
         AddAttr(
-            list(
+            attrs = list(
                 resolution = res.num,
                 chromSize = tibble::as_tibble(chromSize.dtf),
                 matricesKind = attributes.tbl,

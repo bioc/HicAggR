@@ -4,10 +4,10 @@
 \alias{SwitchMatrix}
 \title{Change values of HiC map.}
 \usage{
-SwitchMatrix(hic.cmx_lst, matrixKind.chr = c("obs", "norm", "o/e", "exp"))
+SwitchMatrix(hicLst, matrixKind.chr = c("obs", "norm", "o/e", "exp"))
 }
 \arguments{
-\item{hic.cmx_lst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
 \item{matrixKind.chr}{<character>: The kind of matrix you want.}
 }
@@ -27,8 +27,8 @@ data(HiC_Ctrl.cmx_lst)
 # Preprocess HiC
 HiC.cmx_lst <- HiC_Ctrl.cmx_lst |>
     BalanceHiC(
-        interaction.type = "cis",
-        method.chr = "ICE"
+        interactionType = "cis",
+        method = "ICE"
     ) |>
     OverExpectedHiC()
 

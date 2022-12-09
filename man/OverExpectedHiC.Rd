@@ -4,14 +4,14 @@
 \alias{OverExpectedHiC}
 \title{Genomic distance bias correction.}
 \usage{
-OverExpectedHiC(hic.cmx_lst, verbose.bln = FALSE, cores.num = 1)
+OverExpectedHiC(hicLst, verbose = FALSE, cores = 1)
 }
 \arguments{
-\item{hic.cmx_lst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
-\item{verbose.bln}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores.num}{<numerical> : Number of cores to be used. (Default 1)}
+\item{cores}{<numerical> : Number of cores to be used. (Default 1)}
 }
 \value{
 A matrices list.

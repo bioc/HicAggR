@@ -1,6 +1,6 @@
 ---
 title: "HicAggR - Quick start"
-author: "Nicolas Chanard"
+author: "Nicolas Chanard, David Depierre & Olivier Cuvier"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 description: >
@@ -112,7 +112,7 @@ The package supports the import and normalization of HiC data.
 ## Import
 HicAggR can import HiC data stored in the main formats: .hic, .cool, .mcool, .h5, .hdf5. The pacakage imports only the raw counts in R. Therefore it is necessary to perform the balancing and observed/expected correction steps.
 ```{r, eval = TRUE, results = FALSE}
-hic.cmx_lst <- ImportHiC(
+hicLst <- ImportHiC(
     file.pth      = HicOutput.pth,
     res.num       = binSize.num,
     chrom_1.chr   = c("2L", "2R")
@@ -121,12 +121,12 @@ hic.cmx_lst <- ImportHiC(
 
 ## Balancing
 ```{r, eval = TRUE, results = FALSE}
-hic.cmx_lst <- BalanceHiC(hic.cmx_lst)
+hicLst <- BalanceHiC(hicLst)
 ```
 
 ## Observed/Expected Correction
 ```{r, eval = TRUE, results = FALSE}
-hic.cmx_lst <- OverExpectedHiC(hic.cmx_lst)
+hicLst <- OverExpectedHiC(hicLst)
 ```
 
 # 2 Import genomic coordinates
@@ -146,8 +146,8 @@ Constraints for the distance between interaction sites are defined here in order
 ```{r, eval = TRUE, results = FALSE}
 Beaf_Pairs.gni <- SearchPairs(
     indexAnchor.gnr = Beaf_Index.gnr,
-    minDist.num     = "25KB",
-    maxDist.num     = "100KB"
+    minDist     = "25KB",
+    maxDist     = "100KB"
     )
 ```
 
@@ -162,7 +162,7 @@ knitr::include_graphics("images/Extractions_of_LRI.png")
 ```{r, eval = TRUE, results = FALSE}
 Beaf.mtx_lst <- ExtractSubmatrix(
     feature.gn  = Beaf_Pairs.gni,
-    hic.cmx_lst = hic.cmx_lst
+    hicLst = hicLst
     )
 ```
 

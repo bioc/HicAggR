@@ -4,16 +4,16 @@
 \alias{BoxBlur}
 \title{Blur a matrix.}
 \usage{
-BoxBlur(mat.mtx, box.num = NULL, boxSize.num = NULL, sd.num = 1)
+BoxBlur(mat.mtx, boxKernel = NULL, boxSize.num = NULL, sd.num = 1)
 }
 \arguments{
 \item{mat.mtx}{<matrix>: Numerical matrix.}
 
-\item{box.num}{<numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)}
+\item{boxKernel}{<numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)}
 
-\item{boxSize.num}{<numeric>: If box.num is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
+\item{boxSize.num}{<numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
 
-\item{sd.num}{<numeric>: If box.num is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
+\item{sd.num}{<numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
 }
 \value{
 Blurred matrix.

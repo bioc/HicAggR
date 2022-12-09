@@ -32,7 +32,7 @@ MeltSpm <- function(
             unlist(),
         x = mat.spm@x
     ) |>
-        AddAttr(list(
+        AddAttr(attrs = list(
             matrice.attr = attributes(mat.spm)[which(
                 NotIn(
                     names(attributes(mat.spm)),

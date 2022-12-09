@@ -3,16 +3,16 @@
 #' viridis
 #' @description Create a viridis palette.
 #' @param paletteLength.num <numeric>: Color number.
-#' @param space.chr <numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")
-#' @param interpolate.chr <numeric>: Use spline or linear interpolation. See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias.num <numeric>: A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
+#' @param space <numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")
+#' @param interpolationMethod <numeric>: Use spline or linear interpolation. See ?grDevices::colorRamp for more details. (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
 #' @return A vector of color.
 #' @examples
 #' viridis(9)
 #'
 viridis <- function(
-    paletteLength.num = NULL, space.chr = "rgb",
-    interpolate.chr = "linear", bias.num = 1
+    paletteLength.num = NULL, space = "rgb",
+    interpolationMethod = "linear", bias = 1
 ) {
     (grDevices::colorRampPalette(
         colors = c(
@@ -60,8 +60,8 @@ viridis <- function(
             "#E7E419", "#EAE51A", "#ECE51B", "#EFE51C", "#F1E51D", "#F4E61E",
             "#F6E620", "#F8E621", "#FBE723", "#FDE725"
         ),
-        space = space.chr,
-        interpolate = interpolate.chr,
-        bias = bias.num
+        space = space,
+        interpolate = interpolationMethod,
+        bias = bias
     ))(paletteLength.num)
 }

@@ -12,7 +12,7 @@
 GetFileExtension <- function(
     path.pth = NULL
 ) {
-    fileName.chr <- GetFileName(path.pth, ext.bln = TRUE) |>
+    fileName.chr <- GetFileName(path.pth, extension = TRUE) |>
         strsplit(".", fixed = TRUE) |>
         unlist()
     return(fileName.chr[length(fileName.chr)])

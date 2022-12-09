@@ -40,7 +40,7 @@ Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_PF.mtx_lst <- ExtractSubmatrix(
     feature.gn = Beaf_Beaf.gni,
-    hic.cmx_lst = HiC_Ctrl.cmx_lst,
+    hicLst = HiC_Ctrl.cmx_lst,
     referencePoint.chr = "pf"
 )
 
