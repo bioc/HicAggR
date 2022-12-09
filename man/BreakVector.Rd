@@ -5,24 +5,24 @@
 \title{Cut a vector.}
 \usage{
 BreakVector(
-  x.num = NULL,
+  x = NULL,
   x_min = NULL,
-  center.num = NULL,
+  center = NULL,
   x_max = NULL,
-  n.num = 10,
+  n = 10,
   method = "linear"
 )
 }
 \arguments{
-\item{x.num}{<numeric>: Numerical vector.}
+\item{x}{<numeric>: Numerical vector.}
 
 \item{x_min}{<numeric>: Minimal fixed value.}
 
-\item{center.num}{<numeric>: Center fixed value.}
+\item{center}{<numeric>: Center fixed value.}
 
 \item{x_max}{<numeric>: Maximal fixed value.}
 
-\item{n.num}{<numeric>: Number of tile (return n.num+1 breaks).}
+\item{n}{<numeric>: Number of tile (return n+1 breaks).}
 
 \item{method}{<character>: Kind of breaking. "linear" or "density". (Default "linear")}
 }
@@ -37,7 +37,7 @@ BreakVector
 }
 \examples{
 set.seed(31415)
-BreakVector(x.num = rnorm(100, 50, 200), n.num = 9)
+BreakVector(x = rnorm(100, 50, 200), n = 9)
 
 }
 \keyword{internal}

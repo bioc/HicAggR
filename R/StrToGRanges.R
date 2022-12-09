@@ -2,16 +2,16 @@
 #'
 #' StrToGRanges
 #' @description Convert ranges describe with string (i.e seqname:start-end:strand) in GRanges object.
-#' @param x.chr_vec <character>: Strings to convert on GRanges.
+#' @param stringRanges <character>: Strings to convert on GRanges.
 #' @return A GRanges object.
 #' @examples
 #' StrToGRanges("chr1:1-100:+")
 #' StrToGRanges(c("chr1:1-100:+", "chr2:400-500:-", "chr1:10-50:*"))
 #'
 StrToGRanges <- function(
-    x.chr_vec
+    stringRanges
 ) {
-    x.gnr <- lapply(x.chr_vec, function(x.chr) {
+    x.gnr <- lapply(stringRanges, function(x.chr) {
         x.chr <- unlist(strsplit(x.chr, ":"))
         seqnames.chr <- x.chr[1]
         ranges.num <- strsplit(x.chr[2], "-") |>
@@ -39,6 +39,6 @@ StrToGRanges <- function(
         return(x.gnr)
     }) |>
         MergeGRanges()
-    S4Vectors::mcols(x.gnr)$names <- names(x.chr_vec)
+    S4Vectors::mcols(x.gnr)$names <- names(stringRanges)
     return(x.gnr)
 }

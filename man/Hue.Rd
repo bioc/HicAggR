@@ -5,29 +5,29 @@
 \title{Hue palette.}
 \usage{
 Hue(
-  paletteLength.num = 9,
+  paletteLength = 9,
   rotation = NULL,
-  hueRange.num = c(0, 360),
+  hueRange = c(0, 360),
   saturation = 0.65,
-  lightness.num = 0.65,
-  alpha.num = 1,
-  alpha.bln = FALSE
+  lightness = 0.65,
+  alphaValue = 1,
+  alpha = FALSE
 )
 }
 \arguments{
-\item{paletteLength.num}{<numeric>: Color number.}
+\item{paletteLength}{<numeric>: Color number.}
 
-\item{rotation}{<numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange.num parameter. (Default NULL)}
+\item{rotation}{<numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange parameter. (Default NULL)}
 
-\item{hueRange.num}{<numeric>: Degree range in color space between 0 and 360. (Default c(0,360))}
+\item{hueRange}{<numeric>: Degree range in color space between 0 and 360. (Default c(0,360))}
 
 \item{saturation}{<numeric>: Saturation value between 0 and 1. (Default 0.65)}
 
-\item{lightness.num}{<numeric>: Lightness value between 0 and 1. (Default 0.65)}
+\item{lightness}{<numeric>: Lightness value between 0 and 1. (Default 0.65)}
 
-\item{alpha.num}{<numeric>: Opacity value between 0 and 1. (Default 1)}
+\item{alphaValue}{<numeric>: Opacity value between 0 and 1. (Default 1)}
 
-\item{alpha.bln}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 A vector of color.
@@ -39,6 +39,6 @@ Create an Hue palette.
 Hue
 }
 \examples{
-Hue(paletteLength.num = 9)
+Hue(paletteLength = 9)
 
 }

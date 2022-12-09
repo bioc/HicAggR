@@ -4,10 +4,10 @@
 \alias{IsRgb}
 \title{Check RGB color format.}
 \usage{
-IsRgb(color.col = NULL)
+IsRgb(colour = NULL)
 }
 \arguments{
-\item{color.col}{<character or numeric>: A color.}
+\item{colour}{<character or numeric>: A color.}
 }
 \value{
 A logical.

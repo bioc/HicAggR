@@ -4,14 +4,14 @@
 \alias{VCnorm}
 \title{Compute Vanilla Count Correction.}
 \usage{
-VCnorm(hic.cmx = NULL, qtlTh = 0.15, sqrt.bln = TRUE)
+VCnorm(hic = NULL, qtlTh = 0.15, vcsqrt = TRUE)
 }
 \arguments{
-\item{hic.cmx}{<contactMatrix>: The HiC maps chunk to normalize.}
+\item{hic}{<contactMatrix>: The HiC maps chunk to normalize.}
 
 \item{qtlTh}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
 
-\item{sqrt.bln}{<logical>: Whether the square root must be apply. (Default TRUE)}
+\item{vcsqrt}{<logical>: Whether the square root must be apply. (Default TRUE)}
 }
 \value{
 A matrices list.
@@ -27,6 +27,6 @@ VCnorm
 data(HiC_Ctrl.cmx_lst)
 
 HiC_Ctrl_VC.cmx <- VCnorm(HiC_Ctrl.cmx_lst[["2L_2L"]])
-HiC_Ctrl_VC_SQRT.cmx <- VCnorm(HiC_Ctrl.cmx_lst[["2L_2L"]], sqrt.bln = TRUE)
+HiC_Ctrl_VC_SQRT.cmx <- VCnorm(HiC_Ctrl.cmx_lst[["2L_2L"]], vcsqrt = TRUE)
 
 }

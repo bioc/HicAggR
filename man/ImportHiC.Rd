@@ -5,25 +5,25 @@
 \title{Import Hic data}
 \usage{
 ImportHiC(
-  file.pth = NULL,
-  res.num = NULL,
-  chromSize.dtf = NULL,
-  chrom_1.chr = NULL,
-  chrom_2.chr = NULL,
+  file = NULL,
+  hicResolution = NULL,
+  chromSizes = NULL,
+  chrom_1 = NULL,
+  chrom_2 = NULL,
   verbose = FALSE,
   cores = 1
 )
 }
 \arguments{
-\item{file.pth}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).}
+\item{file}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).}
 
-\item{res.num}{<numeric>: The HiC resolution.}
+\item{hicResolution}{<numeric>: The HiC resolution.}
 
-\item{chromSize.dtf}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
 
-\item{chrom_1.chr}{<numeric>: The seqnames of firsts chromosmes (rows in matrix).}
+\item{chrom_1}{<numeric>: The seqnames of firsts chromosmes (rows in matrix).}
 
-\item{chrom_2.chr}{<numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1.chr (Defalt NULL)}
+\item{chrom_2}{<numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1 (Defalt NULL)}
 
 \item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 
@@ -57,10 +57,10 @@ download.file(Hic.url, HicOutput.pth, method = "curl", extra = "-k")
 
 # Import .hic file
 HiC_Ctrl.cmx_lst <- ImportHiC(
-    file.pth = HicOutput.pth,
-    res.num = 100000,
-    chrom_1.chr = c("2L", "2L", "2R"),
-    chrom_2.chr = c("2L", "2R", "2R")
+    file = HicOutput.pth,
+    hicResolution = 100000,
+    chrom_1 = c("2L", "2L", "2R"),
+    chrom_2 = c("2L", "2R", "2R")
 )
 
 # Download .mcool file
@@ -74,10 +74,10 @@ download.file(Mcool.url, McoolOutput.pth, method = "curl", extra = "-k")
 
 # Import .mcool file
 HiC_HS.cmx_lst <- ImportHiC(
-    file.pth = McoolOutput.pth,
-    res.num = 100000,
-    chrom_1.chr = c("2L", "2L", "2R"),
-    chrom_2.chr = c("2L", "2R", "2R")
+    file = McoolOutput.pth,
+    hicResolution = 100000,
+    chrom_1 = c("2L", "2L", "2R"),
+    chrom_2 = c("2L", "2R", "2R")
 )
 }
 

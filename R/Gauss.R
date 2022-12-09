@@ -5,7 +5,7 @@
 #' @description Gaussian formula in 1 or 2 dimension.
 #' @param x <numeric>: x value.
 #' @param y <numeric>: y value for 2 dimensional gaussian.
-#' @param sd.num <numeric>: Standard deviation parameter of the gaussian. (Default 1)
+#' @param stdev <numeric>: Standard deviation parameter of the gaussian. (Default 1)
 #' @param mu <numeric>: Mean deviation parameter of the gaussian. (Default 0)
 #' @return Result of Gaussian formula
 #' @examples
@@ -13,13 +13,13 @@
 #' Gauss(x = 1, y = 2)
 #'
 Gauss <- function(
-    x = NULL, y = NULL, sd.num = 1, mu = 0
+    x = NULL, y = NULL, stdev = 1, mu = 0
 ) {
     x <- x[1]
     y <- y[1]
     if (is.null(y)) {
-        return(1 / (sd.num * sqrt(2*pi)) * exp(-((x - mu)^2) / (2*sd.num^2)))
+        return(1 / (stdev * sqrt(2*pi)) * exp(-((x - mu)^2) / (2*stdev^2)))
     } else {
-        return(1 / (2 *pi*sd.num^2) * exp(-((x^2 + y^2) / (2*sd.num^2))))
+        return(1 / (2 *pi*stdev^2) * exp(-((x^2 + y^2) / (2*stdev^2))))
     }
 }

@@ -4,10 +4,10 @@
 \alias{TransposeList}
 \title{Turns a nested list "inside-out".}
 \usage{
-TransposeList(var.nlst)
+TransposeList(nestedList)
 }
 \arguments{
-\item{var.nlst}{<list[list]>: A nested list to transpose.}
+\item{nestedList}{<list[list]>: A nested list to transpose.}
 }
 \value{
 The tranposed nested list.

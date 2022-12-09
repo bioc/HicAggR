@@ -4,10 +4,10 @@
 \alias{GetFileName}
 \title{Get file name.}
 \usage{
-GetFileName(path.pth = NULL, extension = FALSE)
+GetFileName(file = NULL, extension = FALSE)
 }
 \arguments{
-\item{path.pth}{<character>: The path to the file.}
+\item{file}{<character>: The path to the file.}
 
 \item{extension}{<logical>: Whether the file extension should be returned with the file name. (Default FALSE)}
 }
@@ -22,7 +22,7 @@ GetFileName
 }
 \examples{
 filePath.pth ="my/path/to/my/file.txt"
-GetFileName(path.pth=filePath.pth, extension=FALSE)
-GetFileName(path.pth=filePath.pth, extension=TRUE)
+GetFileName(file=filePath.pth, extension=FALSE)
+GetFileName(file=filePath.pth, extension=TRUE)
 }
 \keyword{internal}

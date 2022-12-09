@@ -4,12 +4,12 @@
 \alias{Hsl2Hex}
 \title{Convert HSL to Hex.}
 \usage{
-Hsl2Hex(hsl.col = NULL, alpha.bln = FALSE)
+Hsl2Hex(hslColor = NULL, alpha = FALSE)
 }
 \arguments{
-\item{hsl.col}{<charcater>: A vector of the color's HSL code.}
+\item{hslColor}{<charcater>: A vector of the color's HSL code.}
 
-\item{alpha.bln}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 A character of the color's hexadecimal code.
@@ -21,7 +21,7 @@ Convert a color in HSL (Hue,Saturation,Light) to hexadecimal format.
 Hsl2Hex
 }
 \examples{
-Hsl2Hex(c(43.8, 0.873, 0.492, 0.498), alpha.bln = TRUE)
+Hsl2Hex(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
 
 }
 \keyword{internal}

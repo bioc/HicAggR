@@ -4,12 +4,12 @@
 \alias{Rgb2Hex}
 \title{Convert RGB to Hex.}
 \usage{
-Rgb2Hex(rgb.col = NULL, alpha.bln = FALSE)
+Rgb2Hex(rbgColor = NULL, alpha = FALSE)
 }
 \arguments{
-\item{rgb.col}{<integer>: An integer of the color's RGB code.}
+\item{rbgColor}{<integer>: An integer of the color's RGB code.}
 
-\item{alpha.bln}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 A character of the color's hexadecimal code.
@@ -21,7 +21,7 @@ Convert a color in RGB format to hexadecimal format.
 Rgb2Hex
 }
 \examples{
-Rgb2Hex(c(235, 176, 16, 127), alpha.bln = TRUE)
+Rgb2Hex(c(235, 176, 16, 127), alpha = TRUE)
 
 }
 \keyword{internal}

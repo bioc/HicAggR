@@ -2,70 +2,70 @@
 #'
 #' Hue
 #' @description Create an Hue palette.
-#' @param paletteLength.num <numeric>: Color number.
-#' @param rotation <numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange.num parameter. (Default NULL)
-#' @param hueRange.num <numeric>: Degree range in color space between 0 and 360. (Default c(0,360))
+#' @param paletteLength <numeric>: Color number.
+#' @param rotation <numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange parameter. (Default NULL)
+#' @param hueRange <numeric>: Degree range in color space between 0 and 360. (Default c(0,360))
 #' @param saturation <numeric>: Saturation value between 0 and 1. (Default 0.65)
-#' @param lightness.num <numeric>: Lightness value between 0 and 1. (Default 0.65)
-#' @param alpha.num <numeric>: Opacity value between 0 and 1. (Default 1)
-#' @param alpha.bln <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param lightness <numeric>: Lightness value between 0 and 1. (Default 0.65)
+#' @param alphaValue <numeric>: Opacity value between 0 and 1. (Default 1)
+#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
 #' @return A vector of color.
 #' @examples
-#' Hue(paletteLength.num = 9)
+#' Hue(paletteLength = 9)
 #'
 Hue <- function(
-    paletteLength.num = 9, rotation = NULL, hueRange.num = c(0, 360),
-    saturation = 0.65, lightness.num = 0.65, alpha.num = 1,
-    alpha.bln = FALSE
+    paletteLength = 9, rotation = NULL, hueRange = c(0, 360),
+    saturation = 0.65, lightness = 0.65, alphaValue = 1,
+    alpha = FALSE
 ) {
-    if (paletteLength.num > 2) {
+    if (paletteLength > 2) {
         if (is.null(rotation)) {
-            if (abs(diff(hueRange.num)) >=
+            if (abs(diff(hueRange)) >=
                 180) {
-                rotation <- sign(diff(hueRange.num))
+                rotation <- sign(diff(hueRange))
             } else {
-                rotation <- -sign(diff(hueRange.num))
+                rotation <- -sign(diff(hueRange))
             }
         }
-        if (sign(diff(hueRange.num)) !=
+        if (sign(diff(hueRange)) !=
             sign(rotation)) {
-            hueRange.num[which.min(hueRange.num)] <- 360 +
-                hueRange.num[which.min(hueRange.num)]
+            hueRange[which.min(hueRange)] <- 360 +
+                hueRange[which.min(hueRange)]
                 
         }
         distGap.num <- seq(
-            hueRange.num[1],
-            hueRange.num[2],
-            length.out = paletteLength.num) |>
+            hueRange[1],
+            hueRange[2],
+            length.out = paletteLength) |>
             diff() |>
             mean() |>
             abs()
         gap.num <- min(
-            abs(diff(hueRange.num)%%360),
-            abs(360 - abs(diff(hueRange.num)%%360))
+            abs(diff(hueRange)%%360),
+            abs(360 - abs(diff(hueRange)%%360))
         )
-        if (paletteLength.num > 1 && gap.num < distGap.num) {
-            adjust.num <- (distGap.num - gap.num)/(paletteLength.num +1) *
-                paletteLength.num
-            hueRange.num[which.max(hueRange.num)] <- 
-                hueRange.num[which.max(hueRange.num)] - adjust.num
+        if (paletteLength > 1 && gap.num < distGap.num) {
+            adjust.num <- (distGap.num - gap.num)/(paletteLength +1) *
+                paletteLength
+            hueRange[which.max(hueRange)] <- 
+                hueRange[which.max(hueRange)] - adjust.num
         }
         hue.lst <- seq(
-            hueRange.num[1],
-            hueRange.num[2],
-            length.out = paletteLength.num)%%360
-    } else if (paletteLength.num == 2) {
+            hueRange[1],
+            hueRange[2],
+            length.out = paletteLength)%%360
+    } else if (paletteLength == 2) {
         hue.lst <- Hue(
-            paletteLength.num = 5, rotation = rotation,
-            hueRange.num = hueRange.num, saturation = saturation,
-            lightness.num = lightness.num, alpha.num = alpha.num,
-            alpha.bln = alpha.bln)[c(2, 3)]
-    } else if (paletteLength.num == 1) {
+            paletteLength = 5, rotation = rotation,
+            hueRange = hueRange, saturation = saturation,
+            lightness = lightness, alphaValue = alphaValue,
+            alpha = alpha)[c(2, 3)]
+    } else if (paletteLength == 1) {
         hue.lst <- Hue(
-            paletteLength.num = 3, rotation = rotation,
-            hueRange.num = hueRange.num, saturation = saturation,
-            lightness.num = lightness.num, alpha.num = alpha.num,
-            alpha.bln = alpha.bln)[2]
+            paletteLength = 3, rotation = rotation,
+            hueRange = hueRange, saturation = saturation,
+            lightness = lightness, alphaValue = alphaValue,
+            alpha = alpha)[2]
     }
     if (is.numeric(hue.lst)) {
         hue.lst <- lapply(
@@ -73,9 +73,9 @@ Hue <- function(
                 Hsl2Hex(
                     c(
                         hue = hue.num, saturation = saturation,
-                        light = lightness.num, alpha = alpha.num
+                        light = lightness, alpha = alphaValue
                     ),
-                    alpha.bln = alpha.bln
+                    alpha = alpha
                 )
             }
         ) |>

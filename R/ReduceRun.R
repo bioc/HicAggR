@@ -3,35 +3,35 @@
 #' ReduceRun
 #' @keywords internal
 #' @description Apply a function on the values over two RLE and return one RLE.
-#' @param first.rle <rle or Rle>: First rle.
-#' @param second.rle <rle or Rle>>: Second rle.
-#' @param reduceFun.chr <character>: Name of a function to apply e.g paste, sum, mean.
+#' @param firstRle <rle or Rle>: First rle.
+#' @param secondRle <rle or Rle>>: Second rle.
+#' @param reduceMethod <character>: Name of a function to apply e.g paste, sum, mean.
 #' @param ... <...>: Other parameter for the reduce function.
 #' @return Reduced Rle
 #' @examples
-#' first.rle <- rle(c("A", "A", "B"))
-#' second.rle <- rle(c("A", "B", "B"))
-#' ReduceRun(first.rle = first.rle, second.rle = second.rle, reduceFun.chr = "paste", sep = "_")
-#' first.rle <- S4Vectors::Rle(c(1, 2, 3))
-#' second.rle <- S4Vectors::Rle(c(5, 5, 5))
-#' ReduceRun(first.rle = first.rle, second.rle = second.rle, reduceFun.chr = "sum")
+#' firstRle <- rle(c("A", "A", "B"))
+#' secondRle <- rle(c("A", "B", "B"))
+#' ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "paste", sep = "_")
+#' firstRle <- S4Vectors::Rle(c(1, 2, 3))
+#' secondRle <- S4Vectors::Rle(c(5, 5, 5))
+#' ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")
 #'
 ReduceRun <- function(
-    first.rle, second.rle, reduceFun.chr = "paste", ...
+    firstRle, secondRle, reduceMethod = "paste", ...
 ) {
-    if (methods::is(first.rle, "rle")) {
-        firstLen.num <- first.rle$length
-        firstVal.vec <- first.rle$values
-    } else if (methods::is(first.rle, "Rle")) {
-        firstLen.num <- S4Vectors::runLength(first.rle)
-        firstVal.vec <- S4Vectors::runValue(first.rle)
+    if (methods::is(firstRle, "rle")) {
+        firstLen.num <- firstRle$length
+        firstVal.vec <- firstRle$values
+    } else if (methods::is(firstRle, "Rle")) {
+        firstLen.num <- S4Vectors::runLength(firstRle)
+        firstVal.vec <- S4Vectors::runValue(firstRle)
     }
-    if (methods::is(second.rle, "rle")) {
-        secondLen.num <- second.rle$length
-        secondVal.vec <- second.rle$values
-    } else if (methods::is(second.rle, "Rle")) {
-        secondLen.num <- S4Vectors::runLength(second.rle)
-        secondVal.vec <- S4Vectors::runValue(second.rle)
+    if (methods::is(secondRle, "rle")) {
+        secondLen.num <- secondRle$length
+        secondVal.vec <- secondRle$values
+    } else if (methods::is(secondRle, "Rle")) {
+        secondLen.num <- S4Vectors::runLength(secondRle)
+        secondVal.vec <- S4Vectors::runValue(secondRle)
     }
     newLen.num <- NULL
     newVal.vec <- NULL
@@ -48,7 +48,7 @@ ReduceRun <- function(
         !is.na(vals.lst[[2]][1])
     ) {
         A.len <- lens.lst[[which.min(c(lens.lst[[1]][1],lens.lst[[2]][1]))]][1]
-        A.val <- eval(parse(text = reduceFun.chr))(
+        A.val <- eval(parse(text = reduceMethod))(
             vals.lst[[1]][1],
             vals.lst[[2]][1],
             ...

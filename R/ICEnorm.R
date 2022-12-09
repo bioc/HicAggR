@@ -2,7 +2,7 @@
 #'
 #' ICEnorm
 #' @description Compute Iterative Correction (Vanilla Count) on hic maps.
-#' @param hic.cmx <contactMatrix>: The HiC maps chunk to normalize.
+#' @param hic <contactMatrix>: The HiC maps chunk to normalize.
 #' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
 #' @param maxIter <numerical>: The maximum iteration number.
 #' @return A normalized contactMatrix
@@ -10,17 +10,17 @@
 #' data(HiC_Ctrl.cmx_lst)
 #' HiC_Ctrl_ICE.cmx <- ICEnorm(HiC_Ctrl.cmx_lst[['2L_2L']])
 #'
-ICEnorm <- function(hic.cmx, qtlTh = 0.15, maxIter = 50) {
+ICEnorm <- function(hic, qtlTh = 0.15, maxIter = 50) {
     # Removed Low counts bins
     if (qtlTh) {
-        if (hic.cmx@metadata$symmetric) {
-            rowBias.num <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
-                Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
-                Matrix::diag(hic.cmx@matrix)
+        if (hic@metadata$symmetric) {
+            rowBias.num <- Matrix::rowSums(hic@matrix, na.rm = TRUE) +
+                Matrix::colSums(hic@matrix, na.rm = TRUE) -
+                Matrix::diag(hic@matrix)
             colBias.num <- rowBias.num
         } else {
-            rowBias.num <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE)
-            colBias.num <- Matrix::colSums(hic.cmx@matrix, na.rm = TRUE)
+            rowBias.num <- Matrix::rowSums(hic@matrix, na.rm = TRUE)
+            colBias.num <- Matrix::colSums(hic@matrix, na.rm = TRUE)
         }
         row.ndx <- which(
             rowBias.num < stats::quantile(rowBias.num, qtlTh) &
@@ -30,34 +30,34 @@ ICEnorm <- function(hic.cmx, qtlTh = 0.15, maxIter = 50) {
             colBias.num < stats::quantile(colBias.num, qtlTh) &
             colBias.num > 0
         )
-        meltedHic.dtf <- MeltSpm(hic.cmx@matrix)
+        meltedHic.dtf <- MeltSpm(hic@matrix)
         removedHic.dtf <- dplyr::filter(
             meltedHic.dtf,
             meltedHic.dtf$i %in% row.ndx |
             meltedHic.dtf$j %in% col.ndx
         )
-        hic.cmx@metadata$removedCounts <- Matrix::sparseMatrix(
+        hic@metadata$removedCounts <- Matrix::sparseMatrix(
             i = removedHic.dtf$i,
             j = removedHic.dtf$j,
             x = removedHic.dtf$x,
-            dims = dim(hic.cmx@matrix)
+            dims = dim(hic@matrix)
         )
         hic.dtf <- dplyr::filter(
             meltedHic.dtf,
             NotIn(meltedHic.dtf$i, row.ndx) &
             NotIn(meltedHic.dtf$j, col.ndx)
         )
-        hic.cmx@matrix <- Matrix::sparseMatrix(
+        hic@matrix <- Matrix::sparseMatrix(
             i = hic.dtf$i,
             j = hic.dtf$j,
             x = hic.dtf$x,
-            dims = dim(hic.cmx@matrix)
+            dims = dim(hic@matrix)
         )
     }
-    observed.num <- hic.cmx@matrix@x
-    bias <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
-        Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
-        Matrix::diag(hic.cmx@matrix)
+    observed.num <- hic@matrix@x
+    bias <- Matrix::rowSums(hic@matrix, na.rm = TRUE) +
+        Matrix::colSums(hic@matrix, na.rm = TRUE) -
+        Matrix::diag(hic@matrix)
     iter.num <- 1
     fit.lm <- stats::lm(c(
         stats::var(bias[which(bias != 0)]),0) ~ c(iter.num,maxIter)
@@ -68,10 +68,10 @@ ICEnorm <- function(hic.cmx, qtlTh = 0.15, maxIter = 50) {
     intercept.num <- stats::coef(fit.lm)[1]
     max_gain.num <- -Inf
     while (iter.num < maxIter) {
-        hic.cmx <- VCnorm(hic.cmx, qtlTh = 0, sqrt.bln = FALSE)
-        bias <- Matrix::rowSums(hic.cmx@matrix, na.rm = TRUE) +
-            Matrix::colSums(hic.cmx@matrix, na.rm = TRUE) -
-            Matrix::diag(hic.cmx@matrix)
+        hic <- VCnorm(hic, qtlTh = 0, vcsqrt = FALSE)
+        bias <- Matrix::rowSums(hic@matrix, na.rm = TRUE) +
+            Matrix::colSums(hic@matrix, na.rm = TRUE) -
+            Matrix::diag(hic@matrix)
         vertical_distances.num <- abs(
             slope.num * iter.num +
             intercept.num -
@@ -83,7 +83,7 @@ ICEnorm <- function(hic.cmx, qtlTh = 0.15, maxIter = 50) {
         if (gain.num > max_gain.num) {
             max_gain.num <- gain.num
             i_max <- iter.num
-            hicNorm.cmx <- hic.cmx
+            hicNorm.cmx <- hic
         } else if (i_max + floor(maxIter * 0.1) <= iter.num) {
             break
         }

@@ -5,33 +5,33 @@
 \title{Bin a GRanges.}
 \usage{
 BinGRanges(
-  gRange.gnr = NULL,
-  chromSize.dtf = NULL,
-  binSize.num = NULL,
+  gRange = NULL,
+  chromSizes = NULL,
+  binSize = NULL,
   method = "mean",
-  variablesName.chr_vec = NULL,
+  metadataColName = NULL,
   na.rm = TRUE,
   cores = 1,
-  reduce.bln = TRUE,
+  reduceRanges = TRUE,
   verbose = FALSE
 )
 }
 \arguments{
-\item{gRange.gnr}{<GRanges>: A GRanges to bin.}
+\item{gRange}{<GRanges>: A GRanges to bin.}
 
-\item{chromSize.dtf}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
 
-\item{binSize.num}{<numerical>: Width of the bins.}
+\item{binSize}{<numerical>: Width of the bins.}
 
 \item{method}{<character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')}
 
-\item{variablesName.chr_vec}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.}
+\item{metadataColName}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.}
 
 \item{na.rm}{<logical> : A logical value indicating whether 'NA' values should be stripped before the computation proceeds. (Default TRUE)}
 
 \item{cores}{<numerical> : The number of cores. (Default 1)}
 
-\item{reduce.bln}{<logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)}
+\item{reduceRanges}{<logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)}
 
 \item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
 }
@@ -57,11 +57,11 @@ GRange.gnr <- GenomicRanges::GRanges(
 )
 GRange.gnr
 BinGRanges(
-    gRange.gnr = GRange.gnr,
-    chromSize.dtf = data.frame(c("chr1", "chr2"), c(350, 100)),
-    binSize.num = 100,
+    gRange = GRange.gnr,
+    chromSizes = data.frame(c("chr1", "chr2"), c(350, 100)),
+    binSize = 100,
     method = "mean",
-    variablesName.chr_vec = "score",
+    metadataColName = "score",
     na.rm = TRUE
 )
 

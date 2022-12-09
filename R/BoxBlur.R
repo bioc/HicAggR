@@ -3,36 +3,36 @@
 #' BoxBlur
 #' @keywords internal
 #' @description Blur a matrix with a one dimensional kernel.
-#' @param mat.mtx <matrix>: Numerical matrix.
+#' @param mtx <matrix>: Numerical matrix.
 #' @param boxKernel <numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)
-#' @param boxSize.num <numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)
-#' @param sd.num <numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)
+#' @param kernSize <numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)
+#' @param stdev <numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)
 #' @return Blurred matrix.
 #' @examples
 #' set.seed(981643)
-#' mat.mtx <- rnorm(10000, 50, 10)**3 |> matrix(100, 100)
-#' heatmap(mat.mtx, Rowv = NA, Colv = NA)
-#' heatmap(BoxBlur(mat.mtx), Rowv = NA, Colv = NA)
+#' mtx <- rnorm(10000, 50, 10)**3 |> matrix(100, 100)
+#' heatmap(mtx, Rowv = NA, Colv = NA)
+#' heatmap(BoxBlur(mtx), Rowv = NA, Colv = NA)
 #'
 BoxBlur <- function(
-    mat.mtx, boxKernel = NULL, boxSize.num = NULL,
-    sd.num = 1
+    mtx, boxKernel = NULL, kernSize = NULL,
+    stdev = 1
 ) {
     if (is.null(boxKernel)) {
         boxKernel <- GaussBox(
-            sd.num = sd.num, scale.chr = "1",
-            boxSize.num = boxSize.num
+            stdev = stdev, kernScale = "1",
+            kernSize = kernSize
         )
     }
     pad.num <- (length(boxKernel) - 1)/2
-    mat.mtx <- PadMtx(
-        mat.mtx = mat.mtx, padSize.num = pad.num,
-        value.num = NULL, side.chr = c("top", "bot", "right", "left")
+    mtx <- PadMtx(
+        mtx = mtx, padSize = pad.num,
+        val = NULL, side = c("top", "bot", "right", "left")
     )
     matVsmth.mtx2 <- sapply(
-        ((1 + pad.num):(dim(mat.mtx)[2] - pad.num)),
+        ((1 + pad.num):(dim(mtx)[2] - pad.num)),
         function(j) {
-            (t(mat.mtx[, (j - pad.num):(j + pad.num)]) *
+            (t(mtx[, (j - pad.num):(j + pad.num)]) *
                 boxKernel) |>
                 apply(2, Plus)
         }
@@ -46,9 +46,9 @@ BoxBlur <- function(
                 t()
         }
 ))
-    which.ndx <- which(matHsmth.mtx2 == 0)
-    if (length(which.ndx)) {
-        matHsmth.mtx2 <- Rise0(matHsmth.mtx2, which.ndx = which.ndx)
+    indices <- which(matHsmth.mtx2 == 0)
+    if (length(indices)) {
+        matHsmth.mtx2 <- Rise0(matHsmth.mtx2, indices = indices)
     }
     return(matHsmth.mtx2)
 }

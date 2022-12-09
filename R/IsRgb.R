@@ -3,7 +3,7 @@
 #' IsRgb
 #' @keywords internal
 #' @description Check if a color is in RGB color format.
-#' @param color.col <character or numeric>: A color.
+#' @param colour <character or numeric>: A color.
 #' @return A logical.
 #' @examples
 #' IsRgb("red")
@@ -12,18 +12,18 @@
 #' IsRgb(c(43.8, 0.873, 0.492))
 #'
 IsRgb <- function(
-    color.col = NULL
+    colour = NULL
 ) {
     logical.bln <- lapply(
-            color.col,
-            function(value.num) {0 <= value.num & value.num <= 255}
+            colour,
+            function(val) {0 <= val & val <= 255}
         ) |>
         unlist() |>
         sort()
     logical.bln <- logical.bln[[1]]
     return(
-        (!IsHsl(color.col)) &&
-        (class(color.col) %in% c("list", "numeric", "integer") &&
+        (!IsHsl(colour)) &&
+        (class(colour) %in% c("list", "numeric", "integer") &&
         logical.bln)
     )
 }

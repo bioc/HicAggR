@@ -3,16 +3,16 @@
 #' GetFileExtension
 #' @keywords internal
 #' @description Give the extension of a file from the path.
-#' @param path.pth <character>: The path to the file.
+#' @param file <character>: The path to the file.
 #' @return A character string
 #' @examples
 #' filePath.pth ="my/path/to/my/file.txt"
-#' GetFileExtension(path.pth=filePath.pth)
+#' GetFileExtension(file=filePath.pth)
 
 GetFileExtension <- function(
-    path.pth = NULL
+    file = NULL
 ) {
-    fileName.chr <- GetFileName(path.pth, extension = TRUE) |>
+    fileName.chr <- GetFileName(file, extension = TRUE) |>
         strsplit(".", fixed = TRUE) |>
         unlist()
     return(fileName.chr[length(fileName.chr)])

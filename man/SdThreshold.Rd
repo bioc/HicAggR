@@ -4,14 +4,14 @@
 \alias{SdThreshold}
 \title{Find threshold for outliers based on sd.}
 \usage{
-SdThreshold(x.num = NULL, sdThreshold.num = 3, bounds.chr = "both")
+SdThreshold(x = NULL, sdThr = 3, tails = "both")
 }
 \arguments{
-\item{x.num}{<numeric>: numeric vector.}
+\item{x}{<numeric>: numeric vector.}
 
-\item{sdThreshold.num}{<numeric>: number of standard deviation. (Default 3)}
+\item{sdThr}{<numeric>: number of standard deviation. (Default 3)}
 
-\item{bounds.chr}{<character>: bounds to return, "lower", "upper" or "both". (Default "both")}
+\item{tails}{<character>: bounds to return, "lower", "upper" or "both". (Default "both")}
 }
 \value{
 numerical vector of thresholds values for outliers triming
@@ -24,12 +24,12 @@ SdThreshold
 }
 \examples{
 set.seed(1111)
-x.num <- rnorm(1000)
-x.num <- sort(x.num)
-x.num
-SdThreshold(x.num, sdThreshold.num = 2, bounds.chr = "lower")
-SdThreshold(x.num, sdThreshold.num = 2, bounds.chr = "both")
-SdThreshold(x.num, sdThreshold.num = 2, bounds.chr = "upper")
+x <- rnorm(1000)
+x <- sort(x)
+x
+SdThreshold(x, sdThr = 2, tails = "lower")
+SdThreshold(x, sdThr = 2, tails = "both")
+SdThreshold(x, sdThr = 2, tails = "upper")
 
 }
 \keyword{internal}

@@ -4,10 +4,10 @@
 \alias{SeqEnds}
 \title{Get all sequences lengths.}
 \usage{
-SeqEnds(x.gnr)
+SeqEnds(gRanges)
 }
 \arguments{
-\item{x.gnr}{<GRanges>: A GRanges object.}
+\item{gRanges}{<GRanges>: A GRanges object.}
 }
 \value{
 An integer vector.

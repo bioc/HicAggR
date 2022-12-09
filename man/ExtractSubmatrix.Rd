@@ -5,28 +5,28 @@
 \title{Submatrix extraction.}
 \usage{
 ExtractSubmatrix(
-  feature.gn = NULL,
+  genomicFeature = NULL,
   hicLst = NULL,
-  referencePoint.chr = "pf",
-  res.num = NULL,
-  matriceDim.num = 21,
-  shiftFactor.num = 1,
+  referencePoint = "pf",
+  hicResolution = NULL,
+  matriceDim = 21,
+  shift = 1,
   cores = 1,
   verbose = FALSE
 )
 }
 \arguments{
-\item{feature.gn}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.}
+\item{genomicFeature}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.}
 
 \item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
-\item{referencePoint.chr}{<character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")}
+\item{referencePoint}{<character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")}
 
-\item{res.num}{<numeric>: The resoulution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)}
+\item{hicResolution}{<numeric>: The resolution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)}
 
-\item{matriceDim.num}{<numeric>: The size of matrices in output. (Default 21).}
+\item{matriceDim}{<numeric>: The size of matrices in output. (Default 21).}
 
-\item{shiftFactor.num}{<numeric>: Only when "referencePoint.chr" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shiftFactor.num=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.}
+\item{shift}{<numeric>: Only when "referencePoint" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shift=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.}
 
 \item{cores}{<integer> : An integer to specify the number of cores. (Default 1)}
 
@@ -48,27 +48,27 @@ data(HiC_Ctrl.cmx_lst)
 
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-    chromSize.dtf = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
-    binSize.num = 100000
+    gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    binSize = 100000
 )
 
 # Beaf32 <-> Beaf32 Pairing
-Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 
 # Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
 interactions_RF.mtx_lst <- ExtractSubmatrix(
-    feature.gn = Beaf_Beaf.gni,
+    genomicFeature = Beaf_Beaf.gni,
     hicLst = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "rf"
+    referencePoint = "rf"
 )
 
 # Matrices extractions center on Beaf32 <-> Beaf32 pointinteraction
 interactions_PF.mtx_lst <- ExtractSubmatrix(
-    feature.gn = Beaf_Beaf.gni,
+    genomicFeature = Beaf_Beaf.gni,
     hicLst = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "pf"
+    referencePoint = "pf"
 )
 
 }

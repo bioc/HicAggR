@@ -3,81 +3,81 @@
 #' PadMtx
 #' @keywords internal
 #' @description Add a value around a matrix.
-#' @param mat.mtx <matrix>: Numerical matrix.
-#' @param padSize.num <numeric>: Number of columns or rows to add. (Default 1)
-#' @param value.num <numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)
-#' @param side.chr <character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )
+#' @param mtx <matrix>: Numerical matrix.
+#' @param padSize <numeric>: Number of columns or rows to add. (Default 1)
+#' @param val <numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)
+#' @param side <character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )
 #' @return A matrix.
 #' @examples
-#' mat.mtx <- matrix(seq_len(25), 5, 5)
+#' mtx <- matrix(seq_len(25), 5, 5)
 #' PadMtx(
-#'     mat.mtx = mat.mtx,
-#'     padSize.num = 1,
-#'     value.num = 0,
-#'     side.chr = c("top", "bot", "right", "left")
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("top", "bot", "right", "left")
 #' )
 #' PadMtx(
-#'     mat.mtx = mat.mtx,
-#'     padSize.num = 1,
-#'     value.num = NULL,
-#'     side.chr = c("top", "bot", "right", "left")
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = NULL,
+#'     side = c("top", "bot", "right", "left")
 #' )
 #' PadMtx(
-#'     mat.mtx = mat.mtx,
-#'     padSize.num = 1,
-#'     value.num = 0,
-#'     side.chr = c("right", "left")
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("right", "left")
 #' )
 #' PadMtx(
-#'     mat.mtx = mat.mtx,
-#'     padSize.num = 1,
-#'     value.num = 0,
-#'     side.chr = c("top")
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("top")
 #' )
 #'
 PadMtx <- function(
-    mat.mtx = NULL, padSize.num = 1, value.num = 0,
-    side.chr = c("top", "bot", "right", "left")
+    mtx = NULL, padSize = 1, val = 0,
+    side = c("top", "bot", "right", "left")
 ) {
-    if ("top" %in% side.chr) {
-        if (!is.null(value.num)) {
-            row.lst <- rep(list(rep(value.num, dim(mat.mtx)[2])), padSize.num)
+    if ("top" %in% side) {
+        if (!is.null(val)) {
+            row.lst <- rep(list(rep(val, dim(mtx)[2])), padSize)
             row.pad <- do.call(rbind, row.lst)
         } else {
-            row.pad <- mat.mtx[padSize.num:1, ]
+            row.pad <- mtx[padSize:1, ]
         }
-        mat.mtx <- rbind(row.pad, mat.mtx)
+        mtx <- rbind(row.pad, mtx)
     }
-    if ("bot" %in% side.chr) {
-        if (!is.null(value.num)) {
-            row.lst <- rep(list(rep(value.num, dim(mat.mtx)[2])), padSize.num)
+    if ("bot" %in% side) {
+        if (!is.null(val)) {
+            row.lst <- rep(list(rep(val, dim(mtx)[2])), padSize)
             row.pad <- do.call(rbind, row.lst)
         } else {
-            row.pad <- mat.mtx[
-                (nrow(mat.mtx) - padSize.num + 1):nrow(mat.mtx),
+            row.pad <- mtx[
+                (nrow(mtx) - padSize + 1):nrow(mtx),
             ]
         }
-        mat.mtx <- rbind(mat.mtx, row.pad)
+        mtx <- rbind(mtx, row.pad)
     }
-    if ("left" %in% side.chr) {
-        if (!is.null(value.num)) {
-            col.lst <- rep(list(rep(value.num, dim(mat.mtx)[1])), padSize.num)
+    if ("left" %in% side) {
+        if (!is.null(val)) {
+            col.lst <- rep(list(rep(val, dim(mtx)[1])), padSize)
             col.pad <- do.call(cbind, col.lst)
         } else {
-            col.pad <- mat.mtx[, padSize.num:1]
+            col.pad <- mtx[, padSize:1]
         }
-        mat.mtx <- cbind(col.pad, mat.mtx)
+        mtx <- cbind(col.pad, mtx)
     }
-    if ("right" %in% side.chr) {
-        if (!is.null(value.num)) {
-            col.lst <- rep(list(rep(value.num, dim(mat.mtx)[1])), padSize.num)
+    if ("right" %in% side) {
+        if (!is.null(val)) {
+            col.lst <- rep(list(rep(val, dim(mtx)[1])), padSize)
             col.pad <- do.call(cbind, col.lst)
         } else {
-            col.pad <- mat.mtx[,
-                (ncol(mat.mtx) - padSize.num + 1):ncol(mat.mtx)
+            col.pad <- mtx[,
+                (ncol(mtx) - padSize + 1):ncol(mtx)
             ]
         }
-        mat.mtx <- cbind(mat.mtx, col.pad)
+        mtx <- cbind(mtx, col.pad)
     }
-    return(mat.mtx)
+    return(mtx)
 }

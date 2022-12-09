@@ -4,14 +4,14 @@
 \alias{MergeGRanges}
 \title{Merge GRanges.}
 \usage{
-MergeGRanges(..., sort.bln = FALSE, reduce.bln = FALSE)
+MergeGRanges(..., sortRanges = FALSE, reduceRanges = FALSE)
 }
 \arguments{
 \item{...}{<GRanges or GRangesList or list[GRanges]>: Some GRanges or a list of GRanges or a GRangesList.}
 
-\item{sort.bln}{<logical>: Whether the result should be sorted. (Default FALSE)}
+\item{sortRanges}{<logical>: Whether the result should be sorted. (Default FALSE)}
 
-\item{reduce.bln}{<logical>: Whether the result should be reduce. See GenomicRanges::reduce for more details. (Default FALSE)}
+\item{reduceRanges}{<logical>: Whether the result should be reduce. See GenomicRanges::reduce for more details. (Default FALSE)}
 }
 \value{
 a GRange object.
@@ -40,6 +40,6 @@ GRange_2.grn
 MergeGRanges(GRange_1.grn, GRange_2.grn)
 GRange.lst <- list(GRange_1.grn, GRange_2.grn)
 MergeGRanges(GRange.lst)
-MergeGRanges(GRange.lst, reduce.bln = TRUE)
+MergeGRanges(GRange.lst, reduceRanges = TRUE)
 
 }

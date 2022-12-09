@@ -4,12 +4,12 @@
 \alias{TrimOutliers}
 \title{Remove outliers.}
 \usage{
-TrimOutliers(x.num, tresholds.num = SdThreshold(x.num), clip = FALSE)
+TrimOutliers(x, thr = SdThreshold(x), clip = FALSE)
 }
 \arguments{
-\item{x.num}{<numeric>: Numeric vector.}
+\item{x}{<numeric>: Numeric vector.}
 
-\item{tresholds.num}{<numeric>: Numeric vector of length 2. first value is minimal threshold, second value maximal threshold (Default find threshold based on standarrd deviation. see `SdThreshold` function)}
+\item{thr}{<numeric>: Numeric vector of length 2. first value is minimal threshold, second value maximal threshold (Default find threshold based on standarrd deviation. see `SdThreshold` function)}
 
 \item{clip}{<logical>: If TRUE the value out of bounds are replace with threshodls values. If FALSE the Values out of bound are replace with NA (Default FALSE).}
 }
@@ -24,12 +24,12 @@ TrimOutliers
 }
 \examples{
 set.seed(1111)
-x.num <- rnorm(1000)
-x.num <- sort(x.num)
-x.num[990:1000]
-SdThreshold(x.num)
-TrimOutliers(x.num)[990:1000]
-TrimOutliers(x.num, clip = TRUE)[990:1000]
+x <- rnorm(1000)
+x <- sort(x)
+x[990:1000]
+SdThreshold(x)
+TrimOutliers(x)[990:1000]
+TrimOutliers(x, clip = TRUE)[990:1000]
 
 }
 \keyword{internal}

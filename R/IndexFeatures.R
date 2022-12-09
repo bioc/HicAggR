@@ -2,96 +2,96 @@
 #'
 #' IndexFeatures
 #' @description Function that indexes a GRanges object on binned genome and constraints. Needed prior HicAggR::SearchPairs() function.
-#' @param gRange.gnr_lst <GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.
-#' @param constraint.gnr <GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSize.dtf are used as constraints (Default NULL)
-#' @param chromSize.dtf <data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).
-#' @param binSize.num <integer>: Bin size in bp - corresponds to HiC matrix resolution.
-#' @param variablesName.chr_vec <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.
-#' @param method <character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')
+#' @param gRangeList <GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.
+#' @param genomicConstraint <GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as constraints (Default NULL)
+#' @param chromSizes <data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).
+#' @param binSize <integer>: Bin size in bp - corresponds to HiC matrix resolution.
+#' @param metadataColName <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.
+#' @param method <character>: A string defining which summary method is used on metadata columns defined in metadataColName if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')
 #' @param cores <integer> : Number of cores used. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A GRanges object.
 #' @examples
 #' data(Beaf32_Peaks.gnr)
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(
 #'         seqnames = c("2L", "2R"),
 #'         seqlengths = c(23513712, 25286936)
 #'     ),
-#'     binSize.num = 100000
+#'     binSize = 100000
 #' )
 #'
 IndexFeatures <- function(
-    gRange.gnr_lst = NULL, constraint.gnr = NULL, chromSize.dtf = NULL,
-    binSize.num = NULL, method = "mean", variablesName.chr_vec = NULL,
+    gRangeList = NULL, genomicConstraint = NULL, chromSizes = NULL,
+    binSize = NULL, method = "mean", metadataColName = NULL,
     cores = 1, verbose = FALSE
 ) {
     # Constraint Informations
-    if (is.null(constraint.gnr)) {
-        constraint.gnr <- GenomicRanges::GRanges(
-            seqnames = chromSize.dtf[, 1],
+    if (is.null(genomicConstraint)) {
+        genomicConstraint <- GenomicRanges::GRanges(
+            seqnames = chromSizes[, 1],
             ranges = IRanges::IRanges(
-                start = rep(1, length(chromSize.dtf[, 2])),
-                end = chromSize.dtf[, 2]
+                start = rep(1, length(chromSizes[, 2])),
+                end = chromSizes[, 2]
             ),
-            strand = "*", name = chromSize.dtf[, 1]
+            strand = "*", name = chromSizes[, 1]
         )
     } else {
-        if (is.null(constraint.gnr$name) |
-            length(which(!is.na(constraint.gnr$name))) == 0) {
-            constraint.gnr$name <- paste0(
+        if (is.null(genomicConstraint$name) |
+            length(which(!is.na(genomicConstraint$name))) == 0) {
+            genomicConstraint$name <- paste0(
                 "Constraint_",
-                seq_along(constraint.gnr)
+                seq_along(genomicConstraint)
             )
         }
     }
-    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(constraint.gnr)
+    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(genomicConstraint)
     if (length(seqLevelsStyle.chr) > 1) {
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
-        GenomeInfoDb::seqlevelsStyle(constraint.gnr) <- seqLevelsStyle.chr
+        GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
     binnedConstraint.gnr <- BinGRanges(
-        gRange.gnr = constraint.gnr,
-        chromSize.dtf = chromSize.dtf,
-        binSize.num = binSize.num,
+        gRange = genomicConstraint,
+        chromSizes = chromSizes,
+        binSize = binSize,
         verbose = verbose,
-        reduce.bln = FALSE,
+        reduceRanges = FALSE,
         cores = cores
     )
     # Feature Names
-    if (inherits(gRange.gnr_lst, "GRanges")) {
-        gRange.gnr_lst <- list(Features = gRange.gnr_lst)
-    } else if (inherits(gRange.gnr_lst, "GRangesList")) {
-        gRange.gnr_lst <- as.list(gRange.gnr_lst)
+    if (inherits(gRangeList, "GRanges")) {
+        gRangeList <- list(Features = gRangeList)
+    } else if (inherits(gRangeList, "GRangesList")) {
+        gRangeList <- as.list(gRangeList)
     }
-    if (is.null(names(gRange.gnr_lst))) {
-        gRange.gnr_lst <- stats::setNames(
-            gRange.gnr_lst,
-            paste0("Feature_", seq_along(gRange.gnr_lst))
+    if (is.null(names(gRangeList))) {
+        gRangeList <- stats::setNames(
+            gRangeList,
+            paste0("Feature_", seq_along(gRangeList))
         )
     }
-    gRangeOrder.ndx <- lapply(gRange.gnr_lst, length) |>
+    gRangeOrder.ndx <- lapply(gRangeList, length) |>
         unlist() |>
         order(decreasing = TRUE)
-    gRange.gnr_lst <- gRange.gnr_lst[gRangeOrder.ndx]
-    feature.chr_vec <- names(gRange.gnr_lst)
+    gRangeList <- gRangeList[gRangeOrder.ndx]
+    feature.chr_vec <- names(gRangeList)
     # GRanges Binning
     binnedFeature.lst <- BiocParallel::bplapply(
         BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
-        seq_along(gRange.gnr_lst),
+        seq_along(gRangeList),
         function(feature.ndx) {
             feature.chr <- feature.chr_vec[[feature.ndx]]
             feature.gnr <- IRanges::subsetByOverlaps(
-                gRange.gnr_lst[[feature.chr]],
-                constraint.gnr
+                gRangeList[[feature.chr]],
+                genomicConstraint
             )
             GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
-                gRange.gnr = feature.gnr, chromSize.dtf = chromSize.dtf,
-                binSize.num = binSize.num, method = method,
-                variablesName.chr_vec = variablesName.chr_vec,
-                verbose = verbose, reduce.bln = TRUE,
+                gRange = feature.gnr, chromSizes = chromSizes,
+                binSize = binSize, method = method,
+                metadataColName = metadataColName,
+                verbose = verbose, reduceRanges = TRUE,
                 cores = cores
             )
             binnedFeat.tbl <- tibble::tibble(
@@ -117,11 +117,11 @@ IndexFeatures <- function(
                 stats::setNames(c("Constraint.name", "BinnedConstraint.ndx"))
             featConstOvlp.ovlp <- GenomicRanges::findOverlaps(
                 feature.gnr,
-                constraint.gnr
+                genomicConstraint
             )
             featConstOvlp.tbl <- tibble::tibble(
                 Feature.name = feature.gnr$name[featConstOvlp.ovlp@from],
-                Constraint.name = constraint.gnr$name[featConstOvlp.ovlp@to]
+                Constraint.name = genomicConstraint$name[featConstOvlp.ovlp@to]
             ) |>
                 dplyr::left_join(binnedFeat.tbl, by = "Feature.name") |>
                 dplyr::select(-"Feature.name") |>
@@ -158,8 +158,8 @@ IndexFeatures <- function(
             )
             binnedFeature.gnr <- MergeGRanges(
                 binnedFeature.gnr_lst,
-                sort.bln = FALSE,
-                reduce.bln = FALSE
+                sortRanges = FALSE,
+                reduceRanges = FALSE
             )
             binnedFeature.gnr$bln <- TRUE
             names(S4Vectors::mcols(binnedFeature.gnr)) <- paste0(
@@ -191,7 +191,7 @@ IndexFeatures <- function(
     )
     binnedIndex.gnr <- binnedFeature.lst |>
         lapply("[[", "binnedFeature.gnr") |>
-        MergeGRanges(sort.bln = FALSE, reduce.bln = FALSE)
+        MergeGRanges(sortRanges = FALSE, reduceRanges = FALSE)
     featureMetadata.lst_dtf <- binnedFeature.lst |>
         lapply("[[", "featureMetadata.dtf")
     S4Vectors::mcols(binnedIndex.gnr) <- BindFillRows(featureMetadata.lst_dtf)

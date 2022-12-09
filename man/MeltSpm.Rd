@@ -4,10 +4,10 @@
 \alias{MeltSpm}
 \title{Coerce matrix in tibble.}
 \usage{
-MeltSpm(mat.spm = NULL)
+MeltSpm(spMtx = NULL)
 }
 \arguments{
-\item{mat.spm}{<dgCMatrix or dgCMatrix coercible>: A matrix.}
+\item{spMtx}{<dgCMatrix or dgCMatrix coercible>: A matrix.}
 }
 \value{
 A tibble.
@@ -22,9 +22,9 @@ MeltSpm
 i <- c(1, 1, 2, 2, 3, 3, 4, 4, 4, 4)
 j <- c(1, 4, 2, 5, 1, 4, 2, 3, 4, 5)
 x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-mat.spm <- Matrix::sparseMatrix(i = i, j = j, x = x, dims = c(5, 5))
-mat.spm
-meltedMat.tbl <- MeltSpm(mat.spm)
+spMtx <- Matrix::sparseMatrix(i = i, j = j, x = x, dims = c(5, 5))
+spMtx
+meltedMat.tbl <- MeltSpm(spMtx)
 meltedMat.tbl[order(meltedMat.tbl$i), ]
 
 }

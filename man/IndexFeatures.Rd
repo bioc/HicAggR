@@ -5,28 +5,28 @@
 \title{Indexes GRanges on genome.}
 \usage{
 IndexFeatures(
-  gRange.gnr_lst = NULL,
-  constraint.gnr = NULL,
-  chromSize.dtf = NULL,
-  binSize.num = NULL,
+  gRangeList = NULL,
+  genomicConstraint = NULL,
+  chromSizes = NULL,
+  binSize = NULL,
   method = "mean",
-  variablesName.chr_vec = NULL,
+  metadataColName = NULL,
   cores = 1,
   verbose = FALSE
 )
 }
 \arguments{
-\item{gRange.gnr_lst}{<GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.}
+\item{gRangeList}{<GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.}
 
-\item{constraint.gnr}{<GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSize.dtf are used as constraints (Default NULL)}
+\item{genomicConstraint}{<GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
 
-\item{chromSize.dtf}{<data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).}
+\item{chromSizes}{<data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).}
 
-\item{binSize.num}{<integer>: Bin size in bp - corresponds to HiC matrix resolution.}
+\item{binSize}{<integer>: Bin size in bp - corresponds to HiC matrix resolution.}
 
-\item{method}{<character>: A string defining which summary method is used on metadata columns defined in variablesName.chr_vec if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
+\item{method}{<character>: A string defining which summary method is used on metadata columns defined in metadataColName if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
 
-\item{variablesName.chr_vec}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.}
+\item{metadataColName}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.}
 
 \item{cores}{<integer> : Number of cores used. (Default 1)}
 
@@ -44,12 +44,12 @@ IndexFeatures
 \examples{
 data(Beaf32_Peaks.gnr)
 Beaf32_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-    chromSize.dtf = data.frame(
+    gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+    chromSizes = data.frame(
         seqnames = c("2L", "2R"),
         seqlengths = c(23513712, 25286936)
     ),
-    binSize.num = 100000
+    binSize = 100000
 )
 
 }

@@ -2,11 +2,11 @@
 #'
 #' ImportHiC
 #' @description Import ..hic, .cool, .mcool or .bedpe data
-#' @param file.pth <GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).
-#' @param res.num <numeric>: The HiC resolution.
-#' @param chromSize.dtf <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
-#' @param chrom_1.chr <numeric>: The seqnames of firsts chromosmes (rows in matrix).
-#' @param chrom_2.chr <numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1.chr (Defalt NULL)
+#' @param file <GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).
+#' @param hicResolution <numeric>: The HiC resolution.
+#' @param chromSizes <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
+#' @param chrom_1 <numeric>: The seqnames of firsts chromosmes (rows in matrix).
+#' @param chrom_2 <numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1 (Defalt NULL)
 #' @param cores <numerical> : An integer to specify the number of cores. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
@@ -29,10 +29,10 @@
 #'
 #' # Import .hic file
 #' HiC_Ctrl.cmx_lst <- ImportHiC(
-#'     file.pth = HicOutput.pth,
-#'     res.num = 100000,
-#'     chrom_1.chr = c("2L", "2L", "2R"),
-#'     chrom_2.chr = c("2L", "2R", "2R")
+#'     file = HicOutput.pth,
+#'     hicResolution = 100000,
+#'     chrom_1 = c("2L", "2L", "2R"),
+#'     chrom_2 = c("2L", "2R", "2R")
 #' )
 #'
 #' # Download .mcool file
@@ -46,37 +46,37 @@
 #'
 #' # Import .mcool file
 #' HiC_HS.cmx_lst <- ImportHiC(
-#'     file.pth = McoolOutput.pth,
-#'     res.num = 100000,
-#'     chrom_1.chr = c("2L", "2L", "2R"),
-#'     chrom_2.chr = c("2L", "2R", "2R")
+#'     file = McoolOutput.pth,
+#'     hicResolution = 100000,
+#'     chrom_1 = c("2L", "2L", "2R"),
+#'     chrom_2 = c("2L", "2R", "2R")
 #' )
 #' }
 #'
 ImportHiC <- function(
-    file.pth = NULL, res.num = NULL, chromSize.dtf = NULL, chrom_1.chr = NULL,
-    chrom_2.chr = NULL, verbose = FALSE, cores = 1
+    file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
+    chrom_2 = NULL, verbose = FALSE, cores = 1
 ) {
     # Resolution Format
     options(scipen = 999)
-    if (inherits(res.num, "character")) {
-        res.num <- GenomicSystem(res.num)
+    if (inherits(hicResolution, "character")) {
+        hicResolution <- GenomicSystem(hicResolution)
     }
     # Chromosomes Format
-    if (is.null(chrom_2.chr)) {
-        chrom_2.chr <- chrom_1.chr
-    } else if (length(chrom_1.chr) != length(chrom_2.chr)) {
-        stop("chrom_1.chr and chrom_2.chr must have the same length")
+    if (is.null(chrom_2)) {
+        chrom_2 <- chrom_1
+    } else if (length(chrom_1) != length(chrom_2)) {
+        stop("chrom_1 and chrom_2 must have the same length")
     }
-    if ("ALL" %in% toupper(chrom_1.chr)){
-        chrom_1.chr <- chrom_1.chr[-which(toupper(chrom_1.chr) == "ALL")]
-        message("ALL removed from chrom_1.chr")
+    if ("ALL" %in% toupper(chrom_1)){
+        chrom_1 <- chrom_1[-which(toupper(chrom_1) == "ALL")]
+        message("ALL removed from chrom_1")
     }
-    if ("ALL" %in% toupper(chrom_2.chr)){
-        chrom_2.chr <- chrom_2.chr[-which(toupper(chrom_2.chr) == "ALL")]
-        message("ALL removed from chrom_2.chr")
+    if ("ALL" %in% toupper(chrom_2)){
+        chrom_2 <- chrom_2[-which(toupper(chrom_2) == "ALL")]
+        message("ALL removed from chrom_2")
     }
-    chrom.chr <- c(chrom_1.chr, chrom_2.chr) |>
+    chrom.chr <- c(chrom_1, chrom_2) |>
         unlist() |>
         unique()
     if (grepl(pattern = "chr", chrom.chr[1], fixed = TRUE)) {
@@ -85,90 +85,90 @@ ImportHiC <- function(
         seqlevelsStyleHiC <- "ensembl"
     }
     # Get SeqInfo
-    if (GetFileExtension(file.pth) == "hic") {
-        if ("index" %in% colnames(chromSize.dtf)) {
-            chromSize.dtf <- strawr::readHicChroms(file.pth) |>
+    if (GetFileExtension(file) == "hic") {
+        if ("index" %in% colnames(chromSizes)) {
+            chromSizes <- strawr::readHicChroms(file) |>
                 dplyr::select(-"index")
         } else {
-            chromSize.dtf <- strawr::readHicChroms(file.pth)
+            chromSizes <- strawr::readHicChroms(file)
         }
-    } else if (GetFileExtension(file.pth) %in%
+    } else if (GetFileExtension(file) %in%
         c("cool", "mcool", "HDF5", "hdf5", "h5")
     ) {
         # Define HDF5groups
         chr.group <- ifelse(
-            GetFileExtension(file.pth) %in% c("cool", "HDF5", "hdf5", "h5"),
+            GetFileExtension(file) %in% c("cool", "HDF5", "hdf5", "h5"),
             yes = "/chroms",
-            no = paste("resolutions", res.num, "chroms", sep = "/")
+            no = paste("resolutions", hicResolution, "chroms", sep = "/")
         )
         # Get SeqInfo
-        chromSize.dtf <- data.frame(rhdf5::h5read(file.pth, name = chr.group))
-    } else if (GetFileExtension(file.pth) == "bedpe" &
-        !is.null(chromSize.dtf)
+        chromSizes <- data.frame(rhdf5::h5read(file, name = chr.group))
+    } else if (GetFileExtension(file) == "bedpe" &
+        !is.null(chromSizes)
     ) {
-        hic.gnp <- rtracklayer::import(file.pth, format = "bedpe")
+        hic.gnp <- rtracklayer::import(file, format = "bedpe")
         megaHic.dtf <- data.frame(
             chrom_1 = as.vector(hic.gnp@first@seqnames),
-            i = ceiling(hic.gnp@first@ranges@start/res.num),
+            i = ceiling(hic.gnp@first@ranges@start/hicResolution),
             chrom_2 = as.vector(hic.gnp@second@seqnames),
-            j = ceiling(hic.gnp@second@ranges@start/res.num),
+            j = ceiling(hic.gnp@second@ranges@start/hicResolution),
             counts = hic.gnp@elementMetadata$score
         )
     } else {
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
-    rownames(chromSize.dtf) <- chromSize.dtf$name
-    # Standardize seqlevelsStyle of chromSize.dtf according to
+    rownames(chromSizes) <- chromSizes$name
+    # Standardize seqlevelsStyle of chromSizes according to
     # chrom.chr
-    if (grepl("chr", rownames(chromSize.dtf)[1],fixed = TRUE) &
+    if (grepl("chr", rownames(chromSizes)[1],fixed = TRUE) &
         seqlevelsStyleHiC == "ensembl"
     ) {
-        chromSize.dtf$name <- unlist(lapply(
-            strsplit(rownames(chromSize.dtf),"chr"),`[[`, 2
+        chromSizes$name <- unlist(lapply(
+            strsplit(rownames(chromSizes),"chr"),`[[`, 2
         ))
-        rownames(chromSize.dtf) <- unlist(lapply(
-            strsplit(rownames(chromSize.dtf),"chr"),`[[`, 2
+        rownames(chromSizes) <- unlist(lapply(
+            strsplit(rownames(chromSizes),"chr"),`[[`, 2
         ))
-    } else if (!grepl("chr", rownames(chromSize.dtf)[1], fixed = TRUE) &
+    } else if (!grepl("chr", rownames(chromSizes)[1], fixed = TRUE) &
         seqlevelsStyleHiC == "UCSC"
     ) {
-        chromSize.dtf$name <- paste0("chr", rownames(chromSize.dtf))
-        rownames(chromSize.dtf) <- paste0("chr", rownames(chromSize.dtf))
+        chromSizes$name <- paste0("chr", rownames(chromSizes))
+        rownames(chromSizes) <- paste0("chr", rownames(chromSizes))
     }
-    # Standardize chromSize.dtf and chrom.chr
-    chromSize.dtf <- dplyr::filter(
-        chromSize.dtf,
-        chromSize.dtf$name %in% chrom.chr
+    # Standardize chromSizes and chrom.chr
+    chromSizes <- dplyr::filter(
+        chromSizes,
+        chromSizes$name %in% chrom.chr
     )
-    chromSize.dtf <- dplyr::mutate(
-        chromSize.dtf,
-        dimension = ceiling(chromSize.dtf$length/res.num)
+    chromSizes <- dplyr::mutate(
+        chromSizes,
+        dimension = ceiling(chromSizes$length/hicResolution)
     )
-    chrom.chr <- chrom.chr[chrom.chr %in% chromSize.dtf$name]
-    chrom_1.chr <- chrom_1.chr[chrom_1.chr %in% chromSize.dtf$name]
-    chrom_2.chr <- chrom_2.chr[chrom_2.chr %in% chromSize.dtf$name]
+    chrom.chr <- chrom.chr[chrom.chr %in% chromSizes$name]
+    chrom_1 <- chrom_1[chrom_1 %in% chromSizes$name]
+    chrom_2 <- chrom_2[chrom_2 %in% chromSizes$name]
     # Create Genome as GRanges
-    binnedGenome.grn <- chromSize.dtf |>
+    binnedGenome.grn <- chromSizes |>
         dplyr::pull("length") |>
-        stats::setNames(chromSize.dtf$name) |>
+        stats::setNames(chromSizes$name) |>
         GenomicRanges::tileGenome(
-            tilewidth = res.num,
+            tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
-    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSize.dtf$length |>
-        stats::setNames(chromSize.dtf$name)
-    chromComb.lst <- paste(chrom_1.chr, chrom_2.chr, sep = "_")
+    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
+        stats::setNames(chromSizes$name)
+    chromComb.lst <- paste(chrom_1, chrom_2, sep = "_")
     matrixSymmetric.bln <- strsplit(chromComb.lst, "_") |>
         lapply(function(name.chr) {name.chr[[1]] == name.chr[[2]]}) |>
         unlist()
     matrixType.str <- chromComb.lst
     matrixType.str[which(matrixSymmetric.bln)] <- "cis"
     matrixType.str[which(!matrixSymmetric.bln)] <- "trans"
-    matrixKind.str <- chromComb.lst
-    matrixKind.str[which(matrixSymmetric.bln)] <- "U"
-    matrixKind.str[which(!matrixSymmetric.bln)] <- NA
+    matrixKind <- chromComb.lst
+    matrixKind[which(matrixSymmetric.bln)] <- "U"
+    matrixKind[which(!matrixSymmetric.bln)] <- NA
     attributes.tbl <- dplyr::bind_cols(
-        name = chromComb.lst, type = matrixType.str, kind = matrixKind.str,
+        name = chromComb.lst, type = matrixType.str, kind = matrixKind,
         symmetric = matrixSymmetric.bln
     )
     # Dump file
@@ -181,59 +181,59 @@ ImportHiC <- function(
         function(ele.ndx) {
             # Chromosomes
             ele.lst <- unlist(strsplit(chromComb.lst[[ele.ndx]], "_"))
-            chrom_1.chr <- ele.lst[[1]]
-            chrom_2.chr <- ele.lst[[2]]
+            chrom_1 <- ele.lst[[1]]
+            chrom_2 <- ele.lst[[2]]
             # Dimension
             dims.num <- ele.lst |>
                 lapply(
                     function(chrom) {
                         dplyr::filter(
-                            chromSize.dtf,
-                            chromSize.dtf$name == chrom) |>
+                            chromSizes,
+                            chromSizes$name == chrom) |>
                         dplyr::pull("dimension")
                     }
                 ) |>
                 unlist()
-            if (GetFileExtension(file.pth) == "hic") {
+            if (GetFileExtension(file) == "hic") {
                 # Read .hic file
                 hic.dtf <- strawr::straw(
                     "NONE",
-                    file.pth,
-                    chrom_1.chr,
-                    chrom_2.chr,
+                    file,
+                    chrom_1,
+                    chrom_2,
                     "BP",
-                    res.num,
+                    hicResolution,
                     "observed"
                 )
-                hic.dtf$j <- ceiling((hic.dtf$y + 1)/res.num)
-                hic.dtf$i <- ceiling((hic.dtf$x + 1)/res.num)
-            } else if (GetFileExtension(file.pth) %in%
+                hic.dtf$j <- ceiling((hic.dtf$y + 1)/hicResolution)
+                hic.dtf$i <- ceiling((hic.dtf$x + 1)/hicResolution)
+            } else if (GetFileExtension(file) %in%
                 c("cool", "mcool", "HDF5", "hdf5", "h5")
             ) {
                 # Define HDF5groups
                 indexes.group <- ifelse(
-                    GetFileExtension(file.pth) %in%
+                    GetFileExtension(file) %in%
                         c("cool", "HDF5", "hdf5", "h5"),
                     yes = "/indexes",
-                    no = paste("resolutions", res.num, "indexes", sep = "/")
+                    no = paste("resolutions", hicResolution, "indexes", sep = "/")
                 )
                 pixels.group <- ifelse(
-                    GetFileExtension(file.pth) %in%
+                    GetFileExtension(file) %in%
                         c("cool", "HDF5", "hdf5", "h5"),
                     yes = "/pixels",
-                    no = paste("resolutions", res.num, "pixels", sep = "/")
+                    no = paste("resolutions", hicResolution, "pixels", sep = "/")
                 )
                 # Define start and end of chromosomes
-                ends.ndx <- chromSize.dtf$dimension |>
+                ends.ndx <- chromSizes$dimension |>
                     cumsum() |>
-                    stats::setNames(chromSize.dtf$name)
+                    stats::setNames(chromSizes$name)
                 starts.ndx <- 1 + c(0, ends.ndx[-length(ends.ndx)]) |>
-                    stats::setNames(chromSize.dtf$name)
+                    stats::setNames(chromSizes$name)
                 # Read .mcool file
                 bin1.ndx <- as.vector(rhdf5::h5read(
-                    file.pth,
+                    file,
                     name = paste(indexes.group, "bin1_offset", sep = "/"),
-                    index = list(starts.ndx[chrom_1.chr]:ends.ndx[chrom_1.chr])
+                    index = list(starts.ndx[chrom_1]:ends.ndx[chrom_1])
                 ))
                 slice.num <- sum(
                     bin1.ndx[-1] - bin1.ndx[-length(bin1.ndx)]
@@ -241,37 +241,37 @@ ImportHiC <- function(
                 chunk.num <- seq(bin1.ndx[1] + 1, bin1.ndx[1] + 1 + slice.num)
                 hic.dtf <- data.frame(
                     i = as.vector(rhdf5::h5read(
-                        file.pth,
+                        file,
                         name = paste(pixels.group, "bin1_id", sep = "/"),
                         index = list(chunk.num)
                     )) + 1,
                     j = as.vector(rhdf5::h5read(
-                        file.pth,
+                        file,
                         name = paste(pixels.group, "bin2_id", sep = "/"),
                         index = list(chunk.num)
                     )) + 1,
                     counts = as.vector(rhdf5::h5read(
-                        file.pth,
+                        file,
                         name = paste(pixels.group, "count", sep = "/"),
                         index = list(chunk.num)
                     ))
                 )
                 filter.bin2 <- hic.dtf$j %in%
-                    starts.ndx[chrom_2.chr]:ends.ndx[chrom_2.chr]
+                    starts.ndx[chrom_2]:ends.ndx[chrom_2]
                 hic.dtf <- hic.dtf[filter.bin2, ]
                 hic.dtf <- dplyr::mutate(
                     hic.dtf,
-                    i = hic.dtf$i - starts.ndx[chrom_1.chr] + 1
+                    i = hic.dtf$i - starts.ndx[chrom_1] + 1
                 )
                 hic.dtf <- dplyr::mutate(
                     hic.dtf,
-                    j = hic.dtf$j - starts.ndx[chrom_2.chr] + 1
+                    j = hic.dtf$j - starts.ndx[chrom_2] + 1
                 )
-            } else if (GetFileExtension(file.pth) == "bedpe") {
+            } else if (GetFileExtension(file) == "bedpe") {
                 hic.dtf <- dplyr::filter(
                     megaHic.dtf,
-                    megaHic.dtf$chrom_1 == chrom_1.chr &
-                    megaHic.dtf$chrom_2 == chrom_2.chr
+                    megaHic.dtf$chrom_1 == chrom_1 &
+                    megaHic.dtf$chrom_2 == chrom_2
                 )
             }
             # Create Contact matrix
@@ -282,24 +282,24 @@ ImportHiC <- function(
                 dims = dims.num
             )
             row.regions <- binnedGenome.grn[which(
-                as.vector(binnedGenome.grn@seqnames) == chrom_1.chr
+                as.vector(binnedGenome.grn@seqnames) == chrom_1
             )]
             col.regions <- binnedGenome.grn[which(
-                as.vector(binnedGenome.grn@seqnames) == chrom_2.chr
+                as.vector(binnedGenome.grn@seqnames) == chrom_2
             )]
-            hic.cmx <- InteractionSet::ContactMatrix(
+            hic <- InteractionSet::ContactMatrix(
                 hic.spm,
                 row.regions,
                 col.regions
             )
             # Metadata
-            hic.cmx@metadata <- dplyr::filter(
+            hic@metadata <- dplyr::filter(
                 attributes.tbl,
                 attributes.tbl$name == paste(ele.lst, collapse = "_")
             ) |>
-            tibble::add_column(resolution = res.num) |>
+            tibble::add_column(resolution = hicResolution) |>
             as.list()
-            return(hic.cmx)
+            return(hic)
         }
     )
     # Add attributes
@@ -307,8 +307,8 @@ ImportHiC <- function(
         stats::setNames(chromComb.lst) |>
         AddAttr(
             attrs = list(
-                resolution = res.num,
-                chromSize = tibble::as_tibble(chromSize.dtf),
+                resolution = hicResolution,
+                chromSize = tibble::as_tibble(chromSizes),
                 matricesKind = attributes.tbl,
                 mtx = "obs"
             )

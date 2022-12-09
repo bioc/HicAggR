@@ -43,25 +43,25 @@
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
-#'     binSize.num = 100000
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
-#' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
-#'     referencePoint.chr = "pf"
+#'     referencePoint = "pf"
 #' )
 #' interactions_HS.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_HS.cmx_lst,
-#'     referencePoint.chr = "pf"
+#'     referencePoint = "pf"
 #' )
 #'
 #' # Aggregate matrices in one matrix
@@ -114,8 +114,8 @@ Aggregation <- function(
         # Convert sparse matrix in dense matrix and convert 0 in NA
         # if rm0 is TRUE
         matrices <- lapply(
-            matrices, function(mat.spm) {
-                mat.mtx <- as.matrix(mat.spm)
+            matrices, function(spMtx) {
+                mat.mtx <- as.matrix(spMtx)
                 if (rm0) {
                     mat.mtx[mat.mtx == 0] <- NA
                 }
@@ -133,8 +133,8 @@ Aggregation <- function(
         ctrlMatrices <- NULL
     }
     # Get attributes
-    matDim.num <- attributes(matrices)$matriceDim
-    totMtx.num <- length(matrices)
+    matDim <- attributes(matrices)$matriceDim
+    totMtx <- length(matrices)
     attributes.lst <- attributes(matrices)
     if ("names" %in% names(attributes.lst)) {
         attributes.lst <- attributes.lst[-which(
@@ -261,10 +261,10 @@ Aggregation <- function(
         # Scale mat on Ctrl median
         if (scaleCorrection) {
             if (is.null(correctionArea) ||
-            sum(unlist(correctionArea) > matDim.num)) {
+            sum(unlist(correctionArea) > matDim)) {
                 correctionArea <- list(
-                    i = seq_len(round(matDim.num * 0.3)),
-                    j = (matDim.num - round(matDim.num * 0.3) + 1):matDim.num
+                    i = seq_len(round(matDim * 0.3)),
+                    j = (matDim - round(matDim * 0.3) + 1):matDim
                 )
             }
             correctionValue.num <- stats::median(
@@ -306,8 +306,8 @@ Aggregation <- function(
                     c(pval.mtx),
                     method = "fdr"
                 ),
-                nrow = matDim.num,
-                ncol = matDim.num
+                nrow = matDim,
+                ncol = matDim
             )
             pval.mtx[pval.mtx > 0.05] <- NA
             pval.mtx[pval.mtx < 1e-16] <- 1e-16
@@ -343,8 +343,8 @@ Aggregation <- function(
             aggDiff.vec[is.na(c(pval.mtx))] <- diffFun(1, 1)
             aggDiffPvalFilt.mtx <- matrix(
                 aggDiff.vec,
-                nrow = matDim.num,
-                ncol = matDim.num)
+                nrow = matDim,
+                ncol = matDim)
         } else {
             pval.mtx <- NULL
             aggDiffPvalFilt.mtx <- NULL
@@ -354,7 +354,7 @@ Aggregation <- function(
             x = aggDiff.mtx,
             overwrite = TRUE,
             attrs = c(
-                totalMatrixNumber = totMtx.num,
+                totalMatrixNumber = totMtx,
                 filteredMatrixNumber = length(matrices),
                 minimalDistance = minDist, maximalDistance = maxDist,
                 transformationMethod = transFun, aggregationMethod = aggFun,
@@ -375,7 +375,7 @@ Aggregation <- function(
         agg.mtx <- AddAttr(
             x = agg.mtx,
             attrs = c(
-                totalMatrixNumber = totMtx.num,
+                totalMatrixNumber = totMtx,
                 filteredMatrixNumber = length(matrices),
                 minimalDistance = minDist, maximalDistance = maxDist,
                 transformationMethod = transFun, aggregationMethod = aggFun,

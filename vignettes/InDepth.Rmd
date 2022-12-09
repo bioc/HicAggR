@@ -152,11 +152,11 @@ Required genomic informations used by the functions during the entire pipeline a
 
 ```{r, eval = TRUE}
 seqlengths.num <- c('2L'=23513712, '2R'=25286936)
-chromSize.dtf  <- data.frame(
+chromSizes  <- data.frame(
     seqnames   = names(seqlengths.num ), 
     seqlengths = seqlengths.num
     )
-binSize.num <- 1000
+binSize <- 1000
 ```
 
 ___
@@ -166,19 +166,19 @@ ___
 HicAggR can import HiC data stored in the main formats: .hic, .cool, .mcool, .h5, .hdf5. The pacakage imports only the raw counts in R. Therefore it is necessary to perform the balancing and observed/expected correction steps.
 ```{r, eval = TRUE, message = FALSE}
 HiC_Ctrl.cmx_lst <- ImportHiC(
-        file.pth    = HicOutput.pth,
-        res.num     = 1000,
-        chrom_1.chr = c("2L", "2L", "2R"),
-        chrom_2.chr = c("2L", "2R", "2R")
+        file    = HicOutput.pth,
+        hicResolution     = 1000,
+        chrom_1 = c("2L", "2L", "2R"),
+        chrom_2 = c("2L", "2R", "2R")
 )
 ```
 
 ```{r, eval = TRUE, message = FALSE}
 HiC_HS.cmx_lst <- ImportHiC(
-        file.pth    = McoolOutput.pth,
-        res.num     = 1000,
-        chrom_1.chr = c("2L", "2L", "2R"),
-        chrom_2.chr = c("2L", "2R", "2R")
+        file    = McoolOutput.pth,
+        hicResolution     = 1000,
+        chrom_1 = c("2L", "2L", "2R"),
+        chrom_2 = c("2L", "2R", "2R")
 )
 ```
 
@@ -261,11 +261,11 @@ The first step is the indexing of the features. It allows the features to be spl
 ## Example 1: Anchors from Beaf32 ChIP-seq peaks (bed file)
 ```{r, message = FALSE, eval = TRUE}
 anchors_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst        = list(Beaf=Beaf32_Peaks.gnr), 
-    constraint.gnr        = TADs_Domains.gnr,
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = binSize.num,
-    variablesName.chr_vec = "score",
+    gRangeList        = list(Beaf=Beaf32_Peaks.gnr), 
+    genomicConstraint        = TADs_Domains.gnr,
+    chromSizes         = chromSizes,
+    binSize           = binSize,
+    metadataColName = "score",
     method            = "max"
     )
 ```
@@ -282,11 +282,11 @@ anchors_Index.gnr |>
 ## Example 2: Baits from TSS (transcription start sites from UCSC)
 ```{r, eval = TRUE}
 baits_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst        = list(Tss=TSS_Peaks.gnr),
-    constraint.gnr        = TADs_Domains.gnr,
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = binSize.num,
-    variablesName.chr_vec = "score",
+    gRangeList        = list(Tss=TSS_Peaks.gnr),
+    genomicConstraint        = TADs_Domains.gnr,
+    chromSizes         = chromSizes,
+    binSize           = binSize,
+    metadataColName = "score",
     method            = "max"
     )
 ```
@@ -320,20 +320,20 @@ baits_Index.gnr |>
 
 ## Tips
 1. It is possible to index multiple features at the same time by submitting a named list of GRanges. Names given in the list of GRanges can then be used to filter indexed features and pairs.  
-2. If constraint.gnr is defined, then anchors and baits will be paired when located within the same region only. If contraint.gnr is NULL, entire chromosomes (or arms) are used as constraints.  
-3. When multiple ranges are in a same bin (ex: 3 ChIP-seq peaks in the same 10kb bin), associated numeric variables in metadata (`variablesName.chr_vec`) can be summarized according to the defined method (`method`), Example: Max peak score of the bin is kept in metadata column `score`.  
+2. If genomicConstraint is defined, then anchors and baits will be paired when located within the same region only. If contraint.gnr is NULL, entire chromosomes (or arms) are used as constraints.  
+3. When multiple ranges are in a same bin (ex: 3 ChIP-seq peaks in the same 10kb bin), associated numeric variables in metadata (`metadataColName`) can be summarized according to the defined method (`method`), Example: Max peak score of the bin is kept in metadata column `score`.  
 
 ___
 # Search Pairs 
 
 ## Pairing
 `SearchPairs` function takes as input one or two indexed features and returns all putative pairs within the same constraint (ex: wihtin the same TAD).  
-If only one indexed features is defined in indexAnchor.gnr, `SearchPairs` will return symetrical homotypic pairs (A<->A), if indexAnchor.gnr and indexBait.gnr are defined, it will return asymetrical heterotypic pairs (A<->B).
+If only one indexed features is defined in indexAnchor, `SearchPairs` will return symetrical homotypic pairs (A<->A), if indexAnchor and indexBait are defined, it will return asymetrical heterotypic pairs (A<->B).
 
 ```{r, eval = TRUE}
 interactions.gni <- SearchPairs(
-        indexAnchor.gnr = anchors_Index.gnr,
-        indexBait.gnr   = baits_Index.gnr
+        indexAnchor = anchors_Index.gnr,
+        indexBait   = baits_Index.gnr
         )
 ```
 <details>  
@@ -369,7 +369,7 @@ interactions.dtf[,c(1:11,13,12,17,16,18,15,14,20,19,21)] |>
 
 
 ## Tips
-1. If `indexBait.gnr` is NULL, `SearchPairs` will return homotypic pairs with `indexAnchor.gnr`.
+1. If `indexBait` is NULL, `SearchPairs` will return homotypic pairs with `indexAnchor`.
 2. Minimum and maximum distances between pairs anchors can be set. Note that it is also possible tofilter pairs within a specific distance later on.
 
 
@@ -392,10 +392,10 @@ knitr::include_graphics("images/LRI_GInteractions.png")
 
 ```{r, eval = FALSE}
 interactions_PFmatrix.lst <- ExtractSubmatrix(
-    feature.gn         = interactions.gni,
+    genomicFeature         = interactions.gni,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 41
+    referencePoint = "pf",
+    matriceDim     = 41
     )
 ```
 
@@ -407,10 +407,10 @@ knitr::include_graphics("images/LRI_GRanges.png")
 ```
 ```{r, eval = TRUE}
 domains_PFmatrix.lst <- ExtractSubmatrix(
-    feature.gn         = TADs_Domains.gnr,
+    genomicFeature         = TADs_Domains.gnr,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 41
+    referencePoint = "pf",
+    matriceDim     = 41
     )
 ```
 
@@ -430,11 +430,11 @@ knitr::include_graphics("images/Regions_GInteractions.png")
 
 ```{r, eval = TRUE}
 interactions_RFmatrix_ctrl.lst  <- ExtractSubmatrix(
-    feature.gn         = interactions.gni,
+    genomicFeature         = interactions.gni,
     hicLst        = HiC_Ctrl.cmx_lst,
-    res.num            = NULL,
-    referencePoint.chr = "rf",
-    matriceDim.num     = 101
+    hicResolution            = NULL,
+    referencePoint = "rf",
+    matriceDim     = 101
     )
 ```
 
@@ -447,10 +447,10 @@ knitr::include_graphics("images/Regions_GRanges.png")
 
 ```{r, eval = FALSE}
 domains_RFmatrix.lst <- ExtractSubmatrix(
-    feature.gn         = TADs_Domains.gnr,
+    genomicFeature         = TADs_Domains.gnr,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "rf",
-    matriceDim.num     = 101,
+    referencePoint = "rf",
+    matriceDim     = 101,
     cores          = 1,
     verbose        = FALSE
     )
@@ -476,8 +476,8 @@ sort()
 **Step 2:** Filter and reduce TAD boundaries GRanges object according to HiC resolution (binSize) + Store TAD names.
 ```{r, eval = TRUE}
 domains_Border_Bin.gnr <- BinGRanges(
-    gRange.gnr  = domains_Border.gnr,
-    binSize.num = binSize.num,
+    gRange  = domains_Border.gnr,
+    binSize = binSize,
     verbose = FALSE
     )
 domains_Border_Bin.gnr$subname <- domains_Border_Bin.gnr$name
@@ -536,10 +536,10 @@ knitr::include_graphics("images/Ponctuals_Interactions_GRanges.png")
 ```
 ```{r, eval = FALSE}
 border_PFmatrix.lst <- ExtractSubmatrix(
-    feature.gn         = domains_Border_Bin.gnr,
+    genomicFeature         = domains_Border_Bin.gnr,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 101
+    referencePoint = "pf",
+    matriceDim     = 101
 )
 ```
 ### Ponctual interactions defined with GInteractions
@@ -549,22 +549,22 @@ knitr::include_graphics("images/Ponctuals_Interactions_GInteractions.png")
 ```
 ```{r, eval = FALSE}
 border_PFmatrix.lst <- ExtractSubmatrix(
-    feature.gn         = domains_Border_Bin.gni,
+    genomicFeature         = domains_Border_Bin.gni,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 101
+    referencePoint = "pf",
+    matriceDim     = 101
 )
 ```
 
 ## Tips
-1. If `res.num` is NULL, the function will atuomatically use the resolution of the `hicLst` attributes.
-2. referencePoint.chr is automatically set as "pf" if every anchors and baits are on the same bin (see examples).
+1. If `hicResolution` is NULL, the function will atuomatically use the resolution of the `hicLst` attributes.
+2. referencePoint is automatically set as "pf" if every anchors and baits are on the same bin (see examples).
 
 ___
 # Filtrations
 
 The modularity of the workflow allows the user to filter interactions, pairs or extracted submatrices at any step of the analysis.
-`FilterInteractions` function takes as input either a GInteraction object or a list of submatrices, and a list of targets of choice and a selection function defining how targets are filtered.
+`FilterInteractions` function takes as input either a GInteraction object or a list of submatrices, and a list of targets of choice and a selectionFunction defining how targets are filtered.
 
 ## Target list definition:
 Target list must be defined by a named list corresponding to the same names of each element  and correspond to the column of the GInteraction (or the attributes "interactions" of the matrices to be filtered).
@@ -627,7 +627,7 @@ And to exclude Pairs or submatrices that have:
 4. "2L:74_2L:77" in **name**  
 
 ```{r, eval = TRUE}
-target.lst <- list(
+targets <- list(
     anchor.Beaf.name = c("Beaf32_8","Beaf32_15"),
     bait.Tss.name    = c("FBgn0031214","FBgn0005278"),
     name             = c("2L:74_2L:77"),
@@ -638,15 +638,15 @@ target.lst <- list(
 ```
 
 ## Selection Function definition:
-The selection function defines which operations (union(), intersect(), setdiff()...) are used to filter the set of Pairs with target elements.
+The selectionFunction defines which operations (union(), intersect(), setdiff()...) are used to filter the set of Pairs with target elements.
 For more examples, see *Selection function tips and examples* section.
 
-### Example of selection function according to the example target
+### Example of selectionFunction according to the example target
 
-Following the example case defined in target.lst
+Following the example case defined in targets
 
 ```{r, eval = TRUE}
-selection.fun = function(){
+selectionFun = function(){
     Reduce(intersect, list(anchor.Beaf.name, bait.Tss.name ,distance) ) |>
     setdiff(name)
     }
@@ -657,31 +657,31 @@ selection.fun = function(){
 ### Example of GInteraction object filtration  
 With a GInteraction object as input, `FilterInteractions` will return the indices of filtered elements.
 
-With the target.lst and selection.fun defined above:
+With the targets and selectionFun defined above:
 ```{r, eval = TRUE}
 FilterInteractions(
-    interarctions.gni = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
-    target.lst        = target.lst,
-    selection.fun     = selection.fun
+    genomicInteractions = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
+    targets        = targets,
+    selectionFun     = selectionFun
     )
 ```
 
 ### Example of Matrices list filtration
 With a matrices list as input, `FilterInteractions` will return the filtered matrices list, with updated attributes.
 
-With the target.lst and selection.fun defined above:
+With the targets and selectionFun defined above:
 ```{r, eval = TRUE}
 filtred_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
     matrices  = interactions_RFmatrix_ctrl.lst,
-    target.lst    = target.lst,
-    selection.fun = selection.fun
+    targets    = targets,
+    selectionFun = selectionFun
     )
 ```
 
 ## Specific case 1: Only one target (and therefore no selection needed)
 For example, to filter the top 100 first elements, select the top 100 first names
 ```{r, eval = TRUE}
-first100_target.lst = list(
+first100_targets = list(
     submatrix.name = names(interactions_RFmatrix_ctrl.lst)[1:100]
     )
 ```
@@ -689,17 +689,17 @@ first100_target.lst = list(
 ### GInteraction filtration
 ```{r, eval = TRUE}
 FilterInteractions(
-    interarctions.gni = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
-    target.lst        = first100_target.lst,
-    selection.fun     = NULL
+    genomicInteractions = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
+    targets        = first100_targets,
+    selectionFun     = NULL
     ) |> head()
 ```
 ### Matrices list filtration
 ```{r, eval = TRUE}
 first100_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
     matrices  = interactions_RFmatrix_ctrl.lst,
-    target.lst    = first100_target.lst,
-    selection.fun = NULL
+    targets    = first100_targets,
+    selectionFun = NULL
     )
 attributes(first100_interactions_RFmatrix_ctrl.lst)$interactions
 ```
@@ -712,34 +712,34 @@ attributes(interactions_RFmatrix_ctrl.lst[1:20])$interactions
 ```{r, eval = TRUE}
 nSample.num = 3
 set.seed(123)
-target.lst = list(name=sample(attributes(interactions_RFmatrix_ctrl.lst)$interactions$name,nSample.num))
+targets = list(name=sample(attributes(interactions_RFmatrix_ctrl.lst)$interactions$name,nSample.num))
 ```
 ### GInteraction sampling
 ```{r, eval = TRUE}
 FilterInteractions(
-    interarctions.gni = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
-    target.lst        = target.lst,
-    selection.fun     = NULL
+    genomicInteractions = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
+    targets        = targets,
+    selectionFun     = NULL
     )
 ```
 ### Matrices list sampling
 ```{r, eval = TRUE}
 sampled_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
     matrices  = interactions_RFmatrix_ctrl.lst,
-    target.lst    = target.lst,
-    selection.fun = NULL
+    targets    = targets,
+    selectionFun = NULL
     )
 attributes(sampled_interactions_RFmatrix_ctrl.lst)$interactions
 ```
 
 
-## Specific case 3: Filtration without selection function  
+## Specific case 3: Filtration without selectionFunction  
 
-Without any selection function, `FilterInteractions` will return all indices corresponding to each target in the list.
+Without any selectionFunction, `FilterInteractions` will return all indices corresponding to each target in the list.
 Then, the indices of interest can be selected in a second step.
 For the examples we take the folowing targets:
 ```{r, eval = TRUE}
-target.lst <- list(
+targets <- list(
     anchor.Beaf.name = c("Beaf32_8","Beaf32_15"),
     bait.Tss.name    = c("FBgn0031214","FBgn0005278"),
     name             = c("2L:74_2L:77"),
@@ -752,17 +752,17 @@ target.lst <- list(
 ### GInteraction filtration
 ```{r, eval = TRUE}
 FilterInteractions(
-    interarctions.gni = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
-    target.lst        = target.lst,
-    selection.fun     = NULL
+    genomicInteractions = attributes(interactions_RFmatrix_ctrl.lst)$interactions,
+    targets        = targets,
+    selectionFun     = NULL
     ) |> str()
 ```
 ### Matrices list filtration
 ```{r, eval = TRUE}
 FilterInteractions(
     matrices      = interactions_RFmatrix_ctrl.lst,
-    target.lst        = target.lst,
-    selection.fun     = NULL
+    targets        = targets,
+    selectionFun     = NULL
     ) |>
 str()
 ```
@@ -865,8 +865,8 @@ Example: Average of the values in the centered 3x3 square.
 ```{r, eval = TRUE}
 center.num <- GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = "center",
-    operation.fun = "mean"
+    areaFun      = "center",
+    operationFun = "mean"
     )
 ```
 
@@ -881,8 +881,8 @@ Example: Interactions values on the matrice.mtx[33:35,67:69] area, averaged afte
 ```{r, eval = TRUE}
 GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = function(matrice.mtx){matrice.mtx[33:35,67:69]},
-    operation.fun = function(area.mtx){
+    areaFun      = function(matrice.mtx){matrice.mtx[33:35,67:69]},
+    operationFun = function(area.mtx){
         area.mtx[which(area.mtx==0)]<-NA;
         return(mean(area.mtx,na.rm=TRUE))
         }
@@ -899,16 +899,16 @@ head()
 ### Values naming
 
 By default, returned values are named with submatrix ID. 
-If `name.chr` is set with an element metadata column name from GInteraction attributes, values are returned values are named according to this element.
+If `varName` is set with an element metadata column name from GInteraction attributes, values are returned values are named according to this element.
 
 Example: Named quantifications with `anchor.Beaf.name`
 
 ```{r, eval = TRUE}
 namedCenter.num <- GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = "center",
-    operation.fun = "mean",
-    name.chr      = "anchor.Beaf.name"
+    areaFun      = "center",
+    operationFun = "mean",
+    varName      = "anchor.Beaf.name"
     )
 ```
 
@@ -938,8 +938,8 @@ attributes(namedCenter.num)$duplicated
 ```{r, eval = TRUE}
 GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = function(matrice.mtx){matrice.mtx[5,5]},
-    operation.fun = function(area.mtx){area.mtx}
+    areaFun      = function(matrice.mtx){matrice.mtx[5,5]},
+    operationFun = function(area.mtx){area.mtx}
     ) |>
 head()
 ```
@@ -948,20 +948,20 @@ head()
 ```{r, eval = TRUE}
 GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
-    operation.fun = function(area){area}
+    areaFun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
+    operationFun = function(area){area}
     ) |>
 head()
 ```
 ## Tips
 
-1. If `operation.fun` is NULL then it will return values of the selected region without NA.
+1. If `operationFun` is NULL then it will return values of the selected region without NA.
 
 ```{r, eval = TRUE}
 GetQuantif(
     matrices  = oriented_first100_interactions_RFmatrix_ctrl.lst,
-    area.fun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
-    operation.fun = NULL
+    areaFun      = function(matrice.mtx){matrice.mtx[4:6,4:6]},
+    operationFun = NULL
     ) |>
 head()
 ```
@@ -1006,13 +1006,13 @@ the differences; second is by aggregating matrices and assess differences on the
 1. Preparation of Control matrices list condition  
 **Filtration**
 ```{r, eval = FALSE}
-first100_target.lst = list(
+first100_targets = list(
     submatrix.name = names(interactions_RFmatrix_ctrl.lst)[1:100]
     )
 first100_interactions_RFmatrix_ctrl.lst <- FilterInteractions(
     matrices  = interactions_RFmatrix_ctrl.lst,
-    target.lst    = first100_target.lst,
-    selection.fun = NULL
+    targets    = first100_targets,
+    selectionFun = NULL
     )
 ```
 **Orientation**
@@ -1024,18 +1024,18 @@ oriented_first100_interactions_RFmatrix_ctrl.lst <- OrientateMatrix(first100_int
 **Extraction**
 ```{r, eval = TRUE}
 interactions_RFmatrix.lst  <- ExtractSubmatrix(
-    feature.gn         = interactions.gni,
+    genomicFeature         = interactions.gni,
     hicLst        = HiC_HS.cmx_lst,
-    referencePoint.chr = "rf",
-    matriceDim.num     = 101
+    referencePoint = "rf",
+    matriceDim     = 101
     )
 ```
 **Filtration**  
 ```{r, eval = TRUE}
 first100_interactions_RFmatrix.lst <- FilterInteractions(
     matrices  = interactions_RFmatrix.lst,
-    target.lst    = first100_target.lst,
-    selection.fun = NULL
+    targets    = first100_targets,
+    selectionFun = NULL
     )
 ```
 **Orientation**  
@@ -1129,15 +1129,15 @@ diffAggreg.mtx <- Aggregation(
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx   = aggreg.mtx,
-        title.chr = "APA"
+        aggregatedMtx   = aggreg.mtx,
+        title = "APA"
 )
 ```
 #### With Orientation
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx   = orientedAggreg.mtx,
-        title.chr = "APA"
+        aggregatedMtx   = orientedAggreg.mtx,
+        title = "APA"
 )
 ```
 ### Further visualisation parameters:
@@ -1146,22 +1146,22 @@ ggAPA(
 It is possible to set a specific range of values of the scale, for this remove a percentage of values using upper tail, lower tail or both tails of the distribution.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx      = aggreg.mtx,
-        title.chr    = "APA 30% trimmed on upper side",
-        trimPrct.num = 30,
-        bounds.chr   = "upper"
+        aggregatedMtx      = aggreg.mtx,
+        title    = "APA 30% trimmed on upper side",
+        trim = 30,
+        tails   = "upper"
 )
 ggAPA(
-        apa.mtx      = aggreg.mtx,
-        title.chr    = "APA 30% trimmed on upper side",
-        trimPrct.num = 30,
-        bounds.chr   = "lower"
+        aggregatedMtx      = aggreg.mtx,
+        title    = "APA 30% trimmed on upper side",
+        trim = 30,
+        tails   = "lower"
 )
 ggAPA(
-        apa.mtx      = aggreg.mtx,
-        title.chr    = "APA 30% trimmed",
-        trimPrct.num = 30,
-        bounds.chr   = "both"
+        aggregatedMtx      = aggreg.mtx,
+        title    = "APA 30% trimmed",
+        trim = 30,
+        tails   = "both"
 )
 ```
 
@@ -1171,8 +1171,8 @@ Example of user-defined min and max color scale
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx         = aggreg.mtx,
-        title.chr       = "APA [0-1]",
+        aggregatedMtx         = aggreg.mtx,
+        title       = "APA [0-1]",
         colMin = 0,
         colMax = 1
 )
@@ -1183,9 +1183,9 @@ Example of user-defined color scale center
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx    = aggreg.mtx,
-        title.chr  = "APA center on 0.2",
-        colMid.num = 0.5
+        aggregatedMtx    = aggreg.mtx,
+        title  = "APA center on 0.2",
+        colMid = 0.5
 )
 ```
 
@@ -1194,19 +1194,19 @@ ggAPA(
 Examples of user-defined color breaks
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx       = aggreg.mtx,
-        title.chr     = "APA [0, .25, .50, .30, .75, 1]",
-        colBreaks.num = c(0,0.25,0.5,0.75,1)
+        aggregatedMtx       = aggreg.mtx,
+        title     = "APA [0, .25, .50, .30, .75, 1]",
+        colBreaks = c(0,0.25,0.5,0.75,1)
 )
 ggAPA(
-        apa.mtx       = aggreg.mtx,
-        title.chr     = "APA [0, .15, .20, .25, 1]",
-        colBreaks.num = c(0,0.15,0.20,0.25,1)
+        aggregatedMtx       = aggreg.mtx,
+        title     = "APA [0, .15, .20, .25, 1]",
+        colBreaks = c(0,0.15,0.20,0.25,1)
 )
 ggAPA(
-        apa.mtx       = aggreg.mtx,
-        title.chr     = "APA [0, .5, .6, .8, 1]",
-        colBreaks.num = c(0,0.4,0.5,0.7,1)
+        aggregatedMtx       = aggreg.mtx,
+        title     = "APA [0, .5, .6, .8, 1]",
+        colBreaks = c(0,0.4,0.5,0.7,1)
 )
 ```
 
@@ -1214,18 +1214,18 @@ ggAPA(
 Examples of different color scaled bias.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx    = aggreg.mtx,
-        title.chr  = "APA",
+        aggregatedMtx    = aggreg.mtx,
+        title  = "APA",
         colorScale = "density"
 )
 ggAPA(
-        apa.mtx     = aggreg.mtx,
-        title.chr   = "APA",
+        aggregatedMtx     = aggreg.mtx,
+        title   = "APA",
         bias    = 2
 )
 ggAPA(
-        apa.mtx     = aggreg.mtx,
-        title.chr   = "APA",
+        aggregatedMtx     = aggreg.mtx,
+        title   = "APA",
         bias    = 0.5
 )
 ```
@@ -1235,9 +1235,9 @@ ggAPA(
 Here is an option to change the color of heatmap and color of NA values.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx     = aggreg.mtx,
-        title.chr   = "APA",
-        heatmap.col = viridis(6),
+        aggregatedMtx     = aggreg.mtx,
+        title   = "APA",
+        colors = viridis(6),
         na.value      = "black"
 )
 ```
@@ -1247,11 +1247,11 @@ ggAPA(
 Option to apply a blurr on the heatmap to reduce noise. 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx           = aggreg.mtx,
-        title.chr         = "APA",
-        blurPass.num      = 1,
-        blurSd.num        = 0.5,
-        lowerTri.num      = NA
+        aggregatedMtx           = aggreg.mtx,
+        title         = "APA",
+        blurPass      = 1,
+        stdev        = 0.5,
+        loTri      = NA
 )
 ```
 
@@ -1260,8 +1260,8 @@ Since ggAPA() returns a ggplot object, it is possible to modify it following the
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        apa.mtx     = aggreg.mtx,
-        title.chr   = "APA",
+        aggregatedMtx     = aggreg.mtx,
+        title   = "APA",
 ) + 
 ggplot2::labs(
         title    = "New title",

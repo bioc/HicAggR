@@ -99,11 +99,11 @@ knitr::kable(Beaf_Peaks.dtf[,c(1:4,6,5)],
 Required genomic informations used by the functions during the entire pipeline are a data.frame containing chromosomes names and sized and the binSize, corresponding to the HiC matrices at the same resolution.
 ```{r, eval = TRUE}
 seqlengths.num <- c('2L'=23513712, '2R'=25286936)
-chromSize.dtf  <- data.frame(
+chromSizes  <- data.frame(
     seqnames   = names(seqlengths.num ), 
     seqlengths = seqlengths.num
     )
-binSize.num <- 1000
+binSize <- 1000
 ```
 
 # 1 Import HiC
@@ -113,9 +113,9 @@ The package supports the import and normalization of HiC data.
 HicAggR can import HiC data stored in the main formats: .hic, .cool, .mcool, .h5, .hdf5. The pacakage imports only the raw counts in R. Therefore it is necessary to perform the balancing and observed/expected correction steps.
 ```{r, eval = TRUE, results = FALSE}
 hicLst <- ImportHiC(
-    file.pth      = HicOutput.pth,
-    res.num       = binSize.num,
-    chrom_1.chr   = c("2L", "2R")
+    file      = HicOutput.pth,
+    hicResolution       = binSize,
+    chrom_1   = c("2L", "2R")
     )
 ```
 
@@ -135,9 +135,9 @@ Genomic coordinates data (ChIP seq peaks or any other feature) need to be indexe
 ## Features Indexing
 ```{r, eval = TRUE, results = FALSE}
 Beaf_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst        = list(Beaf = Beaf32_Peaks.gnr),
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = binSize.num
+    gRangeList        = list(Beaf = Beaf32_Peaks.gnr),
+    chromSizes         = chromSizes,
+    binSize           = binSize
     )
 ```
 
@@ -145,7 +145,7 @@ Beaf_Index.gnr <- IndexFeatures(
 Constraints for the distance between interaction sites are defined here in order to limit the number of pairs.
 ```{r, eval = TRUE, results = FALSE}
 Beaf_Pairs.gni <- SearchPairs(
-    indexAnchor.gnr = Beaf_Index.gnr,
+    indexAnchor = Beaf_Index.gnr,
     minDist     = "25KB",
     maxDist     = "100KB"
     )
@@ -161,7 +161,7 @@ knitr::include_graphics("images/Extractions_of_LRI.png")
 ## Extraction
 ```{r, eval = TRUE, results = FALSE}
 Beaf.mtx_lst <- ExtractSubmatrix(
-    feature.gn  = Beaf_Pairs.gni,
+    genomicFeature  = Beaf_Pairs.gni,
     hicLst = hicLst
     )
 ```
@@ -177,8 +177,8 @@ aggreg.mtx <- Aggregation(Beaf.mtx_lst)
 ## Visulatisation
 ```{r, eval = TRUE, fig.dim = c(7,7), warning=FALSE}
 ggAPA(
-    apa.mtx = aggreg.mtx,
-    title.chr = "APA Beaf <-> Beaf"
+    aggregatedMtx = aggreg.mtx,
+    title = "APA Beaf <-> Beaf"
     )
 ```
 

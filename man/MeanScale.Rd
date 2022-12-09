@@ -4,10 +4,10 @@
 \alias{MeanScale}
 \title{Scale values by mean.}
 \usage{
-MeanScale(x.num)
+MeanScale(x)
 }
 \arguments{
-\item{x.num}{<numeric>: Numerical vector.}
+\item{x}{<numeric>: Numerical vector.}
 }
 \value{
 Scaled numeric vector.
@@ -20,12 +20,12 @@ MeanScale
 }
 \examples{
 set.seed(655213)
-x.num <- rnorm(500, 500)
+x <- rnorm(500, 500)
 set.seed(522613)
 y.num <- rnorm(500, 100)
-plot(density(x.num), col = "red", xlim = c(min(y.num), max(x.num)))
+plot(density(x), col = "red", xlim = c(min(y.num), max(x)))
 lines(density(y.num), col = "green")
-plot(density(MeanScale(x.num)), col = "red", xlim = c(min(MeanScale(y.num)), max(MeanScale(x.num))))
+plot(density(MeanScale(x)), col = "red", xlim = c(min(MeanScale(y.num)), max(MeanScale(x))))
 lines(density(MeanScale(y.num)), col = "green")
 
 }

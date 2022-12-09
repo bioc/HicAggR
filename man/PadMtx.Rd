@@ -5,20 +5,20 @@
 \title{Add a value around a matrix.}
 \usage{
 PadMtx(
-  mat.mtx = NULL,
-  padSize.num = 1,
-  value.num = 0,
-  side.chr = c("top", "bot", "right", "left")
+  mtx = NULL,
+  padSize = 1,
+  val = 0,
+  side = c("top", "bot", "right", "left")
 )
 }
 \arguments{
-\item{mat.mtx}{<matrix>: Numerical matrix.}
+\item{mtx}{<matrix>: Numerical matrix.}
 
-\item{padSize.num}{<numeric>: Number of columns or rows to add. (Default 1)}
+\item{padSize}{<numeric>: Number of columns or rows to add. (Default 1)}
 
-\item{value.num}{<numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)}
+\item{val}{<numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)}
 
-\item{side.chr}{<character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )}
+\item{side}{<character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )}
 }
 \value{
 A matrix.
@@ -30,30 +30,30 @@ Add a value around a matrix.
 PadMtx
 }
 \examples{
-mat.mtx <- matrix(seq_len(25), 5, 5)
+mtx <- matrix(seq_len(25), 5, 5)
 PadMtx(
-    mat.mtx = mat.mtx,
-    padSize.num = 1,
-    value.num = 0,
-    side.chr = c("top", "bot", "right", "left")
+    mtx = mtx,
+    padSize = 1,
+    val = 0,
+    side = c("top", "bot", "right", "left")
 )
 PadMtx(
-    mat.mtx = mat.mtx,
-    padSize.num = 1,
-    value.num = NULL,
-    side.chr = c("top", "bot", "right", "left")
+    mtx = mtx,
+    padSize = 1,
+    val = NULL,
+    side = c("top", "bot", "right", "left")
 )
 PadMtx(
-    mat.mtx = mat.mtx,
-    padSize.num = 1,
-    value.num = 0,
-    side.chr = c("right", "left")
+    mtx = mtx,
+    padSize = 1,
+    val = 0,
+    side = c("right", "left")
 )
 PadMtx(
-    mat.mtx = mat.mtx,
-    padSize.num = 1,
-    value.num = 0,
-    side.chr = c("top")
+    mtx = mtx,
+    padSize = 1,
+    val = 0,
+    side = c("top")
 )
 
 }

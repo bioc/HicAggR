@@ -4,10 +4,10 @@
 \alias{StrToGRanges}
 \title{Convert String to GRanges.}
 \usage{
-StrToGRanges(x.chr_vec)
+StrToGRanges(stringRanges)
 }
 \arguments{
-\item{x.chr_vec}{<character>: Strings to convert on GRanges.}
+\item{stringRanges}{<character>: Strings to convert on GRanges.}
 }
 \value{
 A GRanges object.

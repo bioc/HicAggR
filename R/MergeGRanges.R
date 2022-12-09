@@ -3,8 +3,8 @@
 #' MergeGRanges
 #' @description Merge GRanges or a list of GRanges
 #' @param ... <GRanges or GRangesList or list[GRanges]>: Some GRanges or a list of GRanges or a GRangesList.
-#' @param sort.bln <logical>: Whether the result should be sorted. (Default FALSE)
-#' @param reduce.bln <logical>: Whether the result should be reduce. See GenomicRanges::reduce for more details. (Default FALSE)
+#' @param sortRanges <logical>: Whether the result should be sorted. (Default FALSE)
+#' @param reduceRanges <logical>: Whether the result should be reduce. See GenomicRanges::reduce for more details. (Default FALSE)
 #' @return a GRange object.
 #' @examples
 #' GRange_1.grn <- GenomicRanges::GRanges(
@@ -24,18 +24,18 @@
 #' MergeGRanges(GRange_1.grn, GRange_2.grn)
 #' GRange.lst <- list(GRange_1.grn, GRange_2.grn)
 #' MergeGRanges(GRange.lst)
-#' MergeGRanges(GRange.lst, reduce.bln = TRUE)
+#' MergeGRanges(GRange.lst, reduceRanges = TRUE)
 #'
 MergeGRanges <- function(
     ...,
-    sort.bln = FALSE,
-    reduce.bln = FALSE
+    sortRanges = FALSE,
+    reduceRanges = FALSE
 ) {
     mergedGrange.grn <- unlist(GenomicRanges::GRangesList(...))
-    if (sort.bln) {
+    if (sortRanges) {
         mergedGrange.grn <- sort(mergedGrange.grn)
     }
-    if (reduce.bln) {
+    if (reduceRanges) {
         mergedGrange.grn <- GenomicRanges::reduce(mergedGrange.grn)
     }
     return(mergedGrange.grn)

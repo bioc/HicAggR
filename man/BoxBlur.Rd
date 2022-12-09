@@ -4,16 +4,16 @@
 \alias{BoxBlur}
 \title{Blur a matrix.}
 \usage{
-BoxBlur(mat.mtx, boxKernel = NULL, boxSize.num = NULL, sd.num = 1)
+BoxBlur(mtx, boxKernel = NULL, kernSize = NULL, stdev = 1)
 }
 \arguments{
-\item{mat.mtx}{<matrix>: Numerical matrix.}
+\item{mtx}{<matrix>: Numerical matrix.}
 
 \item{boxKernel}{<numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)}
 
-\item{boxSize.num}{<numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
+\item{kernSize}{<numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
 
-\item{sd.num}{<numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
+\item{stdev}{<numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
 }
 \value{
 Blurred matrix.
@@ -26,9 +26,9 @@ BoxBlur
 }
 \examples{
 set.seed(981643)
-mat.mtx <- rnorm(10000, 50, 10)**3 |> matrix(100, 100)
-heatmap(mat.mtx, Rowv = NA, Colv = NA)
-heatmap(BoxBlur(mat.mtx), Rowv = NA, Colv = NA)
+mtx <- rnorm(10000, 50, 10)**3 |> matrix(100, 100)
+heatmap(mtx, Rowv = NA, Colv = NA)
+heatmap(BoxBlur(mtx), Rowv = NA, Colv = NA)
 
 }
 \keyword{internal}

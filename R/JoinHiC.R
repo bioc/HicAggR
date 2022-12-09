@@ -12,7 +12,7 @@
 JoinHiC <- function(
     hicLst
 ) {
-    chromSize.dtf <- attributes(hicLst)$chromSize
+    chromSizes <- attributes(hicLst)$chromSize
     mapNames <- names(hicLst)
     mapPosition <- data.frame(apply(
         mapNames |>
@@ -20,20 +20,20 @@ JoinHiC <- function(
             simplify2array() |>
             t(),
         seq_len(2),
-        function(ele) {which(chromSize.dtf$name == ele)}
+        function(ele) {which(chromSizes$name == ele)}
     ))
     colnames(mapPosition) <- c("i", "j")
-    megaDim <- sum(chromSize.dtf$dimension)
+    megaDim <- sum(chromSizes$dimension)
     mega.dtf <- data.frame(
         i = NULL, j = NULL,
         x = NULL
     )
-    for (i in seq_along(chromSize.dtf$name)) {
+    for (i in seq_along(chromSizes$name)) {
         addI <- 0
-        if (i > 1) { addI <- sum(chromSize.dtf$dimension[seq_len(i) -1]) }
-        for (j in seq(i, length(chromSize.dtf$name))) {
+        if (i > 1) { addI <- sum(chromSizes$dimension[seq_len(i) -1]) }
+        for (j in seq(i, length(chromSizes$name))) {
             addJ <- 0
-            if (j > 1) { addJ <- sum(chromSize.dtf$dimension[seq_len(j) -1]) }
+            if (j > 1) { addJ <- sum(chromSizes$dimension[seq_len(j) -1]) }
             if (length(which(mapPosition$i == i & mapPosition$j == j))) {
                 map.dtf <- MeltSpm(
                     hicLst[[
@@ -52,22 +52,22 @@ JoinHiC <- function(
         x = mega.dtf$x,
         dims = c(megaDim, megaDim)
     )
-    seqlengths.lst <- chromSize.dtf$length |>
-        stats::setNames(chromSize.dtf$name)
+    seqlengths.lst <- chromSizes$length |>
+        stats::setNames(chromSizes$name)
     binnedGenome.gnr <- GenomicRanges::tileGenome(
         seqlengths.lst,
         tilewidth = attributes(hicLst)$resolution,
         cut.last.tile.in.chrom = TRUE
     )
-    megaHic.cmx <- InteractionSet::ContactMatrix(
+    megaHic <- InteractionSet::ContactMatrix(
         mega.spm,
         binnedGenome.gnr,
         binnedGenome.gnr
     )
-    megaHic.cmx@metadata <- attributes(hicLst)[-which(
+    megaHic@metadata <- attributes(hicLst)[-which(
         names(attributes(hicLst)) == "names"
     )]
-    megaHic.cmx@metadata$kind <- "U"
-    megaHic.cmx@metadata$symmetric <- TRUE
-    return(megaHic.cmx)
+    megaHic@metadata$kind <- "U"
+    megaHic@metadata$symmetric <- TRUE
+    return(megaHic)
 }

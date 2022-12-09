@@ -3,71 +3,71 @@
 #' Hsl2Rgb
 #' @keywords internal
 #' @description Convert a color in HSl (Hue,Saturation,Light) format to RGB format.
-#' @param hsl.col <charcater>: A vector of the color's HSL code.
-#' @param alpha.bln <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param hslColor <charcater>: A vector of the color's HSL code.
+#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
 #' @return An integer vector of the color's RGB code.
 #' @examples
-#' Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha.bln = TRUE)
+#' Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
 #'
 Hsl2Rgb <- function(
-    hsl.col = NULL, alpha.bln = FALSE
+    hslColor = NULL, alpha = FALSE
 ) {
-    if (3 > length(hsl.col) | length(hsl.col) > 4) {
+    if (3 > length(hslColor) | length(hslColor) > 4) {
         err.chr <- paste0(
             "Need 3 or 4 values beetween 0 and 255, first value for hue, ",
             "second for saturation, third for light and last for alpha"
         )
         stop(err.chr)
     } else {
-        if (IsHsl(hsl.col)) {
-            if (length(hsl.col) == 3) {
-                alpha.num <- 255
+        if (IsHsl(hslColor)) {
+            if (length(hslColor) == 3) {
+                alphaValue <- 255
             } else {
-                alpha.num <- hsl.col[4] * 255
-                hsl.col <- hsl.col[seq_len(3)]
+                alphaValue <- hslColor[4] * 255
+                hslColor <- hslColor[seq_len(3)]
             }
-            C <- hsl.col[2] * (1 - abs(2 * hsl.col[3] - 1))
-            X <- C * (1 - abs((hsl.col[1] / 60) %% 2 - 1))
-            m <- hsl.col[3] - C / 2
-            if (0 <= hsl.col[1] & hsl.col[1] < 60) {
-                rgb.col <- c(
+            C <- hslColor[2] * (1 - abs(2 * hslColor[3] - 1))
+            X <- C * (1 - abs((hslColor[1] / 60) %% 2 - 1))
+            m <- hslColor[3] - C / 2
+            if (0 <= hslColor[1] & hslColor[1] < 60) {
+                rbgColor <- c(
                     red = (C + m) * 255,
                     green = (X + m) * 255,
                     blue = (0 + m) * 255
                 )
-            } else if (60 <= hsl.col[1] & hsl.col[1] < 120) {
-                rgb.col <- c(
+            } else if (60 <= hslColor[1] & hslColor[1] < 120) {
+                rbgColor <- c(
                     red = (X + m) * 255,
                     green = (C + m) * 255,
                     blue = (0 + m) * 255
                 )
-            } else if (120 <= hsl.col[1] & hsl.col[1] < 180) {
-                rgb.col <- c(
+            } else if (120 <= hslColor[1] & hslColor[1] < 180) {
+                rbgColor <- c(
                     red = (0 + m) * 255,
                     green = (C + m) * 255,
                     blue = (X + m) * 255
                 )
-            } else if (180 <= hsl.col[1] & hsl.col[1] < 240) {
-                rgb.col <- c(
+            } else if (180 <= hslColor[1] & hslColor[1] < 240) {
+                rbgColor <- c(
                     red = (0 + m) * 255,
                     green = (X + m) * 255,
                     blue = (C + m) * 255
                 )
-            } else if (240 <= hsl.col[1] & hsl.col[1] < 300) {
-                rgb.col <- c(
+            } else if (240 <= hslColor[1] & hslColor[1] < 300) {
+                rbgColor <- c(
                     red = (X + m) * 255,
                     green = (0 + m) * 255,
                     blue = (C + m) * 255
                 )
-            } else if (300 <= hsl.col[1] & hsl.col[1] < 360) {
-                rgb.col <- c(
+            } else if (300 <= hslColor[1] & hslColor[1] < 360) {
+                rbgColor <- c(
                     red = (C + m) * 255,
                     green = (0 + m) * 255,
                     blue = (X + m) * 255
                 )
             }
-            if (alpha.bln) {
-                rgb.col <- c(rgb.col, alpha = alpha.num)
+            if (alpha) {
+                rbgColor <- c(rbgColor, alpha = alphaValue)
             }
         } else {
             err.chr <- paste0(
@@ -77,5 +77,5 @@ Hsl2Rgb <- function(
             stop(err.chr)
         }
     }
-    return(round(rgb.col))
+    return(round(rbgColor))
 }

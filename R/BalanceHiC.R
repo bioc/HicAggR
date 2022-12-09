@@ -35,27 +35,27 @@ BalanceHiC <- function(
     if (!is.null(interactionType) &&
         "all" %in% interactionType
     ) {
-        megaHic.cmx <- JoinHiC(hicLst)
+        megaHic <- JoinHiC(hicLst)
         if (method == "VC") {
-            megaHic.cmx <- VCnorm(
-                megaHic.cmx,
+            megaHic <- VCnorm(
+                megaHic,
                 qtlTh = qtlTh,
-                sqrt.bln = FALSE
+                vcsqrt = FALSE
             )
         } else if (method == "VC_SQRT") {
-            megaHic.cmx <- VCnorm(
-                megaHic.cmx,
+            megaHic <- VCnorm(
+                megaHic,
                 qtlTh = qtlTh,
-                sqrt.bln = TRUE
+                vcsqrt = TRUE
             )
         } else if (method == "ICE") {
-            megaHic.cmx <- ICEnorm(
-                megaHic.cmx,
+            megaHic <- ICEnorm(
+                megaHic,
                 qtlTh = qtlTh,
                 maxIter = maxIter
             )
         }
-        hicLst <- CutHiC(megaHic.cmx, verbose = verbose)
+        hicLst <- CutHiC(megaHic, verbose = verbose)
     } else if (!is.null(interactionType) &&
         "cis" %in% interactionType &&
         NotIn("trans", interactionType)
@@ -77,25 +77,25 @@ BalanceHiC <- function(
                     function(ele.ndx) {
                         matrixName.chr <- cisMatricesNames.chr[[ele.ndx]]
                         if (method == "VC") {
-                            hic.cmx <- VCnorm(
+                            hic <- VCnorm(
                                 hicLst[[matrixName.chr]],
                                 qtlTh = qtlTh,
-                                sqrt.bln = FALSE
+                                vcsqrt = FALSE
                             )
                         } else if (method == "VC_SQRT") {
-                            hic.cmx <- VCnorm(
+                            hic <- VCnorm(
                                 hicLst[[matrixName.chr]],
                                 qtlTh = qtlTh,
-                                sqrt.bln = TRUE
+                                vcsqrt = TRUE
                             )
                         } else if (method == "ICE") {
-                            hic.cmx <- ICEnorm(
+                            hic <- ICEnorm(
                                 hicLst[[matrixName.chr]],
                                 qtlTh = qtlTh,
                                 maxIter = maxIter
                             )
                         }
-                        return(hic.cmx)
+                        return(hic)
                     }
                 )
             }
@@ -158,27 +158,27 @@ BalanceHiC <- function(
                     chromSize = chromSize.tbl,
                     matricesKind = matricesKind.tbl
                 ))
-            megaHic.cmx <- JoinHiC(trans.cmx_lst)
+            megaHic <- JoinHiC(trans.cmx_lst)
             if (method == "VC") {
-                megaHic.cmx <- VCnorm(
-                    megaHic.cmx,
+                megaHic <- VCnorm(
+                    megaHic,
                     qtlTh = qtlTh,
-                    sqrt.bln = FALSE
+                    vcsqrt = FALSE
                 )
             } else if (method == "VC_SQRT") {
-                megaHic.cmx <- VCnorm(
-                    megaHic.cmx,
+                megaHic <- VCnorm(
+                    megaHic,
                     qtlTh = qtlTh,
-                    sqrt.bln = TRUE
+                    vcsqrt = TRUE
                 )
             } else if (method == "ICE") {
-                megaHic.cmx <- ICEnorm(
-                    megaHic.cmx,
+                megaHic <- ICEnorm(
+                    megaHic,
                     qtlTh = qtlTh,
                     maxIter = maxIter
                 )
             }
-            trans.cmx_lst <- CutHiC(megaHic.cmx, verbose = verbose)
+            trans.cmx_lst <- CutHiC(megaHic, verbose = verbose)
             hicLst[transMatricesNames.chr] <-
                 trans.cmx_lst[transMatricesNames.chr]
             cisMatricesNames.chr <- dplyr::filter(
@@ -240,25 +240,25 @@ BalanceHiC <- function(
                             function(ele.ndx) {
                             matrixName.chr <- cisMatricesNames.chr[[ele.ndx]]
                             if (method == "VC") {
-                                hic.cmx <- VCnorm(
+                                hic <- VCnorm(
                                     hicLst[[matrixName.chr]],
                                     qtlTh = qtlTh,
-                                    sqrt.bln = FALSE
+                                    vcsqrt = FALSE
                                 )
                             } else if (method == "VC_SQRT") {
-                                hic.cmx <- VCnorm(
+                                hic <- VCnorm(
                                     hicLst[[matrixName.chr]],
                                     qtlTh = qtlTh,
-                                    sqrt.bln = TRUE
+                                    vcsqrt = TRUE
                                 )
                             } else if (method == "ICE") {
-                                hic.cmx <- ICEnorm(
+                                hic <- ICEnorm(
                                     hicLst[[matrixName.chr]],
                                     qtlTh = qtlTh,
                                     maxIter = maxIter
                                 )
                             }
-                            return(hic.cmx)
+                            return(hic)
                             }
                     )
                 }
@@ -294,27 +294,27 @@ BalanceHiC <- function(
                         chromSize = chromSize.tbl,
                         matricesKind = matricesKind.tbl
                     ))
-                megaHic.cmx <- JoinHiC(trans.cmx_lst)
+                megaHic <- JoinHiC(trans.cmx_lst)
                 if (method == "VC") {
-                    megaHic.cmx <- VCnorm(
-                        megaHic.cmx,
+                    megaHic <- VCnorm(
+                        megaHic,
                         qtlTh = qtlTh,
-                        sqrt.bln = FALSE
+                        vcsqrt = FALSE
                     )
                 } else if (method == "VC_SQRT") {
-                    megaHic.cmx <- VCnorm(
-                        megaHic.cmx,
+                    megaHic <- VCnorm(
+                        megaHic,
                         qtlTh = qtlTh,
-                        sqrt.bln = TRUE
+                        vcsqrt = TRUE
                     )
                 } else if (method == "ICE") {
-                    megaHic.cmx <- ICEnorm(
-                        megaHic.cmx,
+                    megaHic <- ICEnorm(
+                        megaHic,
                         qtlTh = qtlTh,
                         maxIter = maxIter
                     )
                 }
-                trans.cmx_lst <- CutHiC(megaHic.cmx, verbose = verbose)
+                trans.cmx_lst <- CutHiC(megaHic, verbose = verbose)
                 hicLst[transMatricesNames.chr] <-
                     trans.cmx_lst[transMatricesNames.chr]
             } else {

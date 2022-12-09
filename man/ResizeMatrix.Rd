@@ -4,12 +4,12 @@
 \alias{ResizeMatrix}
 \title{Resize a matrix}
 \usage{
-ResizeMatrix(matrice.mtx, newDim.num = dim(matrice.mtx))
+ResizeMatrix(mtx, newDim = dim(mtx))
 }
 \arguments{
-\item{matrice.mtx}{<matrix>: A numerical matrix to resize.}
+\item{mtx}{<matrix>: A numerical matrix to resize.}
 
-\item{newDim.num}{<integer>: The number of rows and cols in resized matrix.}
+\item{newDim}{<integer>: The number of rows and cols in resized matrix.}
 }
 \value{
 Resized matrix.
@@ -21,12 +21,12 @@ Resize a numericam matrix in new dimension.
 ResizeMatrix
 }
 \examples{
-matrice.mtx <- matrix(0, 11, 11)
-matrice.mtx[which(as.logical(seq_len(11 * 11) \%\% 2))] <- seq_len(ceiling((11 * 11) / 2))
-matrice.mtx[2, ] <- 100
-matrice.mtx[, 7] <- 200
-matrice.mtx
-ResizeMatrix(matrice.mtx = matrice.mtx, newDim.num = c(7, 7))
-ResizeMatrix(matrice.mtx = matrice.mtx, newDim.num = c(13, 13))
+mtx <- matrix(0, 11, 11)
+mtx[which(as.logical(seq_len(11 * 11) \%\% 2))] <- seq_len(ceiling((11 * 11) / 2))
+mtx[2, ] <- 100
+mtx[, 7] <- 200
+mtx
+ResizeMatrix(mtx = mtx, newDim = c(7, 7))
+ResizeMatrix(mtx = mtx, newDim = c(13, 13))
 }
 \keyword{internal}

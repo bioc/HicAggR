@@ -4,10 +4,10 @@
 \alias{GetFileExtension}
 \title{Get file extension}
 \usage{
-GetFileExtension(path.pth = NULL)
+GetFileExtension(file = NULL)
 }
 \arguments{
-\item{path.pth}{<character>: The path to the file.}
+\item{file}{<character>: The path to the file.}
 }
 \value{
 A character string
@@ -20,6 +20,6 @@ GetFileExtension
 }
 \examples{
 filePath.pth ="my/path/to/my/file.txt"
-GetFileExtension(path.pth=filePath.pth)
+GetFileExtension(file=filePath.pth)
 }
 \keyword{internal}

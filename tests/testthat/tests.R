@@ -7,7 +7,7 @@ data("HiC_HS.cmx_lst")
 
 # Global Variables
 seqlengths.num <- c('2L'=23513712, '2R'=25286936)
-chromSize.dtf  <- data.frame(
+chromSizes  <- data.frame(
     seqnames   = names(seqlengths.num ), 
     seqlengths = seqlengths.num
 )
@@ -34,57 +34,57 @@ HiC_Ctrl.cmx_lst <- OverExpectedHiC(HiC_Ctrl.cmx_lst)
 HiC_HS.cmx_lst   <- OverExpectedHiC(HiC_HS.cmx_lst, cores = 2)
 
 # Test SwitchMatrix
-SwitchMatrix(HiC_Ctrl.cmx_lst, matrixKind.chr="norm")
-SwitchMatrix(HiC_Ctrl.cmx_lst, matrixKind.chr="o/e")
+SwitchMatrix(HiC_Ctrl.cmx_lst, matrixKind="norm")
+SwitchMatrix(HiC_Ctrl.cmx_lst, matrixKind="o/e")
 
 # Test IndexFeatures
 Beaf32_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst        = list(Beaf=Beaf32_Peaks.gnr), 
-    constraint.gnr        = TADs_Domains.gnr,
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = 100000,
+    gRangeList        = list(Beaf=Beaf32_Peaks.gnr), 
+    genomicConstraint        = TADs_Domains.gnr,
+    chromSizes         = chromSizes,
+    binSize           = 100000,
     method            = "max",
-    variablesName.chr_vec = "score",
+    metadataColName = "score",
     cores             = 2,
     verbose           = TRUE
 )
 TSS_Index.gnr <- IndexFeatures(
-    gRange.gnr_lst        = list(TSS=TSS_Peaks.gnr), 
-    constraint.gnr        = TADs_Domains.gnr,
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = 100000,
+    gRangeList        = list(TSS=TSS_Peaks.gnr), 
+    genomicConstraint        = TADs_Domains.gnr,
+    chromSizes         = chromSizes,
+    binSize           = 100000,
     method            = "max",
-    variablesName.chr_vec = "score",
+    metadataColName = "score",
     cores             = 2,
     verbose           = TRUE
 )
 IndexFeatures(
-    gRange.gnr_lst        = list(TSS_1=TSS_Peaks.gnr, TSS_2=TSS_Peaks.gnr), 
-    constraint.gnr        = NULL,
-    chromSize.dtf         = chromSize.dtf,
-    binSize.num           = 100000,
+    gRangeList        = list(TSS_1=TSS_Peaks.gnr, TSS_2=TSS_Peaks.gnr), 
+    genomicConstraint        = NULL,
+    chromSizes         = chromSizes,
+    binSize           = 100000,
     cores             = 1,
     verbose           = TRUE
 )
 # Test SearchPairs
 Beaf_TSS.gni <- SearchPairs(
-    indexAnchor.gnr = Beaf32_Index.gnr,
-    indexBait.gnr   = TSS_Index.gnr,
+    indexAnchor = Beaf32_Index.gnr,
+    indexBait   = TSS_Index.gnr,
     minDist     = NULL, 
     maxDist     = NULL,
     cores       = 1,
     verbose     = TRUE
 )
 SearchPairs(
-    indexAnchor.gnr = Beaf32_Index.gnr,
+    indexAnchor = Beaf32_Index.gnr,
     minDist     = "1", 
     maxDist     = "1MB",
     cores       = 1,
     verbose     = TRUE
 )
 SearchPairs(
-    indexAnchor.gnr = Beaf32_Index.gnr,
-    indexBait.gnr   = TSS_Index.gnr,
+    indexAnchor = Beaf32_Index.gnr,
+    indexBait   = TSS_Index.gnr,
     minDist     = 1, 
     maxDist     = 1000000,
     cores       = 2,
@@ -94,83 +94,83 @@ SearchPairs(
 
 # Test ExtractSubmatrix
 submatrixPF_Ctrl.mtx_lst <- ExtractSubmatrix(
-    feature.gn         = Beaf_TSS.gni,
+    genomicFeature         = Beaf_TSS.gni,
     hicLst        = HiC_Ctrl.cmx_lst,
-    res.num            = NULL,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 21,
+    hicResolution            = NULL,
+    referencePoint = "pf",
+    matriceDim     = 21,
     cores          = 1,
     verbose        = TRUE
 )
 submatrixPF_HS.mtx_lst <- ExtractSubmatrix(
-    feature.gn         = Beaf_TSS.gni,
+    genomicFeature         = Beaf_TSS.gni,
     hicLst        = HiC_HS.cmx_lst,
-    res.num            = NULL,
-    referencePoint.chr = "pf",
-    matriceDim.num     = 21,
+    hicResolution            = NULL,
+    referencePoint = "pf",
+    matriceDim     = 21,
     cores          = 1,
     verbose        = TRUE
 )
 submatrixRF_Ctrl.mtx_lst <- ExtractSubmatrix(
-    feature.gn         = Beaf_TSS.gni,
+    genomicFeature         = Beaf_TSS.gni,
     hicLst        = HiC_Ctrl.cmx_lst,
-    res.num            = NULL,
-    referencePoint.chr = "rf",
-    matriceDim.num     = 21,
+    hicResolution            = NULL,
+    referencePoint = "rf",
+    matriceDim     = 21,
     cores          = 1,
     verbose        = TRUE
 )
 ExtractSubmatrix(
-    feature.gn         = TADs_Domains.gnr,
+    genomicFeature         = TADs_Domains.gnr,
     hicLst        = HiC_Ctrl.cmx_lst,
-    referencePoint.chr = "rf",
-    matriceDim.num     = 101,
+    referencePoint = "rf",
+    matriceDim     = 101,
     cores          = 2,
     verbose        = FALSE
 )
 
 
 # Test FilterInteractions
-target.lst <- list(
+targets <- list(
     anchor.Beaf.name = c("Beaf32_113"),
     bait.TSS.name    = c("FBgn0267378")
 )
-selection.fun = function(){
+selectionFun = function(){
     Reduce(union, list(anchor.Beaf.name, bait.TSS.name) )
 }
 FilterInteractions(
     matrices      = submatrixPF_Ctrl.mtx_lst,
-    target.lst        = target.lst,
-    selection.fun     = selection.fun
+    targets        = targets,
+    selectionFun     = selectionFun
 )
 FilterInteractions(
-  interarctions.gni = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
-  target.lst        = target.lst,
-  selection.fun     = NULL
+  genomicInteractions = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
+  targets        = targets,
+  selectionFun     = NULL
 )
-target.lst <- list(interactions = attributes(submatrixPF_Ctrl.mtx_lst)$interactions[1:2])
+targets <- list(interactions = attributes(submatrixPF_Ctrl.mtx_lst)$interactions[1:2])
 FilterInteractions(
-    interarctions.gni = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
-    target.lst        = target.lst,
-    selection.fun     = NULL
+    genomicInteractions = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
+    targets        = targets,
+    selectionFun     = NULL
 )
-target.lst <- list(first = InteractionSet::anchors(attributes(submatrixPF_Ctrl.mtx_lst)$interactions)[["first"]][1:2])
+targets <- list(first = InteractionSet::anchors(attributes(submatrixPF_Ctrl.mtx_lst)$interactions)[["first"]][1:2])
 FilterInteractions(
-    interarctions.gni = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
-    target.lst        = target.lst,
-    selection.fun     = NULL
+    genomicInteractions = attributes(submatrixPF_Ctrl.mtx_lst)$interactions,
+    targets        = targets,
+    selectionFun     = NULL
 )
 
 # Test GetQuantif
 GetQuantif(
     matrices  = submatrixRF_Ctrl.mtx_lst,
-    area.fun      = "center",
-    operation.fun = "mean"
+    areaFun      = "center",
+    operationFun = "mean"
 )
 GetQuantif(
     matrices  = submatrixPF_Ctrl.mtx_lst,
-    area.fun      = "center",
-    operation.fun = "mean"
+    areaFun      = "center",
+    operationFun = "mean"
 )
 
 # Test OrientateMatrix
@@ -201,47 +201,47 @@ diffAggreg.mtx <- Aggregation(
 
 # Test ggAPA and PlotAPA
 ggAPA(
-    apa.mtx      = diffAggreg.mtx,
-    title.chr    = "APA",
+    aggregatedMtx      = diffAggreg.mtx,
+    title    = "APA",
     colMin   = 0,
     colMax   = 10,
-    trimPrct.num = 20,
-    bounds.chr   = "both",
-    blurPass.num = 1,
-    blurSd.num   = 0.5,
-    heatmap.col  = NULL
+    trim = 20,
+    tails   = "both",
+    blurPass = 1,
+    stdev   = 0.5,
+    colors  = NULL
 )
 
 
 ggAPA(
-    apa.mtx      = diffAggreg.mtx,
-    title.chr    = "APA",
-    colMid.num   = 0,
-    trimPrct.num = NULL,
-    bounds.chr   = "both",
-    blurPass.num = 1,
-    blurSd.num   = 0.5,
-    heatmap.col  = viridis(6)
+    aggregatedMtx      = diffAggreg.mtx,
+    title    = "APA",
+    colMid   = 0,
+    trim = NULL,
+    tails   = "both",
+    blurPass = 1,
+    stdev   = 0.5,
+    colors  = viridis(6)
 )
 
 # Complete Tests
 TrimOutliers(rnorm(1000))
-GaussBox(scale.chr="int")
+GaussBox(kernScale="int")
 Gauss(x=1, y=1)
 GenomicSystem(1000000000,2)
 GRange_1.grn <- StrToGRanges(c("chr1:1-100:+","chr2:400-500:-"))
 GRange_2.grn <- StrToGRanges("chr1:10-50:*")
-MergeGRanges(list(GRange_1.grn,GRange_2.grn), reduce.bln=TRUE, sort.bln=TRUE)
-Hue(paletteLength.num=1)
-Hue(paletteLength.num=2)
-PadMtx(mat.mtx=matrix(1:25,5,5), padSize.num=1, value.num=0, side.chr=c('top','bot','right','left') )
-ReduceRun(first.rle=rle(c("A","A","B")), second.rle=rle(c("A","B","B")), reduceFun.chr="paste", sep="_" )
+MergeGRanges(list(GRange_1.grn,GRange_2.grn), reduceRanges=TRUE, sortRanges=TRUE)
+Hue(paletteLength=1)
+Hue(paletteLength=2)
+PadMtx(mtx=matrix(1:25,5,5), padSize=1, val=0, side=c('top','bot','right','left') )
+ReduceRun(firstRle=rle(c("A","A","B")), secondRle=rle(c("A","B","B")), reduceMethod="paste", sep="_" )
 MeanScale(rnorm(500,500))
-BreakVector(x.num=rnorm(500,500), n.num=50, method="density")
-BreakVector(x.num=rnorm(500,500), n.num=50, center.num=-500)
+BreakVector(x=rnorm(500,500), n=50, method="density")
+BreakVector(x=rnorm(500,500), n=50, center=-500)
 set.seed(123)
-mat.spm = as(matrix(floor(runif(7*13,0,2)),7,13), "dgCMatrix")
-Rise0(mat.spm=mat.spm, which.ndx=c(1,3,6,10,12))
-Rise0(mat.spm=mat.spm, coord.dtf=data.frame(i=c(1,5,3), j=c(1,2,3) ) )
-Rise0(mat.spm=mat.spm)
-GetFileExtension(path.pth="my/path/to/my/file.txt")
+spMtx = as(matrix(floor(runif(7*13,0,2)),7,13), "dgCMatrix")
+Rise0(spMtx=spMtx, indices=c(1,3,6,10,12))
+Rise0(spMtx=spMtx, coords=data.frame(i=c(1,5,3), j=c(1,2,3) ) )
+Rise0(spMtx=spMtx)
+GetFileExtension(file="my/path/to/my/file.txt")

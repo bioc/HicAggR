@@ -4,14 +4,14 @@
 \alias{GaussBox}
 \title{One dimension Gaussian kernel.}
 \usage{
-GaussBox(sd.num = 1, boxSize.num = NULL, scale.chr = "1")
+GaussBox(stdev = 1, kernSize = NULL, kernScale = "1")
 }
 \arguments{
-\item{sd.num}{<numeric>: Standard deviation parameter of the gaussian. (Default 1)}
+\item{stdev}{<numeric>: Standard deviation parameter of the gaussian. (Default 1)}
 
-\item{boxSize.num}{<numeric>: Kernel size. If NULL size is 1+4*sd.num (Default NULL)}
+\item{kernSize}{<numeric>: Kernel size. If NULL size is 1+4*stdev (Default NULL)}
 
-\item{scale.chr}{<character>: Scaling kind of box. If "1" sum of kernel equal 1. If "int" Minimal value of kernel is 1 and all entry are integer. If "none", kernel is not scale. (Default "1")}
+\item{kernScale}{<character>: Scaling kind of box. If "1" sum of kernel equal 1. If "int" Minimal value of kernel is 1 and all entry are integer. If "none", kernel is not scale. (Default "1")}
 }
 \value{
 numerical vector.
@@ -23,9 +23,9 @@ One dimension Gaussian kernel.
 GaussBox
 }
 \examples{
-GaussBox(sd.num = 5, scale.chr = "none")
-GaussBox(scale.chr = "1")
-GaussBox(scale.chr = "int")
+GaussBox(stdev = 5, kernScale = "none")
+GaussBox(kernScale = "1")
+GaussBox(kernScale = "int")
 
 }
 \keyword{internal}

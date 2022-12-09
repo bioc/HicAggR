@@ -2,7 +2,7 @@
 #'
 #' CutHiC
 #' @description Cut a mega contactMatrix (join of multiple chromosomic maps) inq a list of contactMatrix.
-#' @param megaHic.cmx <contactMatrix>: The HiC megamap.
+#' @param megaHic <contactMatrix>: The HiC megamap.
 #' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @examples
@@ -11,21 +11,21 @@
 #' CutHiC(Mega_Ctrl.cmx)
 #'
 CutHiC <- function(
-megaHic.cmx, verbose = FALSE
+megaHic, verbose = FALSE
 ) {
-    res.num <- megaHic.cmx@metadata$resolution
-    mtx.chr <- megaHic.cmx@metadata$mtx
-    chromSize.dtf <- megaHic.cmx@metadata$chromSize
-    binnedGenome.grn <- chromSize.dtf |>
+    hicResolution <- megaHic@metadata$resolution
+    mtx.chr <- megaHic@metadata$mtx
+    chromSizes <- megaHic@metadata$chromSize
+    binnedGenome.grn <- chromSizes |>
         dplyr::pull("length") |>
-        stats::setNames(chromSize.dtf$name) |>
+        stats::setNames(chromSizes$name) |>
         GenomicRanges::tileGenome(
-            tilewidth = res.num,
+            tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
-    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSize.dtf$length |>
-        stats::setNames(chromSize.dtf$name)
-    attributes.tbl <- megaHic.cmx@metadata$matricesKind
+    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
+        stats::setNames(chromSizes$name)
+    attributes.tbl <- megaHic@metadata$matricesKind
     chromComb.lst <- attributes.tbl$name
     hic.lst_cmx <- BiocParallel::bplapply(
         BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
@@ -40,32 +40,32 @@ megaHic.cmx, verbose = FALSE
                 as.vector(binnedGenome.grn@seqnames) == ele.lst[[2]]
             )]
             # Extract matrix
-            hic.spm <- megaHic.cmx@matrix[
+            hic.spm <- megaHic@matrix[
                 GenomicRanges::findOverlaps(
-                    InteractionSet::anchors(megaHic.cmx)$row,
+                    InteractionSet::anchors(megaHic)$row,
                     row.regions
                 )@from,
                 GenomicRanges::findOverlaps(
-                    InteractionSet::anchors(megaHic.cmx)$column,
+                    InteractionSet::anchors(megaHic)$column,
                     col.regions
                 )@from
             ]
-            hic.cmx <- InteractionSet::ContactMatrix(
+            hic <- InteractionSet::ContactMatrix(
                 hic.spm,
                 row.regions,
                 col.regions
             )
             # removedCounts
             removedCounts <- NULL
-            if (!is.null(megaHic.cmx@metadata$removedCounts)) {
+            if (!is.null(megaHic@metadata$removedCounts)) {
                 removedCounts <- list(
-                    removedCounts = megaHic.cmx@metadata$removedCounts[
+                    removedCounts = megaHic@metadata$removedCounts[
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$row,
+                            InteractionSet::anchors(megaHic)$row,
                             row.regions
                         )@from,
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$column,
+                            InteractionSet::anchors(megaHic)$column,
                             col.regions
                         )@from
                     ]
@@ -73,33 +73,33 @@ megaHic.cmx, verbose = FALSE
             }
             # observed
             observed <- NULL
-            if (!is.null(megaHic.cmx@metadata$observed)) {
-                observed.spm <- megaHic.cmx@matrix
-                observed.spm@x <- megaHic.cmx@metadata$observed
+            if (!is.null(megaHic@metadata$observed)) {
+                observed.spm <- megaHic@matrix
+                observed.spm@x <- megaHic@metadata$observed
                 observed <- list(
                     observed = observed.spm[GenomicRanges::findOverlaps(
-                        InteractionSet::anchors(megaHic.cmx)$row,
+                        InteractionSet::anchors(megaHic)$row,
                         row.regions
                     )@from,
                     GenomicRanges::findOverlaps(
-                        InteractionSet::anchors(megaHic.cmx)$column,
+                        InteractionSet::anchors(megaHic)$column,
                         col.regions
                     )@from]@x
                 )
             }
             # normalizer
             normalizer <- NULL
-            if (!is.null(megaHic.cmx@metadata$normalizer)) {
-                normalizer.spm <- megaHic.cmx@matrix
-                normalizer.spm@x <- megaHic.cmx@metadata$normalizer
+            if (!is.null(megaHic@metadata$normalizer)) {
+                normalizer.spm <- megaHic@matrix
+                normalizer.spm@x <- megaHic@metadata$normalizer
                 normalizer <- list(
                     normalizer = normalizer.spm[
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$row,
+                            InteractionSet::anchors(megaHic)$row,
                             row.regions
                         )@from,
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$column,
+                            InteractionSet::anchors(megaHic)$column,
                             col.regions
                         )@from
                     ]@x
@@ -107,38 +107,38 @@ megaHic.cmx, verbose = FALSE
             }
             # expected
             expected <- NULL
-            if (!is.null(megaHic.cmx@metadata$expected)) {
-                expected.spm <- megaHic.cmx@matrix
-                expected.spm@x <- megaHic.cmx@metadata$expected
+            if (!is.null(megaHic@metadata$expected)) {
+                expected.spm <- megaHic@matrix
+                expected.spm@x <- megaHic@metadata$expected
                 expected <- list(
                     expected = expected.spm[
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$row,
+                            InteractionSet::anchors(megaHic)$row,
                             row.regions
                         )@from,
                         GenomicRanges::findOverlaps(
-                            InteractionSet::anchors(megaHic.cmx)$column,
+                            InteractionSet::anchors(megaHic)$column,
                             col.regions
                         )@from
                     ]@x
                 )
             }
             # Metadata
-            hic.cmx@metadata <- dplyr::filter(
+            hic@metadata <- dplyr::filter(
                 attributes.tbl,
                 attributes.tbl$name == chromComb.lst[[ele.ndx]]) |>
-                tibble::add_column(resolution = res.num) |>
+                tibble::add_column(resolution = hicResolution) |>
                 as.list() |>
                 c(removedCounts, observed, normalizer, expected)
-            return(hic.cmx)
+            return(hic)
         }
     )
     hic.lst_cmx <- hic.lst_cmx |>
         stats::setNames(chromComb.lst) |>
         AddAttr(
             attrs = list(
-                resolution = res.num, mtx = mtx.chr,
-                chromSize = tibble::as_tibble(chromSize.dtf),
+                resolution = hicResolution, mtx = mtx.chr,
+                chromSize = tibble::as_tibble(chromSizes),
                 matricesKind = attributes.tbl
             )
         )

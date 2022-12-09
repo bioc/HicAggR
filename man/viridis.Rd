@@ -5,14 +5,14 @@
 \title{viridis palette.}
 \usage{
 viridis(
-  paletteLength.num = NULL,
+  paletteLength = NULL,
   space = "rgb",
   interpolationMethod = "linear",
   bias = 1
 )
 }
 \arguments{
-\item{paletteLength.num}{<numeric>: Color number.}
+\item{paletteLength}{<numeric>: Color number.}
 
 \item{space}{<numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")}
 

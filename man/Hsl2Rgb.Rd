@@ -4,12 +4,12 @@
 \alias{Hsl2Rgb}
 \title{Convert HSL to RGB.}
 \usage{
-Hsl2Rgb(hsl.col = NULL, alpha.bln = FALSE)
+Hsl2Rgb(hslColor = NULL, alpha = FALSE)
 }
 \arguments{
-\item{hsl.col}{<charcater>: A vector of the color's HSL code.}
+\item{hslColor}{<charcater>: A vector of the color's HSL code.}
 
-\item{alpha.bln}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 An integer vector of the color's RGB code.
@@ -21,7 +21,7 @@ Convert a color in HSl (Hue,Saturation,Light) format to RGB format.
 Hsl2Rgb
 }
 \examples{
-Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha.bln = TRUE)
+Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
 
 }
 \keyword{internal}

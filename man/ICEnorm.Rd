@@ -4,10 +4,10 @@
 \alias{ICEnorm}
 \title{Compute Iterative Correction.}
 \usage{
-ICEnorm(hic.cmx, qtlTh = 0.15, maxIter = 50)
+ICEnorm(hic, qtlTh = 0.15, maxIter = 50)
 }
 \arguments{
-\item{hic.cmx}{<contactMatrix>: The HiC maps chunk to normalize.}
+\item{hic}{<contactMatrix>: The HiC maps chunk to normalize.}
 
 \item{qtlTh}{<numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)}
 

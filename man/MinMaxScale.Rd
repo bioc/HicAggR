@@ -4,10 +4,10 @@
 \alias{MinMaxScale}
 \title{Scales values on min-max range.}
 \usage{
-MinMaxScale(x.num, x_min = (0), x_max = 1)
+MinMaxScale(x, x_min = (0), x_max = 1)
 }
 \arguments{
-\item{x.num}{<numeric>: Numerical vector.}
+\item{x}{<numeric>: Numerical vector.}
 
 \item{x_min}{<numeric>: Minimal value after scaling.}
 
@@ -24,15 +24,15 @@ MinMaxScale
 }
 \examples{
 set.seed(655213)
-x.num <- rnorm(500, 500)
+x <- rnorm(500, 500)
 set.seed(522613)
 y.num <- rnorm(500, 100)
-plot(density(x.num), col = "red", xlim = c(min(y.num), max(x.num)))
+plot(density(x), col = "red", xlim = c(min(y.num), max(x)))
 lines(density(y.num), col = "green")
 plot(
-    density(MinMaxScale(x.num)),
+    density(MinMaxScale(x)),
     col = "red",
-    xlim = c(min(MinMaxScale(y.num)), max(MinMaxScale(x.num)))
+    xlim = c(min(MinMaxScale(y.num)), max(MinMaxScale(x)))
 )
 lines(density(MinMaxScale(y.num)), col = "green")
 

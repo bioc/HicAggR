@@ -4,12 +4,12 @@
 \alias{SwitchMatrix}
 \title{Change values of HiC map.}
 \usage{
-SwitchMatrix(hicLst, matrixKind.chr = c("obs", "norm", "o/e", "exp"))
+SwitchMatrix(hicLst, matrixKind = c("obs", "norm", "o/e", "exp"))
 }
 \arguments{
 \item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
 
-\item{matrixKind.chr}{<character>: The kind of matrix you want.}
+\item{matrixKind}{<character>: The kind of matrix you want.}
 }
 \value{
 A contactMatrix list.
@@ -33,9 +33,9 @@ HiC.cmx_lst <- HiC_Ctrl.cmx_lst |>
     OverExpectedHiC()
 
 # Switch values in matrix
-HiC_Ctrl_Obs.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind.chr = "obs")
-HiC_Ctrl_Norm.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind.chr = "norm")
-HiC_Ctrl_oe.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind.chr = "o/e")
-HiC_Ctrl_exp.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind.chr = "exp")
+HiC_Ctrl_Obs.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind = "obs")
+HiC_Ctrl_Norm.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind = "norm")
+HiC_Ctrl_oe.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind = "o/e")
+HiC_Ctrl_exp.cmx_lst <- SwitchMatrix(HiC.cmx_lst, matrixKind = "exp")
 
 }

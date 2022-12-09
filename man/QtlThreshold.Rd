@@ -4,14 +4,14 @@
 \alias{QtlThreshold}
 \title{Find threshold for outliers based on quantiles.}
 \usage{
-QtlThreshold(x.num = NULL, prct.num = 5, bounds.chr = "both")
+QtlThreshold(x = NULL, prctThr = 5, tails = "both")
 }
 \arguments{
-\item{x.num}{<numeric>: Numeric vector.}
+\item{x}{<numeric>: Numeric vector.}
 
-\item{prct.num}{<numeric>: Percentage (0-100) threshold. (Default 5)}
+\item{prctThr}{<numeric>: Percentage (0-100) threshold. (Default 5)}
 
-\item{bounds.chr}{<character>: Bounds to return, "lower", "upper" or "both". (Default "both")}
+\item{tails}{<character>: Bounds to return, "lower", "upper" or "both". (Default "both")}
 }
 \value{
 Numerical vector of thresholds values for outliers triming.
@@ -24,12 +24,12 @@ QtlThreshold
 }
 \examples{
 set.seed(1111)
-x.num <- 0:100
-x.num <- sort(x.num)
-x.num
-QtlThreshold(x.num, prct.num = 5, bounds.chr = "lower")
-QtlThreshold(x.num, prct.num = 5, bounds.chr = "both")
-QtlThreshold(x.num, prct.num = 5, bounds.chr = "upper")
+x <- 0:100
+x <- sort(x)
+x
+QtlThreshold(x, prctThr = 5, tails = "lower")
+QtlThreshold(x, prctThr = 5, tails = "both")
+QtlThreshold(x, prctThr = 5, tails = "upper")
 
 }
 \keyword{internal}

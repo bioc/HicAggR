@@ -2,24 +2,24 @@
 #'
 #' ggAPA
 #' @description Create a ggplot object used for plot aggregation.
-#' @param apa.mtx <matrix> : The matrix to plot. (Default NULL)
-#' @param title.chr <character> : The title of plot. (Default NULL)
-#' @param trimPrct.num <numeric> : A number between 0 and 100 that give the percentage of trimming. (Default 0)
-#' @param bounds.chr <character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")
+#' @param aggregatedMtx <matrix> : The matrix to plot. (Default NULL)
+#' @param title <character> : The title of plot. (Default NULL)
+#' @param trim <numeric> : A number between 0 and 100 that give the percentage of trimming. (Default 0)
+#' @param tails <character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")
 #' @param colMin <numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colMid.num <numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
+#' @param colMid <numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
 #' @param colMax <numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colBreaks.num <numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)
-#' @param blurPass.num <numeric> : Number of blur pass. (Default 0)
+#' @param colBreaks <numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)
+#' @param blurPass <numeric> : Number of blur pass. (Default 0)
 #' @param boxKernel <numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)
-#' @param blurSize.num <numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)
-#' @param blurSd.num <numeric> : SD of gaussian smooth. (Default 0.5)
-#' @param lowerTri.num <numeric> : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)
-#' @param heatmap.col <character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)
+#' @param kernSize <numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)
+#' @param stdev <numeric> : SD of gaussian smooth. (Default 0.5)
+#' @param loTri <numeric> : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)
+#' @param colors <character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)
 #' @param na.value <character> : Color of NA values. (Default "#F2F2F2")
-#' @param colorScale.chr <character> : Shape of color scale on of "linear" or "density" based. (Default "linear")
+#' @param colorScale <character> : Shape of color scale on of "linear" or "density" based. (Default "linear")
 #' @param bias <numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
-#' @param paletteLength.num <numeric> : The number of color in the palette. (Default 51)
+#' @param paletteLength <numeric> : The number of color in the palette. (Default 51)
 #' @return A ggplot object.
 #' @examples
 #' # Data
@@ -28,20 +28,20 @@
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
-#'     binSize.num = 100000
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
-#' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
-#'     referencePoint.chr = "pf"
+#'     referencePoint = "pf"
 #' )
 #'
 #' # Aggregate matrices in one matrix
@@ -49,128 +49,128 @@
 #'
 #' # Visualization
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx
+#'     aggregatedMtx = aggreg.mtx
 #' )
 #'
 #' # Add Title
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA"
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA"
 #' )
 #'
 #' # Trim values
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA 30% trimmed on upper side of distribution",
-#'     trimPrct.num = 30,
-#'     bounds.chr = "upper"
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA 30% trimmed on upper tail of distribution",
+#'     trim = 30,
+#'     tails = "upper"
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA 30% trimmed on lower side of distribution",
-#'     trimPrct.num = 30,
-#'     bounds.chr = "lower"
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA 30% trimmed on lower tail of distribution",
+#'     trim = 30,
+#'     tails = "lower"
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA 15% trimmed on each side of distribution",
-#'     trimPrct.num = 30,
-#'     bounds.chr = "both"
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA 15% trimmed on each tail of distribution",
+#'     trim = 30,
+#'     tails = "both"
 #' )
 #'
 #' # Change Minimal, Central and Maximal Colors scale value
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA [min 200, center 300, max 600]",
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA [min 200, center 300, max 600]",
 #'     colMin = 200,
-#'     colMid.num = 300,
+#'     colMid = 300,
 #'     colMax = 600
 #' )
 #'
 #' # Change Color
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
-#'     heatmap.col = viridis(6),
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
+#'     colors = viridis(6),
 #'     na.value = "black"
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
-#'     heatmap.col = c("black", "white"),
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
+#'     colors = c("black", "white"),
 #' )
 #'
 #' # Change Color distribution
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA [100,150,200,250,300,350,600]",
-#'     colBreaks.num = c(100, 150, 200, 250, 300, 350, 600) # Choosen Breaks
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA [100,150,200,250,300,350,600]",
+#'     colBreaks = c(100, 150, 200, 250, 300, 350, 600) # Choosen Breaks
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
 #'     colorScale = "density" # color distribution based on density
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
 #'     bias = 2 # (>1 wait on extremums)
 #' )
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
 #'     bias = 0.5 # (<1 wait on center)
 #' )
 #'
 #' # Apply a Blurr
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
-#'     blurPass.num = 1,
-#'     blurSd.num = 0.5
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
+#'     blurPass = 1,
+#'     stdev = 0.5
 #' )
 #'
 #' # ggplot2 object modifications
 #' # Since the function returns a ggplot object, it is possible
 #' # to modify it following the ggplot2 grammar.
 #' ggAPA(
-#'     apa.mtx = aggreg.mtx,
-#'     title.chr = "APA",
+#'     aggregatedMtx = aggreg.mtx,
+#'     title = "APA",
 #' ) +
 #'     ggplot2::labs(
 #'         title = "New title",
 #'         subtitle = "and subtitle"
 #'     )
 ggAPA <- function(
-    apa.mtx = NULL, title.chr = NULL,
-    trimPrct.num = 0, bounds.chr = "both",
-    colMin = NULL, colMid.num = NULL,
-    colMax = NULL, colBreaks.num = NULL,
-    blurPass.num = 0, boxKernel = NULL,
-    blurSize.num = NULL,
-    blurSd.num = 0.5, lowerTri.num = NULL,
-    heatmap.col = NULL,
+    aggregatedMtx = NULL, title = NULL,
+    trim = 0, tails = "both",
+    colMin = NULL, colMid = NULL,
+    colMax = NULL, colBreaks = NULL,
+    blurPass = 0, boxKernel = NULL,
+    kernSize = NULL,
+    stdev = 0.5, loTri = NULL,
+    colors = NULL,
     na.value = "#F2F2F2",
-    colorScale.chr = "linear",
-    bias = 1, paletteLength.num = 51
+    colorScale = "linear",
+    bias = 1, paletteLength = 51
 ) {
     # Trimming
-    if (!is.null(colBreaks.num)) {
-        colMin <- min(colBreaks.num)
-        colMax <- max(colBreaks.num)
+    if (!is.null(colBreaks)) {
+        colMin <- min(colBreaks)
+        colMax <- max(colBreaks)
     }
-    vec.num <- c(apa.mtx)
-    if (is.null(trimPrct.num)) {
-        trimPrct.num <- 0
+    vec.num <- c(aggregatedMtx)
+    if (is.null(trim)) {
+        trim <- 0
     }
-    if (trimPrct.num != 0 ||
+    if (trim != 0 ||
         !is.null(colMin) ||
         !is.null(colMax)
     ) {
         bounds.num_vec <- vec.num |>
             QtlThreshold(
-                prct.num = trimPrct.num,
-                bounds.chr = bounds.chr
+                prctThr = trim,
+                tails = tails
             ) |>
             stats::setNames(NULL)
         bounds.num_lst <- list(
@@ -195,73 +195,73 @@ ggAPA <- function(
         bounds.num_vec <- NULL
     }
     if (!is.null(bounds.num_vec)) {
-        apa.mtx <- TrimOutliers(
-            x.num = apa.mtx,
-            tresholds.num = bounds.num_vec,
+        aggregatedMtx <- TrimOutliers(
+            x = aggregatedMtx,
+            thr = bounds.num_vec,
             clip = TRUE
         )
-        vec.num <- c(apa.mtx)
+        vec.num <- c(aggregatedMtx)
     }
     # Smoothing
-    if (blurPass.num) {
-        for (i in seq_len(blurPass.num)) {
-            apa.mtx <- BoxBlur(
-                mat.mtx = apa.mtx,
-                sd.num = blurSd.num,
+    if (blurPass) {
+        for (i in seq_len(blurPass)) {
+            aggregatedMtx <- BoxBlur(
+                mtx = aggregatedMtx,
+                stdev = stdev,
                 boxKernel = boxKernel,
-                boxSize.num = blurSize.num
+                kernSize = kernSize
             )
         }
-        if (!is.null(lowerTri.num)) {
-            apa.mtx[lower.tri(
-                apa.mtx,
+        if (!is.null(loTri)) {
+            aggregatedMtx[lower.tri(
+                aggregatedMtx,
                 diag = FALSE
-            )] <- lowerTri.num
+            )] <- loTri
         }
-        vec.num <- c(apa.mtx)
+        vec.num <- c(aggregatedMtx)
     }
     # Breaks
-    if (is.null(colBreaks.num)) {
-        colBreaks.num <- BreakVector(
-            x.num = vec.num,
+    if (is.null(colBreaks)) {
+        colBreaks <- BreakVector(
+            x = vec.num,
             x_min = colMin,
-            center.num = colMid.num,
+            center = colMid,
             x_max = colMax,
-            n.num = paletteLength.num,
-            method = colorScale.chr
+            n = paletteLength,
+            method = colorScale
         )
-        colMin <- min(colBreaks.num)
-        colMax <- max(colBreaks.num)
+        colMin <- min(colBreaks)
+        colMax <- max(colBreaks)
     }
     # Colors
-    if (is.null(heatmap.col)) {
-        heatmap.col <- dplyr::case_when(
-            !is.null(colMid.num) && max(colBreaks.num) <= colMid.num ~
+    if (is.null(colors)) {
+        colors <- dplyr::case_when(
+            !is.null(colMid) && max(colBreaks) <= colMid ~
                 rev(YlGnBu(
-                    paletteLength.num = paletteLength.num,
+                    paletteLength = paletteLength,
                     bias = bias
                 )),
-            !is.null(colMid.num) && colMid.num <= min(colBreaks.num) ~
+            !is.null(colMid) && colMid <= min(colBreaks) ~
                 YlOrRd(
-                    paletteLength.num = paletteLength.num,
+                    paletteLength = paletteLength,
                     bias = bias
                 ),
             TRUE ~
                 c(
                     rev(YlGnBu(
-                        paletteLength.num = floor((paletteLength.num -1)/2),
+                        paletteLength = floor((paletteLength -1)/2),
                         bias = bias
                     )),
                     "#FFFFD8",
                     YlOrRd(
-                        paletteLength.num = ceiling((paletteLength.num -1)/2),
+                        paletteLength = ceiling((paletteLength -1)/2),
                         bias = bias
                     )
                 )
         )
     }
     # Raster
-    data.dtf <- MeltSpm(apa.mtx)
+    data.dtf <- MeltSpm(aggregatedMtx)
     plot.ggp <- ggplot2::ggplot(
         data.dtf, ggplot2::aes(
             .data$j,
@@ -270,8 +270,8 @@ ggAPA <- function(
     ) +
     ggplot2::geom_raster(ggplot2::aes(fill = .data$x)) +
     ggplot2::scale_fill_gradientn(
-        colours  = heatmap.col,
-        values   = MinMaxScale(colBreaks.num),
+        colours  = colors,
+        values   = MinMaxScale(colBreaks),
         na.value = na.value,
         limits   = c(
             colMin,
@@ -279,17 +279,17 @@ ggAPA <- function(
         )
     ) +
     ggplot2::scale_y_reverse(
-        breaks = seq_along(colnames(apa.mtx)),
-        labels = colnames(apa.mtx)
+        breaks = seq_along(colnames(aggregatedMtx)),
+        labels = colnames(aggregatedMtx)
     ) +
     ggplot2::scale_x_continuous(
-        breaks = seq_along(rownames(apa.mtx)),
-        labels = rownames(apa.mtx)
+        breaks = seq_along(rownames(aggregatedMtx)),
+        labels = rownames(aggregatedMtx)
     ) +
     ggplot2::labs(
-        title = title.chr,
-        y = dimnames(apa.mtx)[[2]],
-        x = dimnames(apa.mtx)[[2]]
+        title = title,
+        y = dimnames(aggregatedMtx)[[2]],
+        x = dimnames(aggregatedMtx)[[2]]
     ) +
     ggplot2::theme_classic() +
     ggplot2::theme(

@@ -4,10 +4,10 @@
 \alias{IsHsl}
 \title{Check HSL color format.}
 \usage{
-IsHsl(color.col = NULL)
+IsHsl(colour = NULL)
 }
 \arguments{
-\item{color.col}{<character or numeric>: A color.}
+\item{colour}{<character or numeric>: A color.}
 }
 \value{
 A logical.

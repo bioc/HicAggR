@@ -4,14 +4,14 @@
 \alias{ReduceRun}
 \title{Apply a function over two RLE}
 \usage{
-ReduceRun(first.rle, second.rle, reduceFun.chr = "paste", ...)
+ReduceRun(firstRle, secondRle, reduceMethod = "paste", ...)
 }
 \arguments{
-\item{first.rle}{<rle or Rle>: First rle.}
+\item{firstRle}{<rle or Rle>: First rle.}
 
-\item{second.rle}{<rle or Rle>>: Second rle.}
+\item{secondRle}{<rle or Rle>>: Second rle.}
 
-\item{reduceFun.chr}{<character>: Name of a function to apply e.g paste, sum, mean.}
+\item{reduceMethod}{<character>: Name of a function to apply e.g paste, sum, mean.}
 
 \item{...}{<...>: Other parameter for the reduce function.}
 }
@@ -25,12 +25,12 @@ Apply a function on the values over two RLE and return one RLE.
 ReduceRun
 }
 \examples{
-first.rle <- rle(c("A", "A", "B"))
-second.rle <- rle(c("A", "B", "B"))
-ReduceRun(first.rle = first.rle, second.rle = second.rle, reduceFun.chr = "paste", sep = "_")
-first.rle <- S4Vectors::Rle(c(1, 2, 3))
-second.rle <- S4Vectors::Rle(c(5, 5, 5))
-ReduceRun(first.rle = first.rle, second.rle = second.rle, reduceFun.chr = "sum")
+firstRle <- rle(c("A", "A", "B"))
+secondRle <- rle(c("A", "B", "B"))
+ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "paste", sep = "_")
+firstRle <- S4Vectors::Rle(c(1, 2, 3))
+secondRle <- S4Vectors::Rle(c(5, 5, 5))
+ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")
 
 }
 \keyword{internal}

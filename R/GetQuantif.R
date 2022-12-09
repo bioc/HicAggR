@@ -3,7 +3,7 @@
 #' GetQuantif
 #' @description Function that computes quantification of contact frequencies in a given area and returns it in a named vector.
 #' @param matrices <List[matrix]>: A matrices list.
-#' @param area.fun <character or function>: A character or function that allow an extraction of an area on each matrix that compose the matrices list (Default "center").
+#' @param areaFun <character or function>: A character or function that allow an extraction of an area on each matrix that compose the matrices list (Default "center").
 #' \itemize{
 #' \item "C" or "CENTER": pixel at the intersection between anchor and bait.
 #' \item "UL" or "UPPER_LEFT": pixels in the uppper left square
@@ -16,7 +16,7 @@
 #' \item "R" or "RIGHT": pixels in the right of the center area
 #' \item "D" or "DONUT": pixels that surrounds the center area
 #' }
-#' @param operation.fun <character or function>: A character or function specifying the operation used to get quantification (Default "mean_rm0").
+#' @param operationFun <character or function>: A character or function specifying the operation used to get quantification (Default "mean_rm0").
 #' \itemize{
 #' \item "mean_rm0": apply a mean after replace 0 with NA
 #' \item "median_rm0": apply a median after replace 0 with NA
@@ -25,7 +25,7 @@
 #' \item "sum": apply a sum
 #' \item "mean" or other character: apply a mean
 #' }
-#' @param name.chr <character>: The name of a column in GInteraction attributes of matrices used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.
+#' @param varName <character>: The name of a column in GInteraction attributes of matrices used as named in the output vector (Default NULL). By default, sub-matrices IDs are used.
 #' @return A GRange object.
 #' @examples
 #' # Data
@@ -34,69 +34,69 @@
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(
 #'         seqnames = c("2L", "2R"),
 #'         seqlengths = c(23513712, 25286936)
 #'     ),
-#'     binSize.num = 100000
+#'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
-#' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
-#'     referencePoint.chr = "pf"
+#'     referencePoint = "pf"
 #' )
 #' GetQuantif(
 #'     matrices = interactions_PF.mtx_lst,
-#'     area.fun = "center",
-#'     operation.fun = "mean"
+#'     areaFun = "center",
+#'     operationFun = "mean"
 #' ) |> head()
 #'
 GetQuantif <- function(
-    matrices, area.fun = "center",
-    operation.fun = "mean_rm0", name.chr = NULL
+    matrices, areaFun = "center",
+    operationFun = "mean_rm0", varName = NULL
 ) {
-    # Define operation function
-    if (is.null(operation.fun)) {
-        operation.fun <- function(area) {
+    # Define operationFunction
+    if (is.null(operationFun)) {
+        operationFun <- function(area) {
             c(area[which(!is.na(area))])
         }
-    } else if (!is.function(operation.fun)) {
-        operation.fun <- dplyr::case_when(
-            operation.fun == "mean_rm0" ~
+    } else if (!is.function(operationFun)) {
+        operationFun <- dplyr::case_when(
+            operationFun == "mean_rm0" ~
                 "function(x){x[which(x==0)]<-NA;mean(x,na.rm=TRUE)}",
-            operation.fun == "median_rm0" ~
+            operationFun == "median_rm0" ~
                 "function(x){x[which(x==0)]<-NA;stats::median(x,na.rm=TRUE)}",
-            operation.fun == "sum_rm0" ~
+            operationFun == "sum_rm0" ~
                 "function(x){x[which(x==0)]<-NA;sum(x,na.rm=TRUE)}",
-            operation.fun == "median" ~
+            operationFun == "median" ~
                 "function(x){stats::median(x,na.rm=TRUE)}",
-            operation.fun == "sum" ~
+            operationFun == "sum" ~
                 "function(x){sum(x,na.rm=TRUE)}",
-            operation.fun == "mean" ~
+            operationFun == "mean" ~
                 "function(x){mean(x,na.rm=TRUE)}",
             TRUE ~
                 "function(x){mean(x,na.rm=TRUE)}"
         )
-        operation.fun <- WrapFunction(operation.fun)
+        operationFun <- WrapFunction(operationFun)
     }
     # Define extraction function
-    matriceDim.num <- attributes(matrices)$matriceDim
-    if (!is.function(area.fun) &&
+    matriceDim <- attributes(matrices)$matriceDim
+    if (!is.function(areaFun) &&
         attributes(matrices)$referencePoint == "pf"
     ) {
         # Compute rows and cols index Center
         center.num <- c(
-            floor((matriceDim.num + 1)/2) +
-                ifelse(matriceDim.num >= 9, yes = 1, no = 0),
-            ceiling((matriceDim.num + 1)/2) -
-                ifelse(matriceDim.num >= 9, yes = 1, no = 0)
+            floor((matriceDim + 1)/2) +
+                ifelse(matriceDim >= 9, yes = 1, no = 0),
+            ceiling((matriceDim + 1)/2) -
+                ifelse(matriceDim >= 9, yes = 1, no = 0)
         )
         centerStart.num <- min(center.num)
         centerEnd.num <- max(center.num)
@@ -107,9 +107,9 @@ GetQuantif <- function(
         )
         # Rest
         first.chr  <- paste0("1:", centerStart.num - 2)
-        second.chr <- paste0(centerEnd.num + 2, ":", matriceDim.num)
+        second.chr <- paste0(centerEnd.num + 2, ":", matriceDim)
         # Compute rows and cols index for Donut Thick
-        donutThick.num <- ifelse(matriceDim.num >= 9, yes = 2, no = 1)
+        donutThick.num <- ifelse(matriceDim >= 9, yes = 2, no = 1)
         # Top
         topDonutStart.num <- (centerStart.num - 1 - donutThick.num)
         topDonutEnd.num   <- centerStart.num - 2
@@ -146,47 +146,47 @@ GetQuantif <- function(
             donutCols.chr, ") )"
         )
         # Wrap index in a function
-        area.fun <- dplyr::case_when(
-            toupper(area.fun) %in% c("C", "CENTER") ~
+        areaFun <- dplyr::case_when(
+            toupper(areaFun) %in% c("C", "CENTER") ~
                 list(center.chr, center.chr),
-            toupper(area.fun) %in% c("UL", "UPPER_LEFT") ~
+            toupper(areaFun) %in% c("UL", "UPPER_LEFT") ~
                 list(first.chr, first.chr),
-            toupper(area.fun) %in% c("UR", "UPPER_RIGHT") ~
+            toupper(areaFun) %in% c("UR", "UPPER_RIGHT") ~
                 list(first.chr, second.chr),
-            toupper(area.fun) %in% c("BL", "BOTTOM_LEFT") ~
+            toupper(areaFun) %in% c("BL", "BOTTOM_LEFT") ~
                 list(second.chr, first.chr),
-            toupper(area.fun) %in% c("BR", "BOTTOM_RIGHT") ~
+            toupper(areaFun) %in% c("BR", "BOTTOM_RIGHT") ~
                 list(second.chr, second.chr),
-            toupper(area.fun) %in% c("U", "UPPER") ~
+            toupper(areaFun) %in% c("U", "UPPER") ~
                 list(first.chr, center.chr),
-            toupper(area.fun) %in% c("B", "BOTTOM") ~
+            toupper(areaFun) %in% c("B", "BOTTOM") ~
                 list(second.chr, center.chr),
-            toupper(area.fun) %in% c("L", "LEFT") ~
+            toupper(areaFun) %in% c("L", "LEFT") ~
                 list(center.chr, first.chr),
-            toupper(area.fun) %in% c("R", "RIGHT") ~
+            toupper(areaFun) %in% c("R", "RIGHT") ~
                 list(center.chr, second.chr),
-            toupper(area.fun) %in% c("D", "DONUT") ~
+            toupper(areaFun) %in% c("D", "DONUT") ~
                 list(donut.chr),
             TRUE ~
                 list(center.chr, center.chr)
         ) |>
             paste(collapse = ",")
-        area.fun <- WrapFunction(
-            paste0("function(matrice.mtx){ matrice.mtx[", area.fun, "] }")
+        areaFun <- WrapFunction(
+            paste0("function(matrice.mtx){ matrice.mtx[", areaFun, "] }")
         )
-    } else if (!is.function(area.fun) &&
+    } else if (!is.function(areaFun) &&
         attributes(matrices)$referencePoint == "rf"
     ) {
-        shiftFactor <- attributes(matrices)$shiftFactor
+        shift <- attributes(matrices)$shift
         # Compute rows and cols index Anchor
         anchorStart.num <- max(1,
-            floor((matriceDim.num-2)*shiftFactor/(1+2*shiftFactor))+
-                1 - ifelse(matriceDim.num >= 9, yes = 1, no = 0)
+            floor((matriceDim-2)*shift/(1+2*shift))+
+                1 - ifelse(matriceDim >= 9, yes = 1, no = 0)
         )
         anchorEnd.num <- max(1,
-            min(matriceDim.num,
-                floor((matriceDim.num-2)*shiftFactor/(1+2*shiftFactor))+
-                1 + ifelse(matriceDim.num >= 9, yes = 1, no = 0)
+            min(matriceDim,
+                floor((matriceDim-2)*shift/(1+2*shift))+
+                1 + ifelse(matriceDim >= 9, yes = 1, no = 0)
             )
         )
         anchor.chr <- ifelse(
@@ -196,13 +196,13 @@ GetQuantif <- function(
         )
         # Bait
         baitStart.num <- max(1,
-            ceiling((matriceDim.num-2)*(1+shiftFactor)/(1+2*shiftFactor)) +
-                2 - ifelse(matriceDim.num >= 9, yes = 1, no = 0)
+            ceiling((matriceDim-2)*(1+shift)/(1+2*shift)) +
+                2 - ifelse(matriceDim >= 9, yes = 1, no = 0)
         )
         baitEnd.num <- max(1,
-            min(matriceDim.num,
-                ceiling((matriceDim.num-2)*(1+shiftFactor)/(1+2*shiftFactor))+
-                2 + ifelse(matriceDim.num >= 9, yes = 1, no = 0)
+            min(matriceDim,
+                ceiling((matriceDim-2)*(1+shift)/(1+2*shift))+
+                2 + ifelse(matriceDim >= 9, yes = 1, no = 0)
             )
         )
         bait.chr <- ifelse(
@@ -212,29 +212,29 @@ GetQuantif <- function(
         )
         # Rest
         first.chr <- paste0("1:", anchorStart.num - 2)
-        second.chr <- paste0(baitEnd.num + 2, ":", matriceDim.num)
+        second.chr <- paste0(baitEnd.num + 2, ":", matriceDim)
         ULwidth.chr <- paste0("1:", baitStart.num - 2)
         inner.chr <- paste0(anchorEnd.num + 2, ":", baitStart.num - 2)
-        BRheight.chr <- paste0(anchorEnd.num + 2, ":", matriceDim.num)
+        BRheight.chr <- paste0(anchorEnd.num + 2, ":", matriceDim)
         donut.chr <- NULL
         # Computability
         U.lgk <- anchorStart.num >= 3
-        R.lgk <- matriceDim.num >= baitEnd.num + 2
-        B.lgk <- (((matriceDim.num + 1)/2) - anchorEnd.num) >= 1
-        L.lgk <- (baitStart.num - ((matriceDim.num + 1)/2)) >= 1
+        R.lgk <- matriceDim >= baitEnd.num + 2
+        B.lgk <- (((matriceDim + 1)/2) - anchorEnd.num) >= 1
+        L.lgk <- (baitStart.num - ((matriceDim + 1)/2)) >= 1
         UL.lgk <- U.lgk && baitStart.num >= 3
         UR.lgk <- U.lgk && R.lgk
-        BR.lgk <- matriceDim.num >= anchorEnd.num + 2 &&
+        BR.lgk <- matriceDim >= anchorEnd.num + 2 &&
             R.lgk
-        BL.lgk <- (((matriceDim.num + 1)/2) - anchorEnd.num) >= 2 &&
-            (baitStart.num -((matriceDim.num + 1)/2)) >= 2
+        BL.lgk <- (((matriceDim + 1)/2) - anchorEnd.num) >= 2 &&
+            (baitStart.num -((matriceDim + 1)/2)) >= 2
         D.lgk <- sum(
             U.lgk, R.lgk, B.lgk, L.lgk,
             UL.lgk, UR.lgk, BR.lgk, BL.lgk) >= 1
         # Compute rows and cols index for Donut
         if (D.lgk) {
             # Thick
-            donutThick.num <- ifelse(matriceDim.num >= 9, yes = 2, no = 1)
+            donutThick.num <- ifelse(matriceDim >= 9, yes = 2, no = 1)
             # Top
             topDonutStart.num <- (anchorStart.num - 1 - donutThick.num)
             topDonutEnd.num <- anchorStart.num - 2
@@ -269,7 +269,7 @@ GetQuantif <- function(
             donutCoord.dtf <- dplyr::filter(
                 donutCoord.dtf,
                 donutCoord.dtf$Var1 >= 1 &
-                donutCoord.dtf$Var2 <= matriceDim.num &
+                donutCoord.dtf$Var2 <= matriceDim &
                 donutCoord.dtf$Var1 <= donutCoord.dtf$Var2
             )
             donutRows.chr <- paste(donutCoord.dtf[, 1], collapse = ",")
@@ -283,39 +283,39 @@ GetQuantif <- function(
             )
         }
         # Wrap index in a function
-        area.fun <- dplyr::case_when(
-            toupper(area.fun) %in% c("C", "CENTER") ~
+        areaFun <- dplyr::case_when(
+            toupper(areaFun) %in% c("C", "CENTER") ~
                 list(anchor.chr, bait.chr),
-            toupper(area.fun) %in% c("UL", "UPPER_LEFT") && UL.lgk ~ 
+            toupper(areaFun) %in% c("UL", "UPPER_LEFT") && UL.lgk ~ 
                 list(first.chr, ULwidth.chr),
-            toupper(area.fun) %in% c("UR", "UPPER_RIGHT") && UR.lgk ~ 
+            toupper(areaFun) %in% c("UR", "UPPER_RIGHT") && UR.lgk ~ 
                 list(first.chr, second.chr),
-            toupper(area.fun) %in% c("BL", "BOTTOM_LEFT") && BL.lgk ~ 
+            toupper(areaFun) %in% c("BL", "BOTTOM_LEFT") && BL.lgk ~ 
                 list(inner.chr, inner.chr),
-            toupper(area.fun) %in% c("BR", "BOTTOM_RIGHT") && BR.lgk ~ 
+            toupper(areaFun) %in% c("BR", "BOTTOM_RIGHT") && BR.lgk ~ 
                 list(BRheight.chr, second.chr),
-            toupper(area.fun) %in% c("U", "UPPER") && U.lgk ~ 
+            toupper(areaFun) %in% c("U", "UPPER") && U.lgk ~ 
                 list(first.chr, bait.chr),
-            toupper(area.fun) %in% c("B", "BOTTOM") && B.lgk ~ 
+            toupper(areaFun) %in% c("B", "BOTTOM") && B.lgk ~ 
                 list(second.chr, bait.chr),
-            toupper(area.fun) %in% c("L", "LEFT") && L.lgk ~ 
+            toupper(areaFun) %in% c("L", "LEFT") && L.lgk ~ 
                 list(anchor.chr, first.chr),
-            toupper(area.fun) %in% c("R", "RIGHT") && R.lgk ~ 
+            toupper(areaFun) %in% c("R", "RIGHT") && R.lgk ~ 
                 list(anchor.chr, second.chr),
-            toupper(area.fun) %in% c("D", "DONUT") && D.lgk ~ 
+            toupper(areaFun) %in% c("D", "DONUT") && D.lgk ~ 
                 list(donut.chr),
             TRUE ~ 
                 list(anchor.chr, bait.chr)
         ) |>
             paste(collapse = ",")
-        area.fun <- WrapFunction(
-            paste0("function(matrice.mtx){ matrice.mtx[", area.fun, "] }")
+        areaFun <- WrapFunction(
+            paste0("function(matrice.mtx){ matrice.mtx[", areaFun, "] }")
         )
     }
     # Compute quantif
     quantif.num <- lapply(
         matrices, function(mtx) {
-            mtxQuantif.num <- operation.fun(area.fun(mtx)) |>
+            mtxQuantif.num <- operationFun(areaFun(mtx)) |>
                 stats::setNames(NULL)
             rownames(mtxQuantif.num) <- NULL
             colnames(mtxQuantif.num) <- NULL
@@ -323,7 +323,7 @@ GetQuantif <- function(
         }
     )
     # Get Names
-    if (!is.null(name.chr)) {
+    if (!is.null(varName)) {
         interactions.dtf <- data.frame(
             S4Vectors::mcols(attributes(matrices)$interactions)
             )
@@ -332,7 +332,7 @@ GetQuantif <- function(
             factor(interactions.dtf$submatrix.name,
             levels = names(quantif.num))
         ) |>
-            dplyr::pull(name.chr)
+            dplyr::pull(varName)
     } else {
         names.chr_lst <- names(quantif.num)
     }
@@ -352,8 +352,8 @@ GetQuantif <- function(
                 attributes(matrices),
                 interactions =
                     attributes(matrices)$interactions[repeted.ndx],
-                operation = operation.fun,
-                area = area.fun,
+                operation = operationFun,
+                area = areaFun,
                 duplicated = which(duplicated(repeted.ndx))
             )
         )

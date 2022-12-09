@@ -2,12 +2,12 @@
 #'
 #' ExtractSubmatrix
 #' @description Extract matrices in the HiC maps list around genomic features.
-#' @param feature.gn <GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.
+#' @param genomicFeature <GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.
 #' @param hicLst <List[contactMatrix]>: The HiC maps list.
-#' @param referencePoint.chr <character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")
-#' @param res.num <numeric>: The resoulution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)
-#' @param matriceDim.num <numeric>: The size of matrices in output. (Default 21).
-#' @param shiftFactor.num <numeric>: Only when "referencePoint.chr" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shiftFactor.num=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.
+#' @param referencePoint <character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")
+#' @param hicResolution <numeric>: The resolution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)
+#' @param matriceDim <numeric>: The size of matrices in output. (Default 21).
+#' @param shift <numeric>: Only when "referencePoint" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shift=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.
 #' @param cores <integer> : An integer to specify the number of cores. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.
@@ -18,56 +18,56 @@
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
-#'     binSize.num = 100000
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
-#' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 #'
 #' # Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
 #' interactions_RF.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
-#'     referencePoint.chr = "rf"
+#'     referencePoint = "rf"
 #' )
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 pointinteraction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
-#'     feature.gn = Beaf_Beaf.gni,
+#'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
-#'     referencePoint.chr = "pf"
+#'     referencePoint = "pf"
 #' )
 #'
 ExtractSubmatrix <- function(
-    feature.gn = NULL, hicLst = NULL, referencePoint.chr = "pf",
-    res.num = NULL, matriceDim.num = 21, shiftFactor.num = 1, cores = 1,
+    genomicFeature = NULL, hicLst = NULL, referencePoint = "pf",
+    hicResolution = NULL, matriceDim = 21, shift = 1, cores = 1,
     verbose = FALSE
 ) {
     .GInteractionFormatting <- function(
-        feature.gn, res.num
+        genomicFeature, hicResolution
     ) {
-        if (inherits(feature.gn, "GRanges")) {
+        if (inherits(genomicFeature, "GRanges")) {
             feature.gni <- InteractionSet::GInteractions(
-                GenomicRanges::resize(feature.gn, 1, "start"),
-                GenomicRanges::resize(feature.gn, 1, "end")
+                GenomicRanges::resize(genomicFeature, 1, "start"),
+                GenomicRanges::resize(genomicFeature, 1, "end")
             )
-        } else if (inherits(feature.gn, "Pairs") &&
-            inherits(feature.gn@first, "GRanges") &&
-            inherits(feature.gn@second, "GRanges")) {
+        } else if (inherits(genomicFeature, "Pairs") &&
+            inherits(genomicFeature@first, "GRanges") &&
+            inherits(genomicFeature@second, "GRanges")) {
             feature.gni <- InteractionSet::GInteractions(
-                feature.gn@first,
-                feature.gn@second
+                genomicFeature@first,
+                genomicFeature@second
             )
-        } else if (inherits(feature.gn, "GInteractions")) {
-            feature.gni <- feature.gn
+        } else if (inherits(genomicFeature, "GInteractions")) {
+            feature.gni <- genomicFeature
         }
-        S4Vectors::mcols(feature.gni) <- S4Vectors::mcols(feature.gn)
+        S4Vectors::mcols(feature.gni) <- S4Vectors::mcols(genomicFeature)
         if (is.null(GenomeInfoDb::seqinfo(feature.gni))) {
             GenomeInfoDb::seqinfo(feature.gni) <-
-                GenomeInfoDb::seqinfo(feature.gn)
+                GenomeInfoDb::seqinfo(genomicFeature)
         }
         if (is.null(S4Vectors::mcols(feature.gni)$distance)) {
             S4Vectors::mcols(feature.gni)$distance <-
@@ -84,7 +84,7 @@ ExtractSubmatrix <- function(
                 ), ":",
                 ceiling(
                     InteractionSet::anchors(feature.gni)$first@ranges@start/
-                    res.num
+                    hicResolution
                 )
             )
         }
@@ -95,7 +95,7 @@ ExtractSubmatrix <- function(
                 ), ":",
                 ceiling(
                     InteractionSet::anchors(feature.gni)$second@ranges@start/
-                    res.num
+                    hicResolution
                 )
             )
         }
@@ -134,29 +134,29 @@ ExtractSubmatrix <- function(
     }
     # Run Check Resolution
     if (!is.null(attr(hicLst, "resolution"))) {
-        res.num <- attr(hicLst, "resolution")
-    } else if (is.character(res.num)) {
-        res.num <- GenomicSystem(res.num)
+        hicResolution <- attr(hicLst, "resolution")
+    } else if (is.character(hicResolution)) {
+        hicResolution <- GenomicSystem(hicResolution)
     }
     # Check Dimension
-    if (matriceDim.num < 5) {
-        matriceDim.num <- 5
+    if (matriceDim < 5) {
+        matriceDim <- 5
     }
     # Formatting
-    feature.gn <- .GInteractionFormatting(
-        feature.gn = feature.gn,
-        res.num = res.num
+    genomicFeature <- .GInteractionFormatting(
+        genomicFeature = genomicFeature,
+        hicResolution = hicResolution
     )
-    if (!sum(feature.gn$anchor.bin != feature.gn$bait.bin)) {
-        referencePoint.chr <- "pf"
+    if (!sum(genomicFeature$anchor.bin != genomicFeature$bait.bin)) {
+        referencePoint <- "pf"
     }
     # Resize Features according reference Points
-    referencePoint.chr <- tolower(referencePoint.chr)
-    if (referencePoint.chr == "rf") {
+    referencePoint <- tolower(referencePoint)
+    if (referencePoint == "rf") {
         cis.lgk <- ReduceRun(
-            GenomeInfoDb::seqnames(InteractionSet::anchors(feature.gn)$first),
-            GenomeInfoDb::seqnames(InteractionSet::anchors(feature.gn)$second),
-            reduceFun.chr = "paste", sep = "_"
+            GenomeInfoDb::seqnames(InteractionSet::anchors(genomicFeature)$first),
+            GenomeInfoDb::seqnames(InteractionSet::anchors(genomicFeature)$second),
+            reduceMethod = "paste", sep = "_"
             ) |>
             as.character() |>
             lapply(function(combinaison) {
@@ -164,12 +164,12 @@ ExtractSubmatrix <- function(
                 return(split[1] == split[2])
             }) |>
             unlist()
-        feature.gn <- feature.gn[cis.lgk]
-        feature.gn <- feature.gn[which(feature.gn$distance >= (3 * res.num))]
+        genomicFeature <- genomicFeature[cis.lgk]
+        genomicFeature <- genomicFeature[which(genomicFeature$distance >= (3 * hicResolution))]
         ranges.lst_dtf <- lapply(
             c("first", "second"),
             function(anchorName.chr) {
-                anchor.gnr <- InteractionSet::anchors(feature.gn)[[
+                anchor.gnr <- InteractionSet::anchors(genomicFeature)[[
                     anchorName.chr
                 ]]
                 anchor.dtf <- data.frame(IRanges::ranges(anchor.gnr)) |>
@@ -192,30 +192,30 @@ ExtractSubmatrix <- function(
         )
         feature.gnr <- GenomicRanges::GRanges(
             seqnames = GenomeInfoDb::seqnames(
-                InteractionSet::anchors(feature.gn)$first
+                InteractionSet::anchors(genomicFeature)$first
             ),
             ranges = IRanges::IRanges(
                 start = ranges.dtf$start,
                 end = ranges.dtf$end
             ),
-            seqlengths = GenomeInfoDb::seqlengths(feature.gn),
-            seqinfo = GenomeInfoDb::seqinfo(feature.gn)
+            seqlengths = GenomeInfoDb::seqlengths(genomicFeature),
+            seqinfo = GenomeInfoDb::seqinfo(genomicFeature)
         )
         featureResize.gnr <- GenomicRanges::resize(
             feature.gnr,
             width = feature.gnr@ranges@width +
-                feature.gn$distance * shiftFactor.num * 2,
+                genomicFeature$distance * shift * 2,
             fix = "center"
         )
         featureResize.gni <- InteractionSet::GInteractions(
             featureResize.gnr,
             featureResize.gnr
         )
-        S4Vectors::mcols(featureResize.gni) <- S4Vectors::mcols(feature.gn)
-    } else if (referencePoint.chr == "pf") {
+        S4Vectors::mcols(featureResize.gni) <- S4Vectors::mcols(genomicFeature)
+    } else if (referencePoint == "pf") {
         featureResize.gni <- suppressWarnings(
             GenomicRanges::resize(
-                feature.gn, width = res.num * (matriceDim.num - 1) + 1,
+                genomicFeature, width = hicResolution * (matriceDim - 1) + 1,
                 fix = "center"
             )
         )
@@ -250,7 +250,7 @@ ExtractSubmatrix <- function(
         GenomeInfoDb::seqnames(
             InteractionSet::anchors(featureNoDup.gni)$second
         ),
-        reduceFun.chr = "paste", sep = "_"
+        reduceMethod = "paste", sep = "_"
     )
     order.num <- unlist(
         lapply(
@@ -379,34 +379,34 @@ ExtractSubmatrix <- function(
                         gap.num <- Inf
                     }
                     if (gap.num < 0) {
-                        mat.spm <-
+                        spMtx <-
                             hicLst[[mat.ndx]][col.ndx, row.ndx]@matrix
                     } else {
-                        mat.spm <-
+                        spMtx <-
                             hicLst[[mat.ndx]][row.ndx, col.ndx]@matrix
                     }
-                    if (dim(mat.spm)[1] != matriceDim.num) {
-                        mat.spm <- ResizeMatrix(
-                            matrice.mtx = mat.spm,
-                            newDim.num = c(matriceDim.num, matriceDim.num)
+                    if (dim(spMtx)[1] != matriceDim) {
+                        spMtx <- ResizeMatrix(
+                            mtx = spMtx,
+                            newDim = c(matriceDim, matriceDim)
                         )
                     }
-                    if (abs(gap.num) < matriceDim.num) {
+                    if (abs(gap.num) < matriceDim) {
                         if (abs(gap.num) > 0) {
-                            mat.spm <- PadMtx(
-                                mat.mtx = mat.spm, padSize.num = abs(gap.num),
-                                value.num = 0, side.chr = c("left", "bot")
+                            spMtx <- PadMtx(
+                                mtx = spMtx, padSize = abs(gap.num),
+                                val = 0, side = c("left", "bot")
                             )
                         }
-                        mat.spm[lower.tri(mat.spm)] <- NA
+                        spMtx[lower.tri(spMtx)] <- NA
                         if (abs(gap.num) > 0) {
-                            mat.spm <- mat.spm[
-                                seq_len(matriceDim.num),
-                                (abs(gap.num)+1):(matriceDim.num+abs(gap.num))
+                            spMtx <- spMtx[
+                                seq_len(matriceDim),
+                                (abs(gap.num)+1):(matriceDim+abs(gap.num))
                             ]
                         }
                     }
-                    return(as.matrix(mat.spm))
+                    return(as.matrix(spMtx))
                 }
             )
             return(tempSubmatrix.spm_lst)
@@ -415,15 +415,15 @@ ExtractSubmatrix <- function(
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
     submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
-    interactions.ndx <- seq_along(feature.gn$name) |>
-        stats::setNames(feature.gn$name)
+    interactions.ndx <- seq_along(genomicFeature$name) |>
+        stats::setNames(genomicFeature$name)
     interactions.ndx <- interactions.ndx[featureFilt.gni$name]
-    attributes(submatrix.spm_lst)$interactions <- feature.gn[interactions.ndx]
-    attributes(submatrix.spm_lst)$resolution <- res.num
-    attributes(submatrix.spm_lst)$referencePoint <- referencePoint.chr
-    attributes(submatrix.spm_lst)$matriceDim <- matriceDim.num
-    if (referencePoint.chr == "rf") {
-        attributes(submatrix.spm_lst)$shiftFactor <- shiftFactor.num
+    attributes(submatrix.spm_lst)$interactions <- genomicFeature[interactions.ndx]
+    attributes(submatrix.spm_lst)$resolution <- hicResolution
+    attributes(submatrix.spm_lst)$referencePoint <- referencePoint
+    attributes(submatrix.spm_lst)$matriceDim <- matriceDim
+    if (referencePoint == "rf") {
+        attributes(submatrix.spm_lst)$shift <- shift
     }
     return(submatrix.spm_lst)
 }

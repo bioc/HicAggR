@@ -2,8 +2,8 @@
 #'
 #' SearchPairs
 #' @description Creates pairs of coordinates from indexed anchor and bait genomic coordinates according to distance constraints.
-#' @param indexAnchor.gnr <GRanges>: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).
-#' @param indexBait.gnr <GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor.gnr is used instead (Default NULL)
+#' @param indexAnchor <GRanges>: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).
+#' @param indexBait <GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used instead (Default NULL)
 #' @param minDist <numeric>: Minimal distance between anchors and baits. (Default NULL)
 #' @param maxDist <numeric>: Maximal distance between anchors and baits. (Default NULL)
 #' @param cores <integer> : Number of cores to use. (Default 1)
@@ -15,16 +15,16 @@
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
-#'     gRange.gnr_lst = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSize.dtf = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
-#'     binSize.num = 100000
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
-#' Beaf_Beaf.gni <- SearchPairs(indexAnchor.gnr = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #'
 SearchPairs <- function(
-    indexAnchor.gnr = NULL, indexBait.gnr = NULL, minDist = NULL,
+    indexAnchor = NULL, indexBait = NULL, minDist = NULL,
     maxDist = NULL, verbose = FALSE, cores = 1
 ) {
     if (is.character(minDist)) {
@@ -33,12 +33,12 @@ SearchPairs <- function(
     if (is.character(maxDist)) {
         maxDist <- GenomicSystem(maxDist)
     }
-    if (is.null(indexBait.gnr)) {
-        indexBait.gnr <- indexAnchor.gnr
+    if (is.null(indexBait)) {
+        indexBait <- indexAnchor
     }
     commonConstraint.lst <- intersect(
-        indexAnchor.gnr$constraint,
-        indexBait.gnr$constraint
+        indexAnchor$constraint,
+        indexBait$constraint
     )
     multicoreParam <- MakeParallelParam(
         cores = cores,
@@ -49,12 +49,12 @@ SearchPairs <- function(
         seq_along(commonConstraint.lst),
         function(constraint.ndx) {
             commonConstraint.chr <- commonConstraint.lst[[constraint.ndx]]
-            subIndexAnchor.gnr <- indexAnchor.gnr[which(
-                indexAnchor.gnr@elementMetadata$constraint ==
+            subIndexAnchor.gnr <- indexAnchor[which(
+                indexAnchor@elementMetadata$constraint ==
                 commonConstraint.chr
             )]
-            subIndexBait.gnr <- indexBait.gnr[which(
-                indexBait.gnr@elementMetadata$constraint ==
+            subIndexBait.gnr <- indexBait[which(
+                indexBait@elementMetadata$constraint ==
                 commonConstraint.chr
             )]
             pairsCombination.dtf <- expand.grid(
