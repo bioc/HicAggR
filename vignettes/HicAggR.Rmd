@@ -47,7 +47,7 @@ Quick start from the import of HiC data to the aggregation of HiC contact in 3D.
 
 ## Installation
 ```{r, eval = FALSE}
-remotes::install_github("NChanard/HicAggR")
+remotes::install_github("CuvierLab/HicAggR")
 ```
 
 ## Load library

@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# HicAggR <a href='https://nchanard.github.io/HicAggR/'><img src='man/figures/logo.png' align="right" /></a>
+# HicAggR <a href='https://cuvierlab.github.io/HicAggR/'><img src='man/figures/logo.png' align="right" /></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/NChanard/HicAggR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NChanard/HicAggR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/CuvierLab/HicAggR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CuvierLab/HicAggR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/NChanard/HicAggR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/NChanard/HicAggR?branch=master)
+coverage](https://codecov.io/gh/CuvierLab/HicAggR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/CuvierLab/HicAggR?branch=master)
 <!-- badges: end -->
 
 This package provides a set of functions useful in the analysis of 3D
@@ -23,9 +23,9 @@ analysis of HiC contacts through aggregation.
 Development version is avalaible from [GitHub](https://github.com/):
 
 ``` r
-remotes::install_github("NChanard/HicAggR")
+remotes::install_github("CuvierLab/HicAggR")
 ```
 
 ## Documentation
 
-[HicAggR](https://nchanard.github.io/HicAggR/)
+[HicAggR](https://nchacuvierlabnard.github.io/HicAggR/)
