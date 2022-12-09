@@ -1,0 +1,188 @@
+---
+title: "HicAggR - Quick start"
+author: "Nicolas Chanard"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+description: >
+    Quick tutorial about HicAggR functions.
+vignette: >
+    %\VignetteIndexEntry{HicAggR - Quick start}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\usepackage[UTF-8]{inputenc}
+---
+<style>
+body {
+text-align: justify}
+</style>
+```{css, echo=FALSE}
+pre {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+pre[class] {
+    max-height: 300px;
+}
+```
+```{css, echo=FALSE}
+.scroll-100 {
+    max-height: 100px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+```
+```{r, Options, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+```
+
+Quick start from the import of HiC data to the aggregation of HiC contact in 3D. It includes 4 steps:  
+
+1. Import HiC
+2. Import genomic coordinates
+3. Submatrices extractions
+4. Plot and visualization
+
+# Requirements
+
+## Installation
+```{r, eval = FALSE}
+remotes::install_github("NChanard/HicAggR")
+```
+
+## Load library
+```{r, eval = TRUE, message = FALSE}
+library(HicAggR)
+```  
+
+# Test dataset
+
+## Description
+Data were obtained from *Drosophila melanogaster S2 cells*.
+HiC test dataset: Directly downloaded from the [4DN](https://data.4dnucleome.org) platform.
+Genomic coordinates: ChIPseq peaks of Beaf-32 protein in wild type cells ([GSM1278639](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1278639)).
+
+## Genomic 3D structure
+For a test, please download HiC data in .hic format (Juicer).
+
+```{r, eval = TRUE, message = FALSE}
+options(timeout = 3600) 
+temp.dir <- file.path(tempdir(), "HIC_DATA")
+dir.create(temp.dir)
+
+Hic.url <- "https://4dn-open-data-public.s3.amazonaws.com/fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/4DNFIOTPSS3L.hic"
+HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
+download.file(Hic.url, HicOutput.pth, method = 'curl', extra = '-k')
+```
+
+## Genomic location and annotation data
+These kind of data can be imported in R with [rtracklayer](https://bioconductor.org/packages/release/bioc/html/rtracklayer.html) package.
+```{r, eval = TRUE}
+data("Beaf32_Peaks.gnr")
+```
+<details>  
+<summary>View</summary>  
+```{r, echo = FALSE, eval = TRUE, message = FALSE}
+Beaf_Peaks.dtf <- Beaf32_Peaks.gnr |> as.data.frame() |> head(n=3L)
+Beaf_Peaks.dtf <- Beaf_Peaks.dtf[,-c(4)]
+knitr::kable(Beaf_Peaks.dtf[,c(1:4,6,5)],
+    col.names = c(
+        "seq","start","end","strand",
+        "name","score"),
+    align  = "rccccc",
+    digits = 1
+)
+```
+</details>  
+
+## Additional genome informations
+Required genomic informations used by the functions during the entire pipeline are a data.frame containing chromosomes names and sized and the binSize, corresponding to the HiC matrices at the same resolution.
+```{r, eval = TRUE}
+seqlengths.num <- c('2L'=23513712, '2R'=25286936)
+chromSize.dtf  <- data.frame(
+    seqnames   = names(seqlengths.num ), 
+    seqlengths = seqlengths.num
+    )
+binSize.num <- 1000
+```
+
+# 1 Import HiC
+The package supports the import and normalization of HiC data.
+
+## Import
+HicAggR can import HiC data stored in the main formats: .hic, .cool, .mcool, .h5, .hdf5. The pacakage imports only the raw counts in R. Therefore it is necessary to perform the balancing and observed/expected correction steps.
+```{r, eval = TRUE, results = FALSE}
+hic.cmx_lst <- ImportHiC(
+    file.pth      = HicOutput.pth,
+    res.num       = binSize.num,
+    chrom_1.chr   = c("2L", "2R")
+    )
+```
+
+## Balancing
+```{r, eval = TRUE, results = FALSE}
+hic.cmx_lst <- BalanceHiC(hic.cmx_lst)
+```
+
+## Observed/Expected Correction
+```{r, eval = TRUE, results = FALSE}
+hic.cmx_lst <- OverExpectedHiC(hic.cmx_lst)
+```
+
+# 2 Import genomic coordinates
+Genomic coordinates data (ChIP seq peaks or any other feature) need to be indexed using the same referenced genome as for HiC data. Then the genomic coordinates are paired in GInteraction objects.
+
+## Features Indexing
+```{r, eval = TRUE, results = FALSE}
+Beaf_Index.gnr <- IndexFeatures(
+    gRange.gnr_lst        = list(Beaf = Beaf32_Peaks.gnr),
+    chromSize.dtf         = chromSize.dtf,
+    binSize.num           = binSize.num
+    )
+```
+
+## Beaf32 <-> Beaf32 putatives 
+Constraints for the distance between interaction sites are defined here in order to limit the number of pairs.
+```{r, eval = TRUE, results = FALSE}
+Beaf_Pairs.gni <- SearchPairs(
+    indexAnchor.gnr = Beaf_Index.gnr,
+    minDist.num     = "25KB",
+    maxDist.num     = "100KB"
+    )
+```
+
+# 3 Submatrices extractions
+Once data have been imported, interactions are extracted out of the pairs of genomic coordinates.
+
+```{r, eval = TRUE, echo = FALSE}
+knitr::include_graphics("images/Extractions_of_LRI.png")
+```
+
+## Extraction
+```{r, eval = TRUE, results = FALSE}
+Beaf.mtx_lst <- ExtractSubmatrix(
+    feature.gn  = Beaf_Pairs.gni,
+    hic.cmx_lst = hic.cmx_lst
+    )
+```
+
+# 4 Plot and visualization
+Submatrices are aggregated as sum, average or median. Then, aggregated matrix is plotted as a heatmap of contact frequencies (in the example, contacts surounding Beaf-32 sites).
+
+## Aggregation
+```{r, eval = TRUE, message = FALSE}
+aggreg.mtx <- Aggregation(Beaf.mtx_lst)
+```
+
+## Visulatisation
+```{r, eval = TRUE, fig.dim = c(7,7), warning=FALSE}
+ggAPA(
+    apa.mtx = aggreg.mtx,
+    title.chr = "APA Beaf <-> Beaf"
+    )
+```
+
+# Session Info
+```{r, eval = TRUE}
+sessionInfo()
+```

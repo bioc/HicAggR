@@ -1,0 +1,59 @@
+template:
+  bootstrap: 5
+
+reference:
+- title: Data
+  desc: "Test datasets."
+  contents:
+  - Beaf32_Peaks.gnr
+  - TSS_Peaks.gnr
+  - TADs_Domains.gnr
+  - HiC_Ctrl.cmx_lst
+  - HiC_HS.cmx_lst
+
+- title: HiC
+  desc: "Functions for HiC data preprocessing."
+  contents:
+  - BalanceHiC
+  - CutHiC
+  - ImportHiC
+  - ICEnorm
+  - JoinHiC
+  - OverExpectedHiC
+  - SwitchMatrix
+  - VCnorm
+
+- title: GenomicRanges adding
+  desc: "Additional functions for GRanges objects."
+  contents:
+  - BinGRanges
+  - GenomicSystem
+  - IndexFeatures
+  - MergeGRanges
+  - SeqEnds
+  - StrToGRanges
+
+- title: Aggregation Analysis
+  desc: "Functions for performing an aggregation analysis."
+  contents:
+  - Aggregation
+  - ExtractSubmatrix
+  - FilterInteractions
+  - GetQuantif
+  - OrientateMatrix
+  - SearchPairs
+
+- title: Visualisation
+  desc: "Functions for visualising aggregation analysis results."
+  contents:
+  - ggAPA
+  - Hue
+  - viridis
+  - YlGnBu
+  - YlOrRd
+
+articles:
+- title: Tutorials
+  navbar: ~
+  contents:
+  - InDepth
