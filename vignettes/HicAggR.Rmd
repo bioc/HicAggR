@@ -7,8 +7,8 @@ description: >
     Quick tutorial about HicAggR functions.
 vignette: >
     %\VignetteIndexEntry{HicAggR - Quick start}
-    %\VignetteEngine{knitr::rmarkdown}
     %\usepackage[UTF-8]{inputenc}
+    %\VignetteEngine{knitr::rmarkdown}
 ---
 <style>
 body {
@@ -169,12 +169,19 @@ Beaf.mtx_lst <- ExtractSubmatrix(
 # 4 Plot and visualization
 Submatrices are aggregated as sum, average or median. Then, aggregated matrix is plotted as a heatmap of contact frequencies (in the example, contacts surounding Beaf-32 sites).
 
+## Prepare matrices list
+```{r, eval = TRUE, message = FALSE}
+Beaf.mtx_lst <- PrepareMtxList(
+     matrices = Beaf.mtx_lst
+)
+```
+
 ## Aggregation
 ```{r, eval = TRUE, message = FALSE}
 aggreg.mtx <- Aggregation(Beaf.mtx_lst)
 ```
 
-## Visulatisation
+## Visualisation
 ```{r, eval = TRUE, fig.dim = c(7,7), warning=FALSE}
 ggAPA(
     aggregatedMtx = aggreg.mtx,

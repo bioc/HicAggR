@@ -2,7 +2,7 @@
 #'
 #' BalanceHiC
 #' @description Apply a matrix-balancing normalization method to a list of contacts matrix.
-#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
 #' @param method <character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
 #' @param interactionType <character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)
 #' @param maxIter <numerical>: The maximum iteration number.

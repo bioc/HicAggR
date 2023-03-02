@@ -7,9 +7,9 @@
 BindFillRows(df_Lst, ...)
 }
 \arguments{
-\item{df_Lst}{<data.frames or list[data.frame]>: Data frames to bind or list of data.frames. If is a data.frame create a list with arguments `df_Lst` and `...`, else `...` are ignored.}
+\item{df_Lst}{<data.frames or list\link{data.frame}>: Data frames to bind or list of data.frames. If is a data.frame create a list with arguments \code{df_Lst} and \code{...}, else \code{...} are ignored.}
 
-\item{...}{<data.frames or list[data.frame]>: Data frames to bind or list of data.frames.}
+\item{...}{<data.frames or list\link{data.frame}>: Data frames to bind or list of data.frames.}
 }
 \value{
 The binded data frame

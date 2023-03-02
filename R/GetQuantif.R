@@ -3,9 +3,9 @@
 #' GetQuantif
 #' @description Function that computes quantification of contact frequencies in a given area and returns it in a named vector.
 #' @param matrices <List[matrix]>: A matrices list.
-#' @param areaFun <character or function>: A character or function that allow an extraction of an area on each matrix that compose the matrices list (Default "center").
+#' @param areaFun <character or function>: A character or function that allows to extract an area from each matrix that composes the matrices list (Default "center").
 #' \itemize{
-#' \item "C" or "CENTER": pixel at the intersection between anchor and bait.
+#' \item "C" or "CENTER": 3x3 pixels at the intersection between anchor and bait.
 #' \item "UL" or "UPPER_LEFT": pixels in the uppper left square
 #' \item "UR" or "UPPER_RIGHT": pixels in the uppper right square
 #' \item "BL" or "BOTTOM_LEFT": pixels in the bottom left square
@@ -16,11 +16,11 @@
 #' \item "R" or "RIGHT": pixels in the right of the center area
 #' \item "D" or "DONUT": pixels that surrounds the center area
 #' }
-#' @param operationFun <character or function>: A character or function specifying the operation used to get quantification (Default "mean_rm0").
+#' @param operationFun <character or function>: A character or function specifying the operation applied to the selected area (Default "mean_rm0").
 #' \itemize{
-#' \item "mean_rm0": apply a mean after replace 0 with NA
-#' \item "median_rm0": apply a median after replace 0 with NA
-#' \item "sum_rm0": apply a sum after replace 0 with NA
+#' \item "mean_rm0": apply a mean after replacing 0 with NA
+#' \item "median_rm0": apply a median after replacing 0 with NA
+#' \item "sum_rm0": apply a sum after replacing 0 with NA
 #' \item "median": apply a median
 #' \item "sum": apply a sum
 #' \item "mean" or other character: apply a mean

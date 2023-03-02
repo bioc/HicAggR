@@ -26,41 +26,41 @@ ggAPA(
 )
 }
 \arguments{
-\item{aggregatedMtx}{<matrix> : The matrix to plot. (Default NULL)}
+\item{aggregatedMtx}{\if{html}{\out{<matrix>}} : The matrix to plot. (Default NULL)}
 
-\item{title}{<character> : The title of plot. (Default NULL)}
+\item{title}{\if{html}{\out{<character>}} : The title of plot. (Default NULL)}
 
-\item{trim}{<numeric> : A number between 0 and 100 that give the percentage of trimming. (Default 0)}
+\item{trim}{\if{html}{\out{<numeric>}} : A number between 0 and 100 that give the percentage of trimming. (Default 0)}
 
-\item{tails}{<character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")}
+\item{tails}{\if{html}{\out{<character>}} : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")}
 
-\item{colMin}{<numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
+\item{colMin}{\if{html}{\out{<numeric>}} : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
-\item{colMid}{<numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
+\item{colMid}{\if{html}{\out{<numeric>}} : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
-\item{colMax}{<numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
+\item{colMax}{\if{html}{\out{<numeric>}} : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)}
 
-\item{colBreaks}{<numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)}
+\item{colBreaks}{\if{html}{\out{<numeric>}} : Repartition of colors. If Null automaticaly find. (Default NULL)}
 
-\item{blurPass}{<numeric> : Number of blur pass. (Default 0)}
+\item{blurPass}{\if{html}{\out{<numeric>}} : Number of blur pass. (Default 0)}
 
-\item{boxKernel}{<numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)}
+\item{boxKernel}{\if{html}{\out{<numeric>}} : If NULL automaticaly compute for 3 Sd. (Default NULL)}
 
-\item{kernSize}{<numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)}
+\item{kernSize}{\if{html}{\out{<numeric>}} : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)}
 
-\item{stdev}{<numeric> : SD of gaussian smooth. (Default 0.5)}
+\item{stdev}{\if{html}{\out{<numeric>}} : SD of gaussian smooth. (Default 0.5)}
 
-\item{loTri}{<numeric> : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)}
+\item{loTri}{\if{html}{\out{<numeric>}} : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)}
 
-\item{colors}{<character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)}
+\item{colors}{\if{html}{\out{<character>}} : Heatmap color list. If NULL automaticaly compute. (Default NULL)}
 
-\item{na.value}{<character> : Color of NA values. (Default "#F2F2F2")}
+\item{na.value}{\if{html}{\out{<character>}} : Color of NA values. (Default "#F2F2F2")}
 
-\item{colorScale}{<character> : Shape of color scale on of "linear" or "density" based. (Default "linear")}
+\item{colorScale}{\if{html}{\out{<character>}} : Shape of color scale on of "linear" or "density" based. (Default "linear")}
 
-\item{bias}{<numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)}
+\item{bias}{\if{html}{\out{<numeric>}} : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)}
 
-\item{paletteLength}{<numeric> : The number of color in the palette. (Default 51)}
+\item{paletteLength}{\if{html}{\out{<numeric>}} : The number of color in the palette. (Default 51)}
 }
 \value{
 A ggplot object.

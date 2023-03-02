@@ -16,21 +16,21 @@ IndexFeatures(
 )
 }
 \arguments{
-\item{gRangeList}{<GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.}
+\item{gRangeList}{<GRanges or GRangesList or list\link{GRanges}>: GRanges object, list of GRanges or GRangesList containing coordinates to index.}
 
-\item{genomicConstraint}{<GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
+\item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
 
 \item{chromSizes}{<data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).}
 
-\item{binSize}{<integer>: Bin size in bp - corresponds to HiC matrix resolution.}
+\item{binSize}{\if{html}{\out{<integer>}}: Bin size in bp - corresponds to HiC matrix resolution.}
 
-\item{method}{<character>: A string defining which summary method is used on metadata columns defined in metadataColName if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
+\item{method}{\if{html}{\out{<character>}}: A string defining which summary method is used on metadata columns defined in metadataColName if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')}
 
-\item{metadataColName}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.}
+\item{metadataColName}{\if{html}{\out{<character>}} : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.}
 
-\item{cores}{<integer> : Number of cores used. (Default 1)}
+\item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
 }
 \value{
 A GRanges object.

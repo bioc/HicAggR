@@ -7,11 +7,11 @@
 GaussBox(stdev = 1, kernSize = NULL, kernScale = "1")
 }
 \arguments{
-\item{stdev}{<numeric>: Standard deviation parameter of the gaussian. (Default 1)}
+\item{stdev}{\if{html}{\out{<numeric>}}: Standard deviation parameter of the gaussian. (Default 1)}
 
-\item{kernSize}{<numeric>: Kernel size. If NULL size is 1+4*stdev (Default NULL)}
+\item{kernSize}{\if{html}{\out{<numeric>}}: Kernel size. If NULL size is 1+4*stdev (Default NULL)}
 
-\item{kernScale}{<character>: Scaling kind of box. If "1" sum of kernel equal 1. If "int" Minimal value of kernel is 1 and all entry are integer. If "none", kernel is not scale. (Default "1")}
+\item{kernScale}{\if{html}{\out{<character>}}: Scaling kind of box. If "1" sum of kernel equal 1. If "int" Minimal value of kernel is 1 and all entry are integer. If "none", kernel is not scale. (Default "1")}
 }
 \value{
 numerical vector.

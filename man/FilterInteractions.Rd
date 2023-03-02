@@ -14,13 +14,13 @@ FilterInteractions(
 )
 }
 \arguments{
-\item{matrices}{<List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.}
+\item{matrices}{<List\link{matrix}>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.}
 
-\item{genomicInteractions}{<GInteractions>: The GInteraction object on which compute the filter.}
+\item{genomicInteractions}{\if{html}{\out{<GInteractions>}}: The GInteraction object on which compute the filter.}
 
-\item{targets}{<List>: A nammed list that describe the target.}
+\item{targets}{\if{html}{\out{<List>}}: A nammed list that describe the target.}
 
-\item{selectionFun}{<function>: A function that described how the target must be cross. (Defaul intersection of all targets)}
+\item{selectionFun}{\if{html}{\out{<function>}}: A function that described how the target must be cross. (Defaul intersection of all targets)}
 }
 \value{
 A list of elements index or a filtred matrices list with attributes updates.

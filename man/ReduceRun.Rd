@@ -7,11 +7,11 @@
 ReduceRun(firstRle, secondRle, reduceMethod = "paste", ...)
 }
 \arguments{
-\item{firstRle}{<rle or Rle>: First rle.}
+\item{firstRle}{\if{html}{\out{<rle or Rle>}}: First rle.}
 
-\item{secondRle}{<rle or Rle>>: Second rle.}
+\item{secondRle}{\if{html}{\out{<rle or Rle>}}>: Second rle.}
 
-\item{reduceMethod}{<character>: Name of a function to apply e.g paste, sum, mean.}
+\item{reduceMethod}{\if{html}{\out{<character>}}: Name of a function to apply e.g paste, sum, mean.}
 
 \item{...}{<...>: Other parameter for the reduce function.}
 }

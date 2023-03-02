@@ -2,7 +2,7 @@
 #'
 #' OverExpectedHiC
 #' @description Function that normalises HiC matrices by expected values computing by genomic distance.
-#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
 #' @param cores <numerical> : Number of cores to be used. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
 #' @return A matrices list.

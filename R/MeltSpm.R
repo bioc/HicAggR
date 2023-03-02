@@ -3,7 +3,7 @@
 #'
 #' MeltSpm
 #' @keywords internal
-#' @description Coerce a sparse matrix M in tibble where columns: i is row index, j is column index and x the value M[i,j].
+#' @description Coerce a sparse matrix M in tibble where columns: i is row index, j is column index and x the value M`[`i,j`]`.
 #' @param spMtx <dgCMatrix or dgCMatrix coercible>: A matrix.
 #' @return A tibble.
 #' @examples

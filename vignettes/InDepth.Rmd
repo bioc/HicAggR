@@ -7,8 +7,8 @@ description: >
     In depth tutorial about HicAggR functions.
 vignette: >
     %\VignetteIndexEntry{Introduction to HicAggR}
-    %\VignetteEngine{knitr::rmarkdown}
     %\usepackage[UTF-8]{inputenc}
+    %\VignetteEngine{knitr::rmarkdown}
 ---
 <style>
 body {
@@ -850,6 +850,13 @@ oriented_first100_interactions_RFmatrix_ctrl.lst <- OrientateMatrix(first100_int
 orientedMatrix.mtx <- OrientateMatrix(first100_interactions_RFmatrix_ctrl.lst[[1]])
 ```
 
+# Prepare matrices list
+`PrepareMtxList` can be used to perform operations on the matrices list. This function prepares the matrices list by performing a per matrix operation by transforming values. For example values can be quantilized inorder to rank local interactions and highlight on the contacts with the highest values. This function can also be used to correct orientations, just as `OrientateMatrix`. The reason for giving access for the user to this originally hidden function is to have a uniformly prepared matrices list for both quantifications and visualisations.
+```{r, eval = TRUE}
+oriented_quantiled_first100_interactions_RFmatrix_ctrl.lst <- PrepareMtxList(first100_interactions_RFmatrix_ctrl.lst, transFun = 'quantile', orientate = TRUE)
+oriented_first100_interactions_RFmatrix_ctrl.lst <- PrepareMtxList(first100_interactions_RFmatrix_ctrl.lst, orientate = TRUE)
+```
+
 ___
 # Quantifications
 `GetQuantif` function takes as input a list of submatrices and returns a vector of contact frequencies in a given typeof regions where these contacts are computed with a function.
@@ -978,10 +985,11 @@ ___
 `Aggregation` function has some default aggregation functions like `sum`, `mean` or `median` (see `Aggregation`)
 
 ```{r, eval = TRUE}
+# rm0 argument can be added to PrepareMtxList to assign NA to 0 values.
+oriented_first100_interactions_RFmatrix_ctrl.lst = PrepareMtxList(oriented_first100_interactions_RFmatrix_ctrl.lst,rm0 = FALSE)
 agg_sum.mtx <- Aggregation(
     matrices = oriented_first100_interactions_RFmatrix_ctrl.lst, 
-    aggFun      = "sum",
-    rm0      = FALSE
+    aggFun      = "sum"
     )
 ```
 
@@ -1045,13 +1053,23 @@ oriented_first100_interactions_RFmatrix.lst <- OrientateMatrix(first100_interact
 
 ### Aggregate
 ```{r, eval = TRUE}
+oriented_first100_interactions_RFmatrix_ctrl.lst = PrepareMtxList(first100_interactions_RFmatrix_ctrl.lst,
+    minDist             = NULL,
+    maxDist             = NULL,
+    rm0             = FALSE,
+    orientate = TRUE
+)
+oriented_first100_interactions_RFmatrix.lst = PrepareMtxList(first100_interactions_RFmatrix.lst,
+    minDist             = NULL,
+    maxDist             = NULL,
+    rm0             = FALSE,
+    orientate = TRUE
+)
+
 diffAggreg.mtx <- Aggregation(
     ctrlMatrices    = oriented_first100_interactions_RFmatrix_ctrl.lst,
     matrices        = oriented_first100_interactions_RFmatrix.lst,
-    minDist             = NULL,
-    maxDist             = NULL,
     aggFun             = "mean",
-    rm0             = FALSE,
     diffFun            = "substraction",
     scaleCorrection = TRUE,
     correctionArea  =  list(
@@ -1062,20 +1080,27 @@ diffAggreg.mtx <- Aggregation(
 ```
 
 ## Tips
+On `PrepareMtxList` function:
 
-1. When aggregation is performed using one sample only, use either `matrices` or `ctrlMatrices` parameters
-2. If `rm0` is `TRUE` all zeros in matrices list will be replaced by NA. 
+1. `PrepareMtxList` acts as a one stop function to perform value treatment and orientation correction allowing to have consistent matrices list for both quantification and visualization process to come.
+2. If `rm0` is `TRUE` all zeros in matrices list will be replaced by NA.
 3. It is possible to filter submatrices list by minimal or maximal distance during the aggregation function.
-4. It is possible to orientate submatrices during the aggregation function.
-5. The `statCompare` may not be set `TRUE` every time (due to memory requirement).
-6. `Aggregation` on one sample keeps former attributes of the matrices list and add new ones:
-    * totalMatrixNumber: total number of matrices.  
+4. It is possible to orientate submatrices at this point or using `OrientateMatrix` function.
+5. `PrepareMtxList` keeps former attributes of the matrices list and add new ones:
+    * totalMatrixNumber: total number of matrices.
     * filteredMatrixNumber: number of matrices after distance filtering.  
     * minimalDistance: minimal distance between anchor and bait.  
-    * maximalDistance: maximal distance between anchor and bait.  
+    * maximalDistance: maximal distance between anchor and bait.
+    * transformationMethod: the function used to perform a per matrix data transformation.
+    * zeroRemoved: A Boolean that indicates if zeros have been replaced by NA.
+
+On `Aggregation` function:
+
+1. When aggregation is performed using one sample only, use either `matrices` or `ctrlMatrices` parameters
+2. The `statCompare` may not be set `TRUE` every time (due to memory requirement).
+3. `Aggregation` on one sample keeps former attributes of the matrices list and add new ones:
     * aggregationMethod: The function applied to obtain the aggregation.  
-    * zeroRemoved: A Boolean that indicates if zeros have been replaced by NA.  
-7. `Aggregation` on two samples adds additional attributes:
+4. `Aggregation` on two samples adds additional attributes:
     * correctedFact: The value that is added to the condition to reduce noise. It's computed as the median difference between condition and control in an background area (e.g upper right corner in matrices).
     * matrices:  The list of matrices.  
         - agg: Aggregation of the condition.  
@@ -1092,8 +1117,7 @@ ___
 ```{r}
 aggreg.mtx <- Aggregation(
         ctrlMatrices=interactions_RFmatrix_ctrl.lst,
-        aggFun="mean",
-        rm0=FALSE
+        aggFun="mean"
 )
 ```
 2. Control aggregation with orientation
@@ -1101,8 +1125,7 @@ aggreg.mtx <- Aggregation(
 oriented_interactions_RFmatrix_ctrl.lst <- OrientateMatrix(interactions_RFmatrix_ctrl.lst)
 orientedAggreg.mtx <- Aggregation(
         ctrlMatrices=oriented_interactions_RFmatrix_ctrl.lst,
-        aggFun="mean",
-        rm0=FALSE
+        aggFun="mean"
 )
 ```
 3. Differential aggregation
@@ -1111,10 +1134,7 @@ oriented_interactions_RFmatrix.lst <- OrientateMatrix(interactions_RFmatrix.lst)
 diffAggreg.mtx <- Aggregation(
         ctrlMatrices    = oriented_interactions_RFmatrix_ctrl.lst,
         matrices        = oriented_interactions_RFmatrix.lst,
-        minDist             = NULL,
-        maxDist             = NULL,
         aggFun             = "mean",
-        rm0             = FALSE,
         diffFun            = "log2+1",
         scaleCorrection = TRUE,
         correctionArea  = list( i=c(1:30) , j=c(72:101) ),

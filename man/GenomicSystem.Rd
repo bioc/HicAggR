@@ -7,9 +7,9 @@
 GenomicSystem(x, digits = 3)
 }
 \arguments{
-\item{x}{<character or numeric>: The number to convert or string to convert.}
+\item{x}{\if{html}{\out{<character or numeric>}}: The number to convert or string to convert.}
 
-\item{digits}{<integer>: The number of significant digits to be used. See signif() for more informations. (Default 3)}
+\item{digits}{\if{html}{\out{<integer>}}: The number of significant digits to be used. See signif() for more informations. (Default 3)}
 }
 \value{
 The converted number or string.

@@ -7,7 +7,7 @@
 Plus(x)
 }
 \arguments{
-\item{x}{<numerical>: A numerical vector}
+\item{x}{\if{html}{\out{<numerical>}}: A numerical vector}
 }
 \value{
 The sum of numbers.

@@ -7,9 +7,9 @@
 ResizeMatrix(mtx, newDim = dim(mtx))
 }
 \arguments{
-\item{mtx}{<matrix>: A numerical matrix to resize.}
+\item{mtx}{\if{html}{\out{<matrix>}}: A numerical matrix to resize.}
 
-\item{newDim}{<integer>: The number of rows and cols in resized matrix.}
+\item{newDim}{\if{html}{\out{<integer>}}: The number of rows and cols in resized matrix.}
 }
 \value{
 Resized matrix.

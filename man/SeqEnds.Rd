@@ -7,7 +7,7 @@
 SeqEnds(gRanges)
 }
 \arguments{
-\item{gRanges}{<GRanges>: A GRanges object.}
+\item{gRanges}{\if{html}{\out{<GRanges>}}: A GRanges object.}
 }
 \value{
 An integer vector.

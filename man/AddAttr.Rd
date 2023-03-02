@@ -7,11 +7,11 @@
 AddAttr(x = NULL, attrs = NULL, overwrite = FALSE)
 }
 \arguments{
-\item{x}{<any>: An object to which attributes are to be added.}
+\item{x}{\if{html}{\out{<any>}}: An object to which attributes are to be added.}
 
-\item{attrs}{<list>: A named list of new attributes.}
+\item{attrs}{\if{html}{\out{<list>}}: A named list of new attributes.}
 
-\item{overwrite}{<logical>: Whether an overwrite is required on attributes with the same name.(Default FALSE)}
+\item{overwrite}{\if{html}{\out{<logical>}}: Whether an overwrite is required on attributes with the same name.(Default FALSE)}
 }
 \value{
 The object with new attributes.

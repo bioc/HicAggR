@@ -4,10 +4,12 @@
 \alias{OrientateMatrix}
 \title{Matrix orientation}
 \usage{
-OrientateMatrix(mtx)
+OrientateMatrix(mtx, verbose = TRUE)
 }
 \arguments{
-\item{mtx}{<matrix or List[matrix]>: Matrix or matricies list to oriente}
+\item{mtx}{<matrix or List\link{matrix}>: Matrix or matricies list to oriente}
+
+\item{verbose}{\if{html}{\out{<logical>}}: Report the number of matrices corrected. (Default: TRUE)}
 }
 \value{
 Oriented matrix or matricies list

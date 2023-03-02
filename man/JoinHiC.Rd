@@ -7,10 +7,10 @@
 JoinHiC(hicLst)
 }
 \arguments{
-\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
 }
 \value{
-A contactMatrix.
+A ContactMatrix.
 }
 \description{
 Create mega contactMatrix from a list of contactMatrix.

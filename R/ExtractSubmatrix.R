@@ -3,7 +3,7 @@
 #' ExtractSubmatrix
 #' @description Extract matrices in the HiC maps list around genomic features.
 #' @param genomicFeature <GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.
-#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
 #' @param referencePoint <character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")
 #' @param hicResolution <numeric>: The resolution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)
 #' @param matriceDim <numeric>: The size of matrices in output. (Default 21).

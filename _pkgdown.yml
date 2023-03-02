@@ -36,6 +36,7 @@ reference:
 - title: Aggregation Analysis
   desc: "Functions for performing an aggregation analysis."
   contents:
+  - PrepareMtxList
   - Aggregation
   - ExtractSubmatrix
   - FilterInteractions

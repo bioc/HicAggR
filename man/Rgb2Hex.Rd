@@ -7,9 +7,9 @@
 Rgb2Hex(rbgColor = NULL, alpha = FALSE)
 }
 \arguments{
-\item{rbgColor}{<integer>: An integer of the color's RGB code.}
+\item{rbgColor}{\if{html}{\out{<integer>}}: An integer of the color's RGB code.}
 
-\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{\if{html}{\out{<logical>}}: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 A character of the color's hexadecimal code.

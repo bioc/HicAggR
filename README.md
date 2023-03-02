@@ -28,4 +28,4 @@ remotes::install_github("CuvierLab/HicAggR")
 
 ## Documentation
 
-[HicAggR](https://nchacuvierlabnard.github.io/HicAggR/)
+[HicAggR](https://cuvierlab.github.io/HicAggR/)

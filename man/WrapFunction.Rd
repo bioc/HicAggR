@@ -7,7 +7,7 @@
 WrapFunction(...)
 }
 \arguments{
-\item{...}{<character>: A string that could be parse and eval as a function.}
+\item{...}{\if{html}{\out{<character>}}: A string that could be parse and eval as a function.}
 }
 \value{
 The result of the function or a function.

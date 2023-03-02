@@ -7,11 +7,11 @@
 SdThreshold(x = NULL, sdThr = 3, tails = "both")
 }
 \arguments{
-\item{x}{<numeric>: numeric vector.}
+\item{x}{\if{html}{\out{<numeric>}}: numeric vector.}
 
-\item{sdThr}{<numeric>: number of standard deviation. (Default 3)}
+\item{sdThr}{\if{html}{\out{<numeric>}}: number of standard deviation. (Default 3)}
 
-\item{tails}{<character>: bounds to return, "lower", "upper" or "both". (Default "both")}
+\item{tails}{\if{html}{\out{<character>}}: bounds to return, "lower", "upper" or "both". (Default "both")}
 }
 \value{
 numerical vector of thresholds values for outliers triming

@@ -7,9 +7,9 @@
 Hsl2Hex(hslColor = NULL, alpha = FALSE)
 }
 \arguments{
-\item{hslColor}{<charcater>: A vector of the color's HSL code.}
+\item{hslColor}{\if{html}{\out{<charcater>}}: A vector of the color's HSL code.}
 
-\item{alpha}{<logical>: Whether the alpha layer should be returned. (Default FALSE)}
+\item{alpha}{\if{html}{\out{<logical>}}: Whether the alpha layer should be returned. (Default FALSE)}
 }
 \value{
 A character of the color's hexadecimal code.

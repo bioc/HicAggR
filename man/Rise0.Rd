@@ -7,9 +7,9 @@
 Rise0(spMtx = NULL, indices = NULL, coords = NULL)
 }
 \arguments{
-\item{spMtx}{<dgCMatrix or dgCMatrix coercible>: A sparse matrix.}
+\item{spMtx}{\if{html}{\out{<dgCMatrix or dgCMatrix coercible>}}: A sparse matrix.}
 
-\item{indices}{<numeric>: Vector of positions of the zeros to be explicits (column driven). If NULL and coords NULL all zeros are explicits. (Default NULL)}
+\item{indices}{\if{html}{\out{<numeric>}}: Vector of positions of the zeros to be explicits (column driven). If NULL and coords NULL all zeros are explicits. (Default NULL)}
 
 \item{coords}{<data.frame>: A coordinate data frame for zeros to explicit Row index in fisrt column, columns index in second columns. If NULL the indices parameter is used (Default NULL)}
 }

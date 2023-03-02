@@ -11,7 +11,7 @@ An object of class GRanges.
 data(TADs_Domains.gnr)
 }
 \description{
-Drosophila Melanogaster TADs on chromosome 2R and 2L ([F.Ramirez, 2018](https://doi.org/10.1038/s41467-017-02525-w))
+Drosophila Melanogaster TADs on chromosome 2R and 2L (\href{https://doi.org/10.1038/s41467-017-02525-w}{F.Ramirez, 2018})
 }
 \examples{
 data(TADs_Domains.gnr)

@@ -7,12 +7,12 @@
 SwitchMatrix(hicLst, matrixKind = c("obs", "norm", "o/e", "exp"))
 }
 \arguments{
-\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
 
-\item{matrixKind}{<character>: The kind of matrix you want.}
+\item{matrixKind}{\if{html}{\out{<character>}}: The kind of matrix you want.}
 }
 \value{
-A contactMatrix list.
+A ContactMatrix list.
 }
 \description{
 Change values in matrix with observed, balanced, observed/expected or expected values according to what are be done in hic.

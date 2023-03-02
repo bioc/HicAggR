@@ -7,7 +7,7 @@
 IsHsl(colour = NULL)
 }
 \arguments{
-\item{colour}{<character or numeric>: A color.}
+\item{colour}{\if{html}{\out{<character or numeric>}}: A color.}
 }
 \value{
 A logical.

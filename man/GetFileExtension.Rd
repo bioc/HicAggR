@@ -7,7 +7,7 @@
 GetFileExtension(file = NULL)
 }
 \arguments{
-\item{file}{<character>: The path to the file.}
+\item{file}{\if{html}{\out{<character>}}: The path to the file.}
 }
 \value{
 A character string

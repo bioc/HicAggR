@@ -3,6 +3,7 @@
 #' OrientateMatrix
 #' @description Oriente extracted Matrix according to the anchors and bait order. Apply a 180° rotation follow with a transposation on a matrix or on matricies in a list according to the interactions attributes of the list.
 #' @param mtx <matrix or List[matrix]>: Matrix or matricies list to oriente
+#' @param verbose <logical>: Report the number of matrices corrected. (Default: TRUE)
 #' @return Oriented matrix or matricies list
 #' @examples
 #' # Data
@@ -34,16 +35,18 @@
 #' oriented_Interactions_PF.mtx_lst <- OrientateMatrix(interactions_PF.mtx_lst)
 #'
 OrientateMatrix <- function(
-    mtx
+    mtx, verbose = TRUE
 ) {
     if (is.list(mtx) &&
         !is.null(attributes(mtx)$interactions)
     ) {
         orientedMatrice.mtx <- mtx
-        message(
-            length(which(!attributes(mtx)$interactions$orientation)),
-            " matrices are oriented"
-        )
+        if(verbose){
+            message(
+                length(which(!attributes(mtx)$interactions$orientation)),
+                " matrices are oriented"
+            )
+        }
         orientedMatrice.mtx[which(
             !attributes(mtx)$interactions$orientation
         )] <- lapply(

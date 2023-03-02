@@ -7,15 +7,15 @@
 NotIn(lhs, rhs)
 }
 \arguments{
-\item{lhs}{<vector or NULL>: Values to be compared against rhs}
+\item{lhs}{\if{html}{\out{<vector or NULL>}}: Values to be compared against rhs}
 
-\item{rhs}{<vector or NULL>: Values to be compared against lhs}
+\item{rhs}{\if{html}{\out{<vector or NULL>}}: Values to be compared against lhs}
 }
 \value{
 A boolean.
 }
 \description{
-Binary operator, inverse to \%in\%.
+Binary operator, inverse to \\%in\\%.
 }
 \details{
 NotIn

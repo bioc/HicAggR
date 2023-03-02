@@ -7,15 +7,15 @@
 GetFileName(file = NULL, extension = FALSE)
 }
 \arguments{
-\item{file}{<character>: The path to the file.}
+\item{file}{\if{html}{\out{<character>}}: The path to the file.}
 
-\item{extension}{<logical>: Whether the file extension should be returned with the file name. (Default FALSE)}
+\item{extension}{\if{html}{\out{<logical>}}: Whether the file extension should be returned with the file name. (Default FALSE)}
 }
 \value{
 A character string.
 }
 \description{
-Function as `basename()` with the option to not return the file extension.
+Function as \code{basename()} with the option to not return the file extension.
 }
 \details{
 GetFileName

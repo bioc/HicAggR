@@ -7,7 +7,7 @@
 MeanScale(x)
 }
 \arguments{
-\item{x}{<numeric>: Numerical vector.}
+\item{x}{\if{html}{\out{<numeric>}}: Numerical vector.}
 }
 \value{
 Scaled numeric vector.

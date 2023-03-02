@@ -7,11 +7,11 @@
 OverExpectedHiC(hicLst, verbose = FALSE, cores = 1)
 }
 \arguments{
-\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores}{<numerical> : Number of cores to be used. (Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
 }
 \value{
 A matrices list.

@@ -7,13 +7,13 @@
 BoxBlur(mtx, boxKernel = NULL, kernSize = NULL, stdev = 1)
 }
 \arguments{
-\item{mtx}{<matrix>: Numerical matrix.}
+\item{mtx}{\if{html}{\out{<matrix>}}: Numerical matrix.}
 
-\item{boxKernel}{<numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)}
+\item{boxKernel}{\if{html}{\out{<numeric>}}: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)}
 
-\item{kernSize}{<numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
+\item{kernSize}{\if{html}{\out{<numeric>}}: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)}
 
-\item{stdev}{<numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
+\item{stdev}{\if{html}{\out{<numeric>}}: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)}
 }
 \value{
 Blurred matrix.

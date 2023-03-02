@@ -7,13 +7,13 @@
 Gauss(x = NULL, y = NULL, stdev = 1, mu = 0)
 }
 \arguments{
-\item{x}{<numeric>: x value.}
+\item{x}{\if{html}{\out{<numeric>}}: x value.}
 
-\item{y}{<numeric>: y value for 2 dimensional gaussian.}
+\item{y}{\if{html}{\out{<numeric>}}: y value for 2 dimensional gaussian.}
 
-\item{stdev}{<numeric>: Standard deviation parameter of the gaussian. (Default 1)}
+\item{stdev}{\if{html}{\out{<numeric>}}: Standard deviation parameter of the gaussian. (Default 1)}
 
-\item{mu}{<numeric>: Mean deviation parameter of the gaussian. (Default 0)}
+\item{mu}{\if{html}{\out{<numeric>}}: Mean deviation parameter of the gaussian. (Default 0)}
 }
 \value{
 Result of Gaussian formula

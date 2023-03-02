@@ -15,19 +15,19 @@ ImportHiC(
 )
 }
 \arguments{
-\item{file}{<GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).}
+\item{file}{<GRanges or Pairs\link{GRanges} or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).}
 
-\item{hicResolution}{<numeric>: The HiC resolution.}
+\item{hicResolution}{\if{html}{\out{<numeric>}}: The HiC resolution.}
 
 \item{chromSizes}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
 
-\item{chrom_1}{<numeric>: The seqnames of firsts chromosmes (rows in matrix).}
+\item{chrom_1}{\if{html}{\out{<numeric>}}: The seqnames of firsts chromosmes (rows in matrix).}
 
-\item{chrom_2}{<numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1 (Defalt NULL)}
+\item{chrom_2}{\if{html}{\out{<numeric>}}: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1 (Defalt NULL)}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores}{<numerical> : An integer to specify the number of cores. (Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : An integer to specify the number of cores. (Default 1)}
 }
 \value{
 A matrices list.

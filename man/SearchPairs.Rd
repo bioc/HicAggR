@@ -14,17 +14,17 @@ SearchPairs(
 )
 }
 \arguments{
-\item{indexAnchor}{<GRanges>: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).}
+\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).}
 
-\item{indexBait}{<GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used instead (Default NULL)}
+\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used instead (Default NULL)}
 
-\item{minDist}{<numeric>: Minimal distance between anchors and baits. (Default NULL)}
+\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors and baits. (Default NULL)}
 
-\item{maxDist}{<numeric>: Maximal distance between anchors and baits. (Default NULL)}
+\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits. (Default NULL)}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
 
-\item{cores}{<integer> : Number of cores to use. (Default 1)}
+\item{cores}{\if{html}{\out{<integer>}} : Number of cores to use. (Default 1)}
 }
 \value{
 A GInteractions object.
