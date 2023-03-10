@@ -53,6 +53,20 @@
 #' )
 #' }
 #'
+#' 
+
+
+    #    file = paste0(workdir, "work/ALIGN_GSE172392_HiC_mESC_Han_2021/05_HIC_JUICER/merged.HiC_mESC_siRNA_EGFP.hic")
+    #    hicResolution = binSize.num
+    #    chromSizes = chromSize.df
+    #    chrom_1 = chromSize.df$name
+    #    chrom_2 = NULL
+    #    verbose = T
+    #    cores = 10
+
+
+
+
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
     chrom_2 = NULL, verbose = FALSE, cores = 1
@@ -84,6 +98,8 @@ ImportHiC <- function(
     } else {
         seqlevelsStyleHiC <- "ensembl"
     }
+    # chromSizs needs to have colnames = c("name", "length")
+    colnames(chromSizes) = c("name", "length")
     # Get SeqInfo
     if (GetFileExtension(file) == "hic") {
         if ("index" %in% colnames(chromSizes)) {
@@ -118,9 +134,15 @@ ImportHiC <- function(
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
     rownames(chromSizes) <- chromSizes$name
+    # Standardize chromSizes and chrom.chr
+    chromSizes <- dplyr::filter(
+        chromSizes,
+        chromSizes$name %in% chrom.chr
+    )
     # Standardize seqlevelsStyle of chromSizes according to
     # chrom.chr
-    if (grepl("chr", rownames(chromSizes)[1],fixed = TRUE) &
+    # This brings a problem when GetFileExtension(file) == "hic", sometimes it adds a first chrom called "All" with out chr, So I changed rownames(chromSizes)[1] to rownames(chromSizes)[length(rownames(chromSizes))]
+    if (grepl("chr", rownames(chromSizes)[length(rownames(chromSizes))],fixed = TRUE) &
         seqlevelsStyleHiC == "ensembl"
     ) {
         chromSizes$name <- unlist(lapply(
@@ -129,17 +151,12 @@ ImportHiC <- function(
         rownames(chromSizes) <- unlist(lapply(
             strsplit(rownames(chromSizes),"chr"),`[[`, 2
         ))
-    } else if (!grepl("chr", rownames(chromSizes)[1], fixed = TRUE) &
+    } else if (!grepl("chr", rownames(chromSizes)[length(rownames(chromSizes))], fixed = TRUE) &
         seqlevelsStyleHiC == "UCSC"
     ) {
         chromSizes$name <- paste0("chr", rownames(chromSizes))
         rownames(chromSizes) <- paste0("chr", rownames(chromSizes))
     }
-    # Standardize chromSizes and chrom.chr
-    chromSizes <- dplyr::filter(
-        chromSizes,
-        chromSizes$name %in% chrom.chr
-    )
     chromSizes <- dplyr::mutate(
         chromSizes,
         dimension = ceiling(chromSizes$length/hicResolution)
