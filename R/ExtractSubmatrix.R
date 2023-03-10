@@ -41,6 +41,19 @@
 #'     referencePoint = "pf"
 #' )
 #'
+#' 
+
+
+
+#   genomicFeature         = interactions_nr5a2_nr5a2.gni
+#   hicLst        = HiC_mESC_siRNA_EGFP.cmx_lst
+#   hicResolution            = NULL
+#   referencePoint = "pf"
+#   matriceDim     = 11
+#   cores          = 10
+#   verbose        = T
+
+
 ExtractSubmatrix <- function(
     genomicFeature = NULL, hicLst = NULL, referencePoint = "pf",
     hicResolution = NULL, matriceDim = 21, shift = 1, cores = 1,
@@ -132,6 +145,7 @@ ExtractSubmatrix <- function(
         }
         return(feature.gni)
     }
+
     # Run Check Resolution
     if (!is.null(attr(hicLst, "resolution"))) {
         hicResolution <- attr(hicLst, "resolution")
@@ -284,22 +298,18 @@ ExtractSubmatrix <- function(
     anchors.gnr <- InteractionSet::anchors(featureNoDup.gni)$first
     baits.gnr <- InteractionSet::anchors(featureNoDup.gni)$second
     # Extraction
+    multicoreParam <- MakeParallelParam(cores = cores,verbose = FALSE)
     submatrix.spm_lst <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
+        BPPARAM = multicoreParam,
         seq_along(S4Vectors::runValue(chromosomesCombinaison.rle)),
         function(combinaison.ndx) {
             combinaisonName.chr <-
                 S4Vectors::runValue(
                     chromosomesCombinaison.rle
                 )[[combinaison.ndx]]
-            combinaisonStart.ndx <-
-                cumsum(
-                    c(1, S4Vectors::runLength(chromosomesCombinaison.rle))
-                )[[combinaison.ndx]]
-            combinaisonEnd.ndx <-
-                cumsum(
-                    S4Vectors::runLength(chromosomesCombinaison.rle)
-                )[[combinaison.ndx]]
+            # print(paste0(" STARTING ENTRACTION FOR ", combinaisonName.chr))
+            combinaisonStart.ndx <- cumsum(c(1, S4Vectors::runLength(chromosomesCombinaison.rle)))[[combinaison.ndx]]
+            combinaisonEnd.ndx <-cumsum(S4Vectors::runLength(chromosomesCombinaison.rle))[[combinaison.ndx]]
             if (combinaisonName.chr %in% names(matAnchors.gnr_lst)) {
                 mat.ndx <- which(names(hicLst) == combinaisonName.chr)
                 ovl_row <- data.frame(GenomicRanges::findOverlaps(
@@ -354,12 +364,7 @@ ExtractSubmatrix <- function(
                     )
                     ovl_col <- tidyr::nest(ovl_col)
             }
-            multicoreParam <- MakeParallelParam(
-                cores = cores,
-                verbose = FALSE
-            )
-            tempSubmatrix.spm_lst <- BiocParallel::bplapply(
-                BPPARAM = multicoreParam,
+            tempSubmatrix.spm_lst <- lapply(
                 seq_along(combinaisonStart.ndx:combinaisonEnd.ndx),
                 function(range.ndx) {
                     row.ndx <- unlist(
@@ -409,12 +414,16 @@ ExtractSubmatrix <- function(
                     return(as.matrix(spMtx))
                 }
             )
+            print(paste0("extracted : ", length(tempSubmatrix.spm_lst), " Matrices on ", combinaisonName.chr))
             return(tempSubmatrix.spm_lst)
         }
     ) |>
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
+
+    print(paste0(" TOTAL extracted submat: ", length(submatrix.spm_lst)))
     submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
+    print(paste0(" FILTERED extracted submat: ", length(submatrix.spm_lst)))
     interactions.ndx <- seq_along(genomicFeature$name) |>
         stats::setNames(genomicFeature$name)
     interactions.ndx <- interactions.ndx[featureFilt.gni$name]
