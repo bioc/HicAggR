@@ -77,10 +77,9 @@ IndexFeatures <- function(
     gRangeList <- gRangeList[gRangeOrder.ndx]
     feature.chr_vec <- names(gRangeList)
     # GRanges Binning
-    binnedFeature.lst <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
-        seq_along(gRangeList),
-        function(feature.ndx) {
+    multicoreParam <- MakeParallelParam(cores = cores, verbose = FALSE) # DD 230310 correct how parallezation was done...
+    binnedFeature.lst <- BiocParallel::bplapply(BPPARAM = multicoreParam,
+        seq_along(gRangeList),function(feature.ndx) {
             feature.chr <- feature.chr_vec[[feature.ndx]]
             feature.gnr <- IRanges::subsetByOverlaps(
                 gRangeList[[feature.chr]],
@@ -134,12 +133,8 @@ IndexFeatures <- function(
             featConstOvlp.tbl <- tidyr::nest(featConstOvlp.tbl) |>
                 stats::setNames(c("Constraint.name", "BinnedFeature.ndx")) |>
                 dplyr::left_join(binnedConstraint.tbl, by = "Constraint.name")
-            multicoreParam <- MakeParallelParam(
-                cores = cores,
-                verbose = FALSE
-            )
-            binnedFeature.gnr_lst <- BiocParallel::bplapply(
-                BPPARAM = multicoreParam, seq_len(nrow(featConstOvlp.tbl)),
+
+            binnedFeature.gnr_lst <- lapply(seq_len(nrow(featConstOvlp.tbl)),
                 function(row.ndx) {
                     ranges.ndx <-
                         featConstOvlp.tbl$BinnedFeature.ndx[row.ndx] |>
@@ -273,6 +268,6 @@ IndexFeatures <- function(
     S4Vectors::mcols(binnedIndex.gnr) <- as.data.frame(
             S4Vectors::mcols(binnedIndex.gnr)
         ) |>
-        dplyr::select(columOrder.chr)
+        dplyr::select(all_of(columOrder.chr)) # should avoid warning tidyselect
     return(sort(binnedIndex.gnr))
 }
