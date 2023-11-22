@@ -101,6 +101,8 @@ ImportHiC <- function(
     # chromSizs needs to have colnames = c("name", "length")
     colnames(chromSizes) = c("name", "length")
     # Get SeqInfo
+    # These lines make no sense to me, why check "index" presence,
+    # if we are getting the chromSizes from file anyways...
     if (GetFileExtension(file) == "hic") {
         if ("index" %in% colnames(chromSizes)) {
             chromSizes <- strawr::readHicChroms(file) |>
@@ -108,6 +110,7 @@ ImportHiC <- function(
         } else {
             chromSizes <- strawr::readHicChroms(file)
         }
+        if("index" %in% colnames(chromSizes)){chromSizes <- chromSizes |> dplyr::select(-"index")}
     } else if (GetFileExtension(file) %in%
         c("cool", "mcool", "HDF5", "hdf5", "h5")
     ) {
@@ -141,7 +144,9 @@ ImportHiC <- function(
     )
     # Standardize seqlevelsStyle of chromSizes according to
     # chrom.chr
-    # This brings a problem when GetFileExtension(file) == "hic", sometimes it adds a first chrom called "All" with out chr, So I changed rownames(chromSizes)[1] to rownames(chromSizes)[length(rownames(chromSizes))]
+    # This brings a problem when GetFileExtension(file) == "hic", 
+    # sometimes it adds a first chrom called "All" with out chr, 
+    # So I changed rownames(chromSizes)[1] to rownames(chromSizes)[length(rownames(chromSizes))]
     if (grepl("chr", rownames(chromSizes)[length(rownames(chromSizes))],fixed = TRUE) &
         seqlevelsStyleHiC == "ensembl"
     ) {

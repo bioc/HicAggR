@@ -392,3 +392,81 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 tibble::column_to_rownames("name")
             gridExtra::grid.table(attr.tbl)
 }
+
+
+#' Draw aggregation plots for interactions with different distances.
+#' 
+#' PlotAPA_byDistance
+#' @description Separates matrices based on interaction distance, performs aggregation and plots Aggregated signal for each chunk of interaction distances.
+#' @param submatrices <listmatrix>: The matrices list to separate using interaction distances and aggregate.
+#' Chunks of distances are created with:
+#' `c(0,50000*2 ^ seq(0,5,by=1))`. 
+#' Other matrices with distances over 1.6 Mb are aggregated in the same final chunk.
+#' @param ... : Additional arguments to pass to Aggregation()
+#' For differential aggregation plot, `submatrices` will take the matrices of the treated condition. 
+#' eg:
+#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlMatrices = interactions_Ctrl.mtx_lst)`
+#' @return A plot with separate APAs per distance
+#' @importFrom gridExtra grid.arrange
+#' @examples
+#' library(HicAggR)
+#' # Data
+#' data(Beaf32_Peaks.gnr)
+#' data(HiC_Ctrl.cmx_lst)
+#'
+#' # Index Beaf32
+#' Beaf32_Index.gnr <- IndexFeatures(
+#'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     binSize = 100000
+#' )
+#'
+#' # Beaf32 <-> Beaf32 Pairing
+#' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
+#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+#'
+#' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
+#' interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
+#'     genomicFeature = Beaf_Beaf.gni,
+#'     hicLst = HiC_Ctrl.cmx_lst,
+#'     referencePoint = "pf"
+#' )
+#' interactions_Ctrl.mtx_lst <- PrepareMtxList(
+#'     matrices = interactions_Ctrl.mtx_lst
+#' )
+#' PlotAPA_byDistance(submatrices = interactions_Ctrl.mtx_lst)
+#' 
+PlotAPA_byDistance = function(submatrices = NULL,...){
+    maxCol = log2(max(attributes(submatrices)$interactions$distance)/50000)
+    if(maxCol>5){
+        vector_dist = c(c(0,50000*2 ^ seq(0,5,by=1)),
+            max(attributes(submatrices)$interactions$distance))
+    }else{
+        vector_dist = c(0,50000*2 ^ seq(0,maxCol,by=1))
+    }
+    by_dist_vec_list = list()
+    noValues_vector = c()
+    n_cples = c()
+    for(d in seq(2,length(vector_dist))){
+        filtered = FilterInteractions(
+            submatrices=submatrices,
+            target = list(
+                distance= function(dist){dist < vector_dist[d] & dist >= vector_dist[d-1]}),
+                    selectionFun=function(){list(distance)})
+        
+        if(length(filtered)>0){
+            by_dist_vec_list = append(by_dist_vec_list,
+            list(Aggregation(matrices = filtered,...)))
+            n_cples = c(n_cples,length(attr(filtered,"interactions")))
+        }else{
+            noValues_vector = c(noValues_vector,d)
+        }
+    }
+    vector_dist=vector_dist[-noValues_vector]
+    plotList = list()
+    for(p in seq(1,length(by_dist_vec_list))){
+        plotList = append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
+        ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p]))))
+    }
+    gridExtra::grid.arrange(grobs = plotList,ncol=length(plotList),nrow=1)
+}

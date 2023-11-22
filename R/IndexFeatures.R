@@ -85,6 +85,14 @@ IndexFeatures <- function(
                 gRangeList[[feature.chr]],
                 genomicConstraint
             )
+            # adding name metadata if the GRanges do not have name
+            if(is.null(feature.gnr$name)){
+                if(!is.null(names(gRangeList)[feature.ndx])){
+                    feature.gnr$name = paste0(names(gRangeList)[feature.ndx],'_',seq(1,length(feature.gnr)))
+                }else{
+                    feature.gnr$name = paste0("peak_feature",feature.ndx,'_',seq(1,length(feature.gnr)))
+                }
+            }
             GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
                 gRange = feature.gnr, chromSizes = chromSizes,
@@ -269,5 +277,8 @@ IndexFeatures <- function(
             S4Vectors::mcols(binnedIndex.gnr)
         ) |>
         dplyr::select(all_of(columOrder.chr)) # should avoid warning tidyselect
+    # When indexing a GRangeList seqinfo gets lost somehow
+    chromSizes = chromSizes[which(chromSizes[,1]!="All"),]
+    seqinfo(binnedIndex.gnr) = Seqinfo(seqnames = chromSizes[,1],seqlengths = chromSizes[,2],)
     return(sort(binnedIndex.gnr))
 }

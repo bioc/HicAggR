@@ -131,5 +131,15 @@ SearchPairs <- function(
         columOrder.chr
     )
     names(pairs.gni) <- S4Vectors::mcols(pairs.gni)$name
+        if(is.null(seqinfo(pairs.gni))){
+        seqinfo(pairs.gni) = seqinfo(indexAnchor)
+    }
+    ## Add maybe a line to add Seqinfo object.
+    ## To avoid error when using interactions built 
+    ## with grangeslist for both the anchor and bait. eg:
+#       Error in new_Rle(values, lengths) : Rle of type 'NULL' is not supported
+#   seqinfo(pairs.gni) = Seqinfo(
+    # seqnames= chromSizes$seqnames,
+    # seqlengths=chromSizes$selengths)
     return(pairs.gni)
 }
