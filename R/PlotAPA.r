@@ -402,17 +402,19 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
 #' Chunks of distances are created with:
 #' `c(0,50000*2 ^ seq(0,5,by=1))`. 
 #' Other matrices with distances over 1.6 Mb are aggregated in the same final chunk.
-#' @param ... : Additional arguments to pass to Aggregation()
+#' @param ctrlSubmatrices <listmatrix>: The matrices list to use as control condition for differential aggregation.
+#' @param ... : Additional arguments to pass to [Aggregation()]
 #' For differential aggregation plot, `submatrices` will take the matrices of the treated condition. 
 #' eg:
-#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlMatrices = interactions_Ctrl.mtx_lst)`
-#' @return A plot with separate APAs per distance
+#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlSubmatrices = interactions_Ctrl.mtx_lst)`
+#' @param plot.opts: list of arguments to pass to [ggAPA()].
+#' @return A plot with separate APAs per distance and a list of aggregated matrices as invisible output.
 #' @importFrom gridExtra grid.arrange
 #' @examples
-#' library(HicAggR)
-#' # Data
+#' #' # Data
 #' data(Beaf32_Peaks.gnr)
 #' data(HiC_Ctrl.cmx_lst)
+#' data(HiC_HS.cmx_lst)
 #'
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
@@ -431,12 +433,42 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
 #'     hicLst = HiC_Ctrl.cmx_lst,
 #'     referencePoint = "pf"
 #' )
+#' interactions_HS.mtx_lst <- ExtractSubmatrix(
+#'     genomicFeature = Beaf_Beaf.gni,
+#'     hicLst = HiC_HS.cmx_lst,
+#'     referencePoint = "pf"
+#' )
 #' interactions_Ctrl.mtx_lst <- PrepareMtxList(
 #'     matrices = interactions_Ctrl.mtx_lst
 #' )
+#'
+#' # Aggregate matrices in one matrix
 #' PlotAPA_byDistance(submatrices = interactions_Ctrl.mtx_lst)
+#'
+#'
+#' interactions_HS.mtx_lst <- PrepareMtxList(
+#'     matrices = interactions_HS.mtx_lst
+#' )
+#'
+#' # Differential Aggregation
+#' PlotAPA_byDistance(
+#'     submatrices = interactions_HS.mtx_lst,
+#'     ctrlSubmatrices = interactions_Ctrl.mtx_lst,
+#'     diffFun = "ratio",
+#'     plot.opts = list(colors = list("blue","white","red"))
+#' )
 #' 
-PlotAPA_byDistance = function(submatrices = NULL,...){
+PlotAPA_byDistance = function(submatrices = NULL,ctrlSubmatrices=NULL,...,plot.opts=NULL){
+    # exchange variables if submatrices is null
+    two_conditions = TRUE
+    if(is.null(submatrices) & !is.null(ctrlSubmatrices)){
+        submatrices = ctrlSubmatrices
+        two_conditions = FALSE
+    }
+    if(is.null(submatrices) & is.null(ctrlSubmatrices)){
+        stop("Argument submatrices is null")
+    }
+
     maxCol = log2(max(attributes(submatrices)$interactions$distance)/50000)
     if(maxCol>5){
         vector_dist = c(c(0,50000*2 ^ seq(0,5,by=1)),
@@ -447,26 +479,44 @@ PlotAPA_byDistance = function(submatrices = NULL,...){
     by_dist_vec_list = list()
     noValues_vector = c()
     n_cples = c()
+    all_cples = attr(submatrices,"interactions")
     for(d in seq(2,length(vector_dist))){
-        filtered = FilterInteractions(
-            submatrices=submatrices,
-            target = list(
-                distance= function(dist){dist < vector_dist[d] & dist >= vector_dist[d-1]}),
-                    selectionFun=function(){list(distance)})
-        
-        if(length(filtered)>0){
-            by_dist_vec_list = append(by_dist_vec_list,
-            list(Aggregation(matrices = filtered,...)))
-            n_cples = c(n_cples,length(attr(filtered,"interactions")))
+        samples = all_cples$name[which(all_cples$distance < vector_dist[d] & 
+            all_cples$distance >= vector_dist[d-1])]
+        filtered = FilterInteractions(submatrices,targets=list(name=samples))
+
+        if(!is.null(ctrlSubmatrices) & two_conditions){
+            filtered_ctrl = FilterInteractions(ctrlSubmatrices,targets=list(name=samples))
+            if(length(filtered)>0 & length(filtered_ctrl)){
+                by_dist_vec_list = append(by_dist_vec_list,
+                list(Aggregation(matrices = filtered,ctrlMatrices = filtered_ctrl,...)))
+                n_cples = c(n_cples,length(attr(filtered,"interactions")))
+            }else{
+                noValues_vector = c(noValues_vector,d)
+            }
         }else{
-            noValues_vector = c(noValues_vector,d)
+            if(length(filtered)>0){
+                by_dist_vec_list = append(by_dist_vec_list,
+                list(Aggregation(matrices = filtered,...)))
+                n_cples = c(n_cples,length(attr(filtered,"interactions")))
+            }else{
+                noValues_vector = c(noValues_vector,d)
+            }
         }
     }
     vector_dist=vector_dist[-noValues_vector]
     plotList = list()
     for(p in seq(1,length(by_dist_vec_list))){
-        plotList = append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
-        ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p]))))
+        if(!is.null(plot.opts) & length(plot.opts)>0){
+            chunk.plot = list(do.call(ggAPA,c(list(aggregatedMtx = by_dist_vec_list[[p]]),
+                as.list(plot.opts)))+
+                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p])))
+            plotList = append(plotList,chunk.plot)
+        }else{
+            plotList = append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
+                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p]))))
+        }
     }
     gridExtra::grid.arrange(grobs = plotList,ncol=length(plotList),nrow=1)
+    return(invisible(list("agg.matrices" = by_dist_vec_list,"distance.chunks"=vector_dist[-1],"nb.couples"=n_cples)))
 }
