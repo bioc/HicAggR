@@ -4,7 +4,12 @@
 \alias{PlotAPA_byDistance}
 \title{Draw aggregation plots for interactions with different distances.}
 \usage{
-PlotAPA_byDistance(submatrices = NULL, ...)
+PlotAPA_byDistance(
+  submatrices = NULL,
+  ctrlSubmatrices = NULL,
+  ...,
+  plot.opts = NULL
+)
 }
 \arguments{
 \item{submatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to separate using interaction distances and aggregate.
@@ -12,13 +17,17 @@ Chunks of distances are created with:
 \code{c(0,50000*2 ^ seq(0,5,by=1))}.
 Other matrices with distances over 1.6 Mb are aggregated in the same final chunk.}
 
-\item{...}{: Additional arguments to pass to Aggregation()
+\item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use as control condition for differential aggregation.}
+
+\item{...}{: Additional arguments to pass to \code{\link[=Aggregation]{Aggregation()}}
 For differential aggregation plot, \code{submatrices} will take the matrices of the treated condition.
 eg:
-\code{PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlMatrices = interactions_Ctrl.mtx_lst)}}
+\code{PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlSubmatrices = interactions_Ctrl.mtx_lst)}}
+
+\item{plot.opts:}{list of arguments to pass to \code{\link[=ggAPA]{ggAPA()}}.}
 }
 \value{
-A plot with separate APAs per distance
+A plot with separate APAs per distance and a list of aggregated matrices as invisible output.
 }
 \description{
 Separates matrices based on interaction distance, performs aggregation and plots Aggregated signal for each chunk of interaction distances.
@@ -27,10 +36,10 @@ Separates matrices based on interaction distance, performs aggregation and plots
 PlotAPA_byDistance
 }
 \examples{
-library(HicAggR)
-# Data
+#' # Data
 data(Beaf32_Peaks.gnr)
 data(HiC_Ctrl.cmx_lst)
+data(HiC_HS.cmx_lst)
 
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
@@ -49,9 +58,29 @@ interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
     hicLst = HiC_Ctrl.cmx_lst,
     referencePoint = "pf"
 )
+interactions_HS.mtx_lst <- ExtractSubmatrix(
+    genomicFeature = Beaf_Beaf.gni,
+    hicLst = HiC_HS.cmx_lst,
+    referencePoint = "pf"
+)
 interactions_Ctrl.mtx_lst <- PrepareMtxList(
     matrices = interactions_Ctrl.mtx_lst
 )
+
+# Aggregate matrices in one matrix
 PlotAPA_byDistance(submatrices = interactions_Ctrl.mtx_lst)
+
+
+interactions_HS.mtx_lst <- PrepareMtxList(
+    matrices = interactions_HS.mtx_lst
+)
+
+# Differential Aggregation
+PlotAPA_byDistance(
+    submatrices = interactions_HS.mtx_lst,
+    ctrlSubmatrices = interactions_Ctrl.mtx_lst,
+    diffFun = "ratio",
+    plot.opts = list(colors = list("blue","white","red"))
+)
 
 }
