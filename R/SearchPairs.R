@@ -131,8 +131,8 @@ SearchPairs <- function(
         columOrder.chr
     )
     names(pairs.gni) <- S4Vectors::mcols(pairs.gni)$name
-        if(is.null(seqinfo(pairs.gni))){
-        seqinfo(pairs.gni) = seqinfo(indexAnchor)
+        if(is.null(GenomeInfoDb::seqinfo(pairs.gni))){
+        GenomeInfoDb::seqinfo(pairs.gni) = GenomeInfoDb::seqinfo(indexAnchor)
     }
     ## Add maybe a line to add Seqinfo object.
     ## To avoid error when using interactions built 

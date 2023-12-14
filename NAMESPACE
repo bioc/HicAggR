@@ -1,3 +1,5 @@
 exportPattern("^[[:alpha:]]+")
 import(InteractionSet)
 importFrom("rlang", ".data")
+importFrom(gridExtra,grid.arrange)
+importFrom(gridExtra,grid.table)

@@ -236,7 +236,7 @@ attributes(HiC_Ctrl.cmx_lst)
 
 Each contactmatrix in the list have metadata. These are accessible via:
 ```{r, eval = TRUE}
-S4Vectors::metadata(HiC_Ctrl.cmx_lst[["2L_2L"]])
+str(S4Vectors::metadata(HiC_Ctrl.cmx_lst[["2L_2L"]]))
 #>
 ```
 

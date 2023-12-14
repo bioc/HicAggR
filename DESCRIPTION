@@ -16,7 +16,7 @@ Description:
     of 3D genomic interactions. It includes the import of
     standard HiC data formats into R and HiC normalisation procedures.
     The main objective of this package is to improve the visualization and
-    quantification of the analysis of HiC contacts through aggreagtion.
+    quantification of the analysis of HiC contacts through aggregation.
 biocViews: Software, HiC, DataImport, DataRepresentation, Normalization, Visualization
 License: MIT + file LICENSE
 URL: https://cuvierlab.github.io/HicAggR/,
@@ -42,7 +42,8 @@ Imports:
     stats,
     strawr,
     tibble,
-    tidyr
+    tidyr,
+    gridExtra
 Suggests:
     covr,
     kableExtra,
