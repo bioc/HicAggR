@@ -53,19 +53,6 @@
 #' )
 #' }
 #'
-#' 
-
-
-    #    file = paste0(workdir, "work/ALIGN_GSE172392_HiC_mESC_Han_2021/05_HIC_JUICER/merged.HiC_mESC_siRNA_EGFP.hic")
-    #    hicResolution = binSize.num
-    #    chromSizes = chromSize.df
-    #    chrom_1 = chromSize.df$name
-    #    chrom_2 = NULL
-    #    verbose = T
-    #    cores = 10
-
-
-
 
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
@@ -98,8 +85,10 @@ ImportHiC <- function(
     } else {
         seqlevelsStyleHiC <- "ensembl"
     }
-    # chromSizs needs to have colnames = c("name", "length")
-    colnames(chromSizes) = c("name", "length")
+    # This throws error when building vignettes, if chromSizes object is not supplied
+    # line 115-120 in HicAggR.Rmd & 168-174 in InDepth.Rmd
+    # # chromSizs needs to have colnames = c("name", "length")
+    # colnames(chromSizes) = c("name", "length")
     # Get SeqInfo
     # These lines make no sense to me, why check "index" presence,
     # if we are getting the chromSizes from file anyways...
@@ -111,6 +100,7 @@ ImportHiC <- function(
             chromSizes <- strawr::readHicChroms(file)
         }
         if("index" %in% colnames(chromSizes)){chromSizes <- chromSizes |> dplyr::select(-"index")}
+        colnames(chromSizes) = c("name", "length")
     } else if (GetFileExtension(file) %in%
         c("cool", "mcool", "HDF5", "hdf5", "h5")
     ) {
@@ -125,6 +115,7 @@ ImportHiC <- function(
     } else if (GetFileExtension(file) == "bedpe" &
         !is.null(chromSizes)
     ) {
+        colnames(chromSizes) = c("name", "length")        
         hic.gnp <- rtracklayer::import(file, format = "bedpe")
         megaHic.dtf <- data.frame(
             chrom_1 = as.vector(hic.gnp@first@seqnames),
@@ -137,11 +128,13 @@ ImportHiC <- function(
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
     rownames(chromSizes) <- chromSizes$name
-    # Standardize chromSizes and chrom.chr
-    chromSizes <- dplyr::filter(
-        chromSizes,
-        chromSizes$name %in% chrom.chr
-    )
+    # vignette building throws error InDepth.Rmd (177-183), data is in UCSC chrom_1 in Ensembl
+    # gives a void chromSizes table
+    # # Standardize chromSizes and chrom.chr
+    # chromSizes <- dplyr::filter(
+    #     chromSizes,
+    #     chromSizes$name %in% chrom.chr
+    # )
     # Standardize seqlevelsStyle of chromSizes according to
     # chrom.chr
     # This brings a problem when GetFileExtension(file) == "hic", 

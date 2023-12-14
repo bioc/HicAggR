@@ -276,9 +276,9 @@ IndexFeatures <- function(
     S4Vectors::mcols(binnedIndex.gnr) <- as.data.frame(
             S4Vectors::mcols(binnedIndex.gnr)
         ) |>
-        dplyr::select(all_of(columOrder.chr)) # should avoid warning tidyselect
+        dplyr::select(dplyr::all_of(columOrder.chr)) # should avoid warning tidyselect
     # When indexing a GRangeList seqinfo gets lost somehow
     chromSizes = chromSizes[which(chromSizes[,1]!="All"),]
-    seqinfo(binnedIndex.gnr) = Seqinfo(seqnames = chromSizes[,1],seqlengths = chromSizes[,2],)
+    GenomeInfoDb::seqinfo(binnedIndex.gnr) = GenomeInfoDb::Seqinfo(seqnames = chromSizes[,1],seqlengths = chromSizes[,2],)
     return(sort(binnedIndex.gnr))
 }
