@@ -504,7 +504,9 @@ PlotAPA_byDistance = function(submatrices = NULL,ctrlSubmatrices=NULL,...,plot.o
             }
         }
     }
-    vector_dist=vector_dist[-noValues_vector]
+    if(length(noValues_vector)>0){
+        vector_dist=vector_dist[-noValues_vector]
+    }    
     plotList = list()
     for(p in seq(1,length(by_dist_vec_list))){
         if(!is.null(plot.opts) & length(plot.opts)>0){
