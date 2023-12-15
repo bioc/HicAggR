@@ -12,25 +12,32 @@ PlotAPA_byDistance(
 )
 }
 \arguments{
-\item{submatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to separate using interaction distances and aggregate.
+\item{submatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to separate using
+interaction distances and aggregate.
 Chunks of distances are created with:
 \code{c(0,50000*2 ^ seq(0,5,by=1))}.
-Other matrices with distances over 1.6 Mb are aggregated in the same final chunk.}
+Other matrices with distances over 1.6 Mb are aggregated in the same
+final chunk.}
 
-\item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use as control condition for differential aggregation.}
+\item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use as control
+condition for differential aggregation.}
 
 \item{...}{: Additional arguments to pass to \code{\link[=Aggregation]{Aggregation()}}
-For differential aggregation plot, \code{submatrices} will take the matrices of the treated condition.
+For differential aggregation plot, \code{submatrices} will take the matrices
+of the treated condition.
 eg:
 \code{PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlSubmatrices = interactions_Ctrl.mtx_lst)}}
 
-\item{plot.opts:}{list of arguments to pass to \code{\link[=ggAPA]{ggAPA()}}.}
+\item{plot.opts}{list of arguments to pass to \code{\link[=ggAPA]{ggAPA()}}.}
 }
 \value{
-A plot with separate APAs per distance and a list of aggregated matrices as invisible output.
+A plot with separate APAs per distance and a list of aggregated
+matrices as invisible output.
 }
 \description{
-Separates matrices based on interaction distance, performs aggregation and plots Aggregated signal for each chunk of interaction distances.
+Separates matrices based on interaction distance, performs
+aggregation and plots Aggregated signal for each chunk of interaction
+distances.
 }
 \details{
 PlotAPA_byDistance
@@ -44,13 +51,14 @@ data(HiC_HS.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"),
+        seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 
 # Beaf32 <-> Beaf32 Pairing
 Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for eg
 
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_Ctrl.mtx_lst <- ExtractSubmatrix(

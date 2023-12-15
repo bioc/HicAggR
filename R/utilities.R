@@ -16,8 +16,11 @@
 #' BindFillRows
 #' @keywords internal
 #' @description Bind data frames by rows after filling missing columns with NA.
-#' @param df_Lst <data.frames or list[data.frame]>: Data frames to bind or list of data.frames. If is a data.frame create a list with arguments `df_Lst` and `...`, else `...` are ignored.
-#' @param ... <data.frames or list[data.frame]>: Data frames to bind or list of data.frames.
+#' @param df_Lst <data.frames or list[data.frame]>: Data frames to bind or list
+#'  of data.frames. If is a data.frame create a list with arguments
+#'  `df_Lst` and `...`, else `...` are ignored.
+#' @param ... <data.frames or list[data.frame]>: Data frames to bind or list of
+#'  data.frames.
 #' @return The binded data frame
 #' @examples
 #' df1 <- data.frame(a = seq_len(5), b = c(6:10))
@@ -51,9 +54,12 @@ BindFillRows <- function(
 #' @keywords internal
 #' @description Blur a matrix with a one dimensional kernel.
 #' @param mtx <matrix>: Numerical matrix.
-#' @param boxKernel <numeric>: The numerical vector for kernel. If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)
-#' @param kernSize <numeric>: If boxKernel is NULL, size of kernel for 'GaussBox' function. (Default NULL)
-#' @param stdev <numeric>: If boxKernel is NULL, standard deviation parameter for 'GaussBox' function. (Default NULL)
+#' @param boxKernel <numeric>: The numerical vector for kernel.
+#'  If NULL apply a GaussBox (see 'GaussBox' function) (Default NULL)
+#' @param kernSize <numeric>: If boxKernel is NULL, size of kernel for
+#'  'GaussBox' function. (Default NULL)
+#' @param stdev <numeric>: If boxKernel is NULL, standard deviation
+#'  parameter for 'GaussBox' function. (Default NULL)
 #' @return Blurred matrix.
 #' @examples
 #' set.seed(981643)
@@ -104,13 +110,15 @@ BoxBlur <- function(
 #'
 #' BreakVector
 #' @keywords internal
-#' @description Compute the n+1 breaks of a vector in a linear or density based way with the possibility to fix minimal, center and maximal values.
+#' @description Compute the n+1 breaks of a vector in a linear or density based
+#'  way with the possibility to fix minimal, center and maximal values.
 #' @param x <numeric>: Numerical vector.
 #' @param x_min <numeric>: Minimal fixed value.
 #' @param center <numeric>: Center fixed value.
 #' @param x_max <numeric>: Maximal fixed value.
 #' @param n <numeric>: Number of tile (return n+1 breaks).
-#' @param method <character>: Kind of breaking. "linear" or "density". (Default "linear")
+#' @param method <character>: Kind of breaking. "linear" or "density".
+#'  (Default "linear")
 #' @return Numerical vector of breaks.
 #' @examples
 #' set.seed(31415)
@@ -135,7 +143,7 @@ BreakVector <- function(
                 x_min, x_max,
                 length.out = n
             )
-        } else if (x_min < center & center < x_max) {
+        } else if (x_min < center && center < x_max) {
             breaks.num <- c(
                 seq(
                     x_min, center,
@@ -177,7 +185,8 @@ BreakVector <- function(
 #' @description Gaussian formula in 1 or 2 dimension.
 #' @param x <numeric>: x value.
 #' @param y <numeric>: y value for 2 dimensional gaussian.
-#' @param stdev <numeric>: Standard deviation parameter of the gaussian. (Default 1)
+#' @param stdev <numeric>: Standard deviation parameter of the gaussian.
+#'  (Default 1)
 #' @param mu <numeric>: Mean deviation parameter of the gaussian. (Default 0)
 #' @return Result of Gaussian formula
 #' @examples
@@ -201,9 +210,13 @@ Gauss <- function(
 #' GaussBox
 #' @keywords internal
 #' @description One dimension Gaussian kernel.
-#' @param stdev <numeric>: Standard deviation parameter of the gaussian. (Default 1)
-#' @param kernSize <numeric>: Kernel size. If NULL size is 1+4*stdev (Default NULL)
-#' @param kernScale <character>: Scaling kind of box. If "1" sum of kernel equal 1. If "int" Minimal value of kernel is 1 and all entry are integer. If "none", kernel is not scale. (Default "1")
+#' @param stdev <numeric>: Standard deviation parameter of the gaussian.
+#'  (Default 1)
+#' @param kernSize <numeric>: Kernel size. If NULL size is 1+4*stdev.
+#'  (Default NULL)
+#' @param kernScale <character>: Scaling kind of box. If "1" sum of kernel
+#'  equals 1. If "int" Minimal value of kernel is 1 and all entry are integer.
+#'  If "none", kernel is not scale. (Default "1")
 #' @return numerical vector.
 #' @examples
 #' GaussBox(stdev = 5, kernScale = "none")
@@ -244,9 +257,11 @@ GaussBox <- function(
 #' Base pairs convertion.
 #'
 #' GenomicSystem
-#' @description Convert numbers of base into string with order of magnitude (Kbp, Mbp, Gbp) and vice versa.
+#' @description Convert numbers of base into string with order of magnitude
+#'  (Kbp, Mbp, Gbp) and vice versa.
 #' @param x <character or numeric>: The number to convert or string to convert.
-#' @param digits <integer>: The number of significant digits to be used. See signif() for more informations. (Default 3)
+#' @param digits <integer>: The number of significant digits to be used.
+#'  See [signif()] for more informations. (Default 3)
 #' @return The converted number or string.
 #' @examples
 #' GenomicSystem(1540, 3)
@@ -315,9 +330,11 @@ GetFileExtension <- function(
 #'
 #' GetFileName
 #' @keywords internal
-#' @description Function as `basename()` with the option to not return the file extension.
+#' @description Function as `basename()` with the option to not return the file
+#'  extension.
 #' @param file <character>: The path to the file.
-#' @param extension <logical>: Whether the file extension should be returned with the file name. (Default FALSE)
+#' @param extension <logical>: Whether the file extension should be returned
+#'  with the file name. (Default FALSE)
 #' @return A character string.
 #' @examples
 #' filePath.pth ="my/path/to/my/file.txt"
@@ -337,10 +354,15 @@ GetFileName <- function(
 
 #' In situ Hi-C control.
 #'
-#' @description In situ Hi-C on non-heat treated S2 cells (Drosophila Melanogaster) with MboI on chromosome 2R and 2L download from [4DN](https://data.4dnucleome.org/experiment-set-replicates/4DNESFOADERB/) portal (Ray J, Munn PR, et al., 2019). This data is the result of the HicAggR::ImportHiC function.
+#' @description In situ Hi-C on non-heat treated S2 cells
+#'  (Drosophila Melanogaster) with MboI on chromosome 2R and 2L download from
+#'  [4DN](https://data.4dnucleome.org/experiment-set-replicates/4DNESFOADERB/)
+#'  portal (Ray J, Munn PR, et al., 2019). This data is the result of the
+#'  [HicAggR::ImportHiC()] function.
 #' @docType data
 #' @usage data(HiC_Ctrl.cmx_lst)
-#' @format A a list of ContactMatrix objects. Each element correspond to the interaction matrix of two chromosomes.
+#' @format A a list of ContactMatrix objects. Each element correspond to the
+#'  interaction matrix of two chromosomes.
 #' @keywords datasets
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
@@ -350,10 +372,15 @@ GetFileName <- function(
 
 #' In situ Hi-C heat treated.
 #'
-#' @description In situ Hi-C on heat treated S2 cells (Drosophila Melanogaster) with MboI on chromosome 2R and 2L download from [4DN](https://data.4dnucleome.org/experiment-set-replicates/4DNESFI64TG3/) portal (Ray J, Munn PR, et al., 2019). This data is the result of the HicAggR::ImportHiC function.
+#' @description In situ Hi-C on heat treated S2 cells (Drosophila Melanogaster)
+#'  with MboI on chromosome 2R and 2L download from
+#'  [4DN](https://data.4dnucleome.org/experiment-set-replicates/4DNESFI64TG3/)
+#'  portal (Ray J, Munn PR, et al., 2019). This data is the result of the
+#'  [HicAggR::ImportHiC()] function.
 #' @docType data
 #' @usage data(HiC_HS.cmx_lst)
-#' @format A a list of ContactMatrix objects. Each element correspond to the interaction matrix of two chromosomes.
+#' @format A a list of ContactMatrix objects. Each element correspond to the
+#'  interaction matrix of two chromosomes.
 #' @keywords datasets
 #' @examples
 #' data(HiC_HS.cmx_lst)
@@ -365,9 +392,11 @@ GetFileName <- function(
 #'
 #' Hsl2Hex
 #' @keywords internal
-#' @description Convert a color in HSL (Hue,Saturation,Light) to hexadecimal format.
+#' @description Convert a color in HSL (Hue,Saturation,Light) to
+#'  hexadecimal format.
 #' @param hslColor <charcater>: A vector of the color's HSL code.
-#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param alpha <logical>: Whether the alpha layer should be returned.
+#'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
 #' @examples
 #' Hsl2Hex(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
@@ -384,9 +413,10 @@ Hsl2Hex <- function(
 #'
 #' Hsl2Rgb
 #' @keywords internal
-#' @description Convert a color in HSl (Hue,Saturation,Light) format to RGB format.
+#' @description Convert a color in HSl (Hue,Saturation,Light) format to RGB.
 #' @param hslColor <charcater>: A vector of the color's HSL code.
-#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param alpha <logical>: Whether the alpha layer should be returned.
+#'  (Default FALSE)
 #' @return An integer vector of the color's RGB code.
 #' @examples
 #' Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
@@ -394,7 +424,7 @@ Hsl2Hex <- function(
 Hsl2Rgb <- function(
     hslColor = NULL, alpha = FALSE
 ) {
-    if (3 > length(hslColor) | length(hslColor) > 4) {
+    if (3 > length(hslColor) || length(hslColor) > 4) {
         err.chr <- paste0(
             "Need 3 or 4 values beetween 0 and 255, first value for hue, ",
             "second for saturation, third for light and last for alpha"
@@ -411,37 +441,37 @@ Hsl2Rgb <- function(
             C <- hslColor[2] * (1 - abs(2 * hslColor[3] - 1))
             X <- C * (1 - abs((hslColor[1] / 60) %% 2 - 1))
             m <- hslColor[3] - C / 2
-            if (0 <= hslColor[1] & hslColor[1] < 60) {
+            if (0 <= hslColor[1] && hslColor[1] < 60) {
                 rbgColor <- c(
                     red = (C + m) * 255,
                     green = (X + m) * 255,
                     blue = (0 + m) * 255
                 )
-            } else if (60 <= hslColor[1] & hslColor[1] < 120) {
+            } else if (60 <= hslColor[1] && hslColor[1] < 120) {
                 rbgColor <- c(
                     red = (X + m) * 255,
                     green = (C + m) * 255,
                     blue = (0 + m) * 255
                 )
-            } else if (120 <= hslColor[1] & hslColor[1] < 180) {
+            } else if (120 <= hslColor[1] && hslColor[1] < 180) {
                 rbgColor <- c(
                     red = (0 + m) * 255,
                     green = (C + m) * 255,
                     blue = (X + m) * 255
                 )
-            } else if (180 <= hslColor[1] & hslColor[1] < 240) {
+            } else if (180 <= hslColor[1] && hslColor[1] < 240) {
                 rbgColor <- c(
                     red = (0 + m) * 255,
                     green = (X + m) * 255,
                     blue = (C + m) * 255
                 )
-            } else if (240 <= hslColor[1] & hslColor[1] < 300) {
+            } else if (240 <= hslColor[1] && hslColor[1] < 300) {
                 rbgColor <- c(
                     red = (X + m) * 255,
                     green = (0 + m) * 255,
                     blue = (C + m) * 255
                 )
-            } else if (300 <= hslColor[1] & hslColor[1] < 360) {
+            } else if (300 <= hslColor[1] && hslColor[1] < 360) {
                 rbgColor <- c(
                     red = (C + m) * 255,
                     green = (0 + m) * 255,
@@ -467,12 +497,16 @@ Hsl2Rgb <- function(
 #' Hue
 #' @description Create an Hue palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param rotation <numeric>: If positive, rotates clockwise in the color space, reversing if the number is negative. If is NULL compute rotation according to hueRange parameter. (Default NULL)
-#' @param hueRange <numeric>: Degree range in color space between 0 and 360. (Default c(0,360))
+#' @param rotation <numeric>: If positive, rotates clockwise in the color
+#'  space, reversing if the number is negative. If is NULL compute rotation
+#'  according to hueRange parameter. (Default NULL)
+#' @param hueRange <numeric>: Degree range in color space between 0 and 360.
+#'  (Default c(0,360))
 #' @param saturation <numeric>: Saturation value between 0 and 1. (Default 0.65)
 #' @param lightness <numeric>: Lightness value between 0 and 1. (Default 0.65)
 #' @param alphaValue <numeric>: Opacity value between 0 and 1. (Default 1)
-#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param alpha <logical>: Whether the alpha layer should be returned.
+#'  (Default FALSE)
 #' @return A vector of color.
 #' @examples
 #' Hue(paletteLength = 9)
@@ -616,9 +650,12 @@ IsRgb <- function(
 #' MakeParallelParam
 #' @keywords internal
 #' @description Create BiocParallel parameter according to OS.
-#' @param cores <numerical> : An integer to specify the number of cores. (Default 1)
-#' @param verbose <logical>: A logical value. If TRUE show the progression in console. (Default TRUE)
-#' @return Parrallel parameter according number of cores and OS to use with BiocParallel package.
+#' @param cores <numerical> : An integer to specify the number of cores.
+#'  (Default 1)
+#' @param verbose <logical>: A logical value. If TRUE show the progression in
+#'  console. (Default TRUE)
+#' @return Parrallel parameter according number of cores and OS to use with
+#'  BiocParallel package.
 #' @examples
 #' multicoreParam <- MakeParallelParam(2)
 #' BiocParallel::bplapply(BPPARAM = multicoreParam, seq_len(3), sqrt)
@@ -626,8 +663,8 @@ IsRgb <- function(
 MakeParallelParam <- function(
     cores = 1, verbose = FALSE
 ) {
-    if (!is.numeric(cores) |
-        cores < 2 |
+    if (!is.numeric(cores) ||
+        cores < 2 ||
         .Platform$OS.type == "windows"
     ) {
         return(BiocParallel::SerialParam(progressbar = verbose))
@@ -655,7 +692,8 @@ MakeParallelParam <- function(
 #' y.num <- rnorm(500, 100)
 #' plot(density(x), col = "red", xlim = c(min(y.num), max(x)))
 #' lines(density(y.num), col = "green")
-#' plot(density(MeanScale(x)), col = "red", xlim = c(min(MeanScale(y.num)), max(MeanScale(x))))
+#' plot(density(MeanScale(x)), col = "red",
+#'     xlim = c(min(MeanScale(y.num)), max(MeanScale(x))))
 #' lines(density(MeanScale(y.num)), col = "green")
 #'
 MeanScale <- function(
@@ -722,7 +760,8 @@ MinMaxScale <- function(
 #'
 #' Plus
 #' @keywords internal
-#' @description Perform sum by removing NA. If all values are NA return NA instead 0.
+#' @description Perform sum by removing NA. If all values are NA return NA
+#'  instead 0.
 #' @param x <numerical>: A numerical vector
 #' @return  The sum of numbers.
 #' @examples
@@ -753,7 +792,8 @@ Plus <- function(
 #' @description Find threshold for outliers triming based on quantiles.
 #' @param x <numeric>: Numeric vector.
 #' @param prctThr <numeric>: Percentage (0-100) threshold. (Default 5)
-#' @param tails <character>: Bounds to return, "lower", "upper" or "both". (Default "both")
+#' @param tails <character>: Bounds to return, "lower", "upper" or "both".
+#'  (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
 #' @examples
 #' set.seed(1111)
@@ -781,7 +821,8 @@ QtlThreshold <- function(
 #' @keywords internal
 #' @description Convert a color in RGB format to hexadecimal format.
 #' @param rbgColor <integer>: An integer of the color's RGB code.
-#' @param alpha <logical>: Whether the alpha layer should be returned. (Default FALSE)
+#' @param alpha <logical>: Whether the alpha layer should be returned.
+#'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
 #' @examples
 #' Rgb2Hex(c(235, 176, 16, 127), alpha = TRUE)
@@ -789,7 +830,7 @@ QtlThreshold <- function(
 Rgb2Hex <- function(
     rbgColor = NULL, alpha = FALSE
 ) {
-    if (3 > length(rbgColor) | length(rbgColor) > 4) {
+    if (3 > length(rbgColor) || length(rbgColor) > 4) {
         err.chr <- paste0(
             "Need 3 or 4 values beetween 0 and 255, first value for red, ",
             "second for green, third for blue and last for alpha"
@@ -833,8 +874,12 @@ Rgb2Hex <- function(
 #' @keywords internal
 #' @description Explicit some implicit zeros in sparse matrix.
 #' @param spMtx <dgCMatrix or dgCMatrix coercible>: A sparse matrix.
-#' @param indices <numeric>: Vector of positions of the zeros to be explicits (column driven). If NULL and coords NULL all zeros are explicits. (Default NULL)
-#' @param coords <data.frame>: A coordinate data frame for zeros to explicit Row index in fisrt column, columns index in second columns. If NULL the indices parameter is used (Default NULL)
+#' @param indices <numeric>: Vector of positions of the zeros to be explicits
+#'  (column driven). If NULL and coords NULL all zeros are explicits.
+#'  (Default NULL)
+#' @param coords <data.frame>: A coordinate data frame for zeros to explicit
+#'  Row index in fisrt column, columns index in second columns. If NULL the
+#'  indices parameter is used (Default NULL)
 #' @return Sparse matrix with some explicit zeros.
 #' @examples
 #' set.seed(123)
@@ -873,10 +918,11 @@ Rise0 <- function(
 #'
 #' SdThreshold
 #' @keywords internal
-#' @description Find threshold for outliers triming based on standard deviation.
+#' @description Find threshold to trim outliers based on standard deviation.
 #' @param x <numeric>: numeric vector.
 #' @param sdThr <numeric>: number of standard deviation. (Default 3)
-#' @param tails <character>: bounds to return, "lower", "upper" or "both". (Default "both")
+#' @param tails <character>: bounds to return, "lower", "upper" or "both".
+#'  (Default "both")
 #' @return numerical vector of thresholds values for outliers triming
 #' @examples
 #' set.seed(1111)
@@ -911,8 +957,10 @@ SdThreshold <- function(
 #' @examples
 #' GRange.grn <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2", "chr1"), c(1, 3, 1)),
-#'     ranges = IRanges::IRanges(101:105, end = 111:115, names = letters[seq_len(5)]),
-#'     strand = S4Vectors::Rle(BiocGenerics::strand(c("-", "+", "*", "+")), c(1, 1, 2, 1)),
+#'     ranges = IRanges::IRanges(101:105, end = 111:115,
+#'         names = letters[seq_len(5)]),
+#'     strand = S4Vectors::Rle(BiocGenerics::strand(c("-", "+", "*", "+")),
+#'         c(1, 1, 2, 1)),
 #'     seqinfo = c(chr1 = 200, chr2 = 300),
 #'     score = seq_len(5)
 #' )
@@ -929,7 +977,8 @@ SeqEnds <- function(
 #' Convert String to GRanges.
 #'
 #' StrToGRanges
-#' @description Convert ranges describe with string (i.e seqname:start-end:strand) in GRanges object.
+#' @description Convert ranges describe with string 
+#' (i.e seqname:start-end:strand) in GRanges object.
 #' @param stringRanges <character>: Strings to convert on GRanges.
 #' @return A GRanges object.
 #' @examples
@@ -973,7 +1022,8 @@ StrToGRanges <- function(
 
 #' D.melanogaster TADs.
 #'
-#' @description Drosophila Melanogaster TADs on chromosome 2R and 2L ([F.Ramirez, 2018](https://doi.org/10.1038/s41467-017-02525-w))
+#' @description Drosophila Melanogaster TADs on chromosome 2R and 2L
+#'  ([F.Ramirez, 2018](https://doi.org/10.1038/s41467-017-02525-w))
 #' @docType data
 #' @usage data(TADs_Domains.gnr)
 #' @format An object of class GRanges.
@@ -1002,9 +1052,14 @@ StrToGRanges <- function(
 #' viridis
 #' @description Create a viridis palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation. See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
+#' @param space <numeric>: A character string; interpolation in RGB or
+#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
+#'  (Default "rgb")
+#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
+#'  See ?grDevices::colorRamp for more details. (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give more widely
+#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
+#'  (Default 1)
 #' @return A vector of color.
 #' @examples
 #' viridis(9)
@@ -1093,9 +1148,14 @@ WrapFunction <- function(
 #' YlGnBu
 #' @description Create a YlGnBu palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation. See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
+#' @param space <numeric>: A character string; interpolation in RGB or
+#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
+#'  (Default "rgb")
+#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
+#'  See ?grDevices::colorRamp for more details. (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give more widely
+#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
+#'  (Default 1)
 #' @return A vector of color.
 #' @examples
 #' YlGnBu(9)
@@ -1120,9 +1180,14 @@ YlGnBu <- function(
 #' YlOrRd
 #' @description Create a YlOrRd palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details. (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation. See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
+#' @param space <numeric>: A character string; interpolation in RGB or
+#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
+#'  (Default "rgb")
+#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
+#'  See ?grDevices::colorRamp for more details. (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give more widely
+#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
+#'  (Default 1)
 #' @return A vector of color.
 #' @examples
 #' YlOrRd(9)

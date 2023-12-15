@@ -1,14 +1,23 @@
 #' Compute HiC matrix-balancing.
 #'
 #' BalanceHiC
-#' @description Apply a matrix-balancing normalization method to a list of contacts matrix.
-#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
-#' @param method <character> : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
-#' @param interactionType <character> : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)
+#' @description Apply a matrix-balancing normalization method to a
+#'  list of contacts matrix.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
+#' @param method <character> : The kind of normalization method.
+#'  One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
+#' @param interactionType <character> : "cis", "trans", c("cis", "trans"),
+#'  "all".
+#'  If NULL normalization is apply on cis contactMatrix then trans
+#'  contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization
+#'  is apply on all contactMatrix at once. (Default NULL)
 #' @param maxIter <numerical>: The maximum iteration number.
-#' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
+#' @param qtlTh <numerical>: The threshold quantile below which the bins will
+#'  be ignored. (Default 0.15)
 #' @param cores <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
@@ -219,7 +228,7 @@ BalanceHiC <- function(
         }
     } else {
         matricesKind.tbl <- attributes(hicLst)$matricesKind
-        if (is.null(interactionType) |
+        if (is.null(interactionType) ||
             "cis" %in% interactionType
         ) {
             if ("cis" %in% matricesKind.tbl$type) {
@@ -270,7 +279,7 @@ BalanceHiC <- function(
                 message(mess.chr)
             }
         }
-        if (is.null(interactionType) |
+        if (is.null(interactionType) ||
             "trans" %in% interactionType
         ) {
             if ("trans" %in% matricesKind.tbl$type) {

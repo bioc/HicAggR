@@ -2,14 +2,26 @@
 #'
 #' ExtractSubmatrix
 #' @description Extract matrices in the HiC maps list around genomic features.
-#' @param genomicFeature <GRanges or Pairs[GRanges] or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.
-#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
-#' @param referencePoint <character>: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")
-#' @param hicResolution <numeric>: The resolution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)
+#' @param genomicFeature <GRanges or Pairs[GRanges] or GInteractions>:
+#'  The genomic coordinates on which compute the extraction of HiC submatrix.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
+#' @param referencePoint <character>: Type of extracted submatrices.
+#'  "rf" for "region feature" to extract triangle-shaped matrices around
+#'  regions or "pf" for "point feature" to extract square-shaped matrices
+#'  around points. (Default "rf")
+#' @param hicResolution <numeric>: The resolution in used in hicLst.
+#'  If NULL automatically find in resolution attributes of hicLst.
+#'  (Default NULL)
 #' @param matriceDim <numeric>: The size of matrices in output. (Default 21).
-#' @param shift <numeric>: Only when "referencePoint" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shift=2, extracted matrices will be 2*regionSize+regionSize+2*regionSize.
-#' @param cores <integer> : An integer to specify the number of cores. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param shift <numeric>: Only when "referencePoint" is "rf". Factor defining
+#'  how much of the distance between anchor and bait is extracted before and
+#'  after the region (Default 1). Ex: for shift=2, extracted matrices will
+#'  be 2*regionSize+regionSize+2*regionSize.
+#' @param cores <integer> : An integer to specify the number of cores.
+#'  (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' # Data
@@ -19,7 +31,8 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
@@ -27,7 +40,8 @@
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 #' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 #'
-#' # Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
+#' # Matrices extractions of regions defined between
+#' # Beaf32 <-> Beaf32 interactions
 #' interactions_RF.mtx_lst <- ExtractSubmatrix(
 #'     genomicFeature = Beaf_Beaf.gni,
 #'     hicLst = HiC_Ctrl.cmx_lst,
@@ -41,17 +55,7 @@
 #'     referencePoint = "pf"
 #' )
 #'
-#' 
-
-
-
-#   genomicFeature         = interactions_nr5a2_nr5a2.gni
-#   hicLst        = HiC_mESC_siRNA_EGFP.cmx_lst
-#   hicResolution            = NULL
-#   referencePoint = "pf"
-#   matriceDim     = 11
-#   cores          = 10
-#   verbose        = T
+#'
 
 
 ExtractSubmatrix <- function(
@@ -168,8 +172,10 @@ ExtractSubmatrix <- function(
     referencePoint <- tolower(referencePoint)
     if (referencePoint == "rf") {
         cis.lgk <- ReduceRun(
-            GenomeInfoDb::seqnames(InteractionSet::anchors(genomicFeature)$first),
-            GenomeInfoDb::seqnames(InteractionSet::anchors(genomicFeature)$second),
+            GenomeInfoDb::seqnames(
+                InteractionSet::anchors(genomicFeature)$first),
+            GenomeInfoDb::seqnames(
+                InteractionSet::anchors(genomicFeature)$second),
             reduceMethod = "paste", sep = "_"
             ) |>
             as.character() |>
@@ -179,7 +185,8 @@ ExtractSubmatrix <- function(
             }) |>
             unlist()
         genomicFeature <- genomicFeature[cis.lgk]
-        genomicFeature <- genomicFeature[which(genomicFeature$distance >= (3 * hicResolution))]
+        genomicFeature <- genomicFeature[
+            which(genomicFeature$distance >= (3 * hicResolution))]
         ranges.lst_dtf <- lapply(
             c("first", "second"),
             function(anchorName.chr) {
@@ -307,9 +314,10 @@ ExtractSubmatrix <- function(
                 S4Vectors::runValue(
                     chromosomesCombinaison.rle
                 )[[combinaison.ndx]]
-            # print(paste0(" STARTING ENTRACTION FOR ", combinaisonName.chr))
-            combinaisonStart.ndx <- cumsum(c(1, S4Vectors::runLength(chromosomesCombinaison.rle)))[[combinaison.ndx]]
-            combinaisonEnd.ndx <-cumsum(S4Vectors::runLength(chromosomesCombinaison.rle))[[combinaison.ndx]]
+            combinaisonStart.ndx <- cumsum(c(1, S4Vectors::runLength(
+                chromosomesCombinaison.rle)))[[combinaison.ndx]]
+            combinaisonEnd.ndx <-cumsum(S4Vectors::runLength(
+                chromosomesCombinaison.rle))[[combinaison.ndx]]
             if (combinaisonName.chr %in% names(matAnchors.gnr_lst)) {
                 mat.ndx <- which(names(hicLst) == combinaisonName.chr)
                 ovl_row <- data.frame(GenomicRanges::findOverlaps(
@@ -414,20 +422,22 @@ ExtractSubmatrix <- function(
                     return(as.matrix(spMtx))
                 }
             )
-            print(paste0("extracted : ", length(tempSubmatrix.spm_lst), " Matrices on ", combinaisonName.chr))
+            message("extracted : ", length(tempSubmatrix.spm_lst), 
+            " Matrices on ", combinaisonName.chr)
             return(tempSubmatrix.spm_lst)
         }
     ) |>
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
 
-    print(paste0(" TOTAL extracted submat: ", length(submatrix.spm_lst)))
+    message(paste0(" TOTAL extracted submat: ", length(submatrix.spm_lst)))
     submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
-    print(paste0(" FILTERED extracted submat: ", length(submatrix.spm_lst)))
+    message(paste0(" FILTERED extracted submat: ", length(submatrix.spm_lst)))
     interactions.ndx <- seq_along(genomicFeature$name) |>
         stats::setNames(genomicFeature$name)
     interactions.ndx <- interactions.ndx[featureFilt.gni$name]
-    attributes(submatrix.spm_lst)$interactions <- genomicFeature[interactions.ndx]
+    attributes(submatrix.spm_lst)$interactions <- genomicFeature[
+        interactions.ndx]
     attributes(submatrix.spm_lst)$resolution <- hicResolution
     attributes(submatrix.spm_lst)$referencePoint <- referencePoint
     attributes(submatrix.spm_lst)$matriceDim <- matriceDim

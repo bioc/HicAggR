@@ -1,10 +1,13 @@
 #' Genomic distance bias correction.
 #'
 #' OverExpectedHiC
-#' @description Function that normalises HiC matrices by expected values computing by genomic distance.
-#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
+#' @description Function that normalises HiC matrices by expected values
+#'  computed per genomic distance.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
 #' @param cores <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' # Note: run HicAggR::BalanceHiC before OverExpectedHiC calculation.

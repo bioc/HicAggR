@@ -1,9 +1,11 @@
 #' Cut HiC map in chunks.
 #'
 #' CutHiC
-#' @description Cut a mega contactMatrix (join of multiple chromosomic maps) inq a list of contactMatrix.
+#' @description Cut a mega contactMatrix (joint from multiple chromosomic maps)
+#'  into a list of contactMatrix.
 #' @param megaHic <contactMatrix>: The HiC megamap.
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)

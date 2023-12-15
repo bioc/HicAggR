@@ -4,22 +4,37 @@
 #' @description Create a ggplot object used for plot aggregation.
 #' @param aggregatedMtx <matrix> : The matrix to plot. (Default NULL)
 #' @param title <character> : The title of plot. (Default NULL)
-#' @param trim <numeric> : A number between 0 and 100 that give the percentage of trimming. (Default 0)
-#' @param tails <character> : Which boundary must be trim, if it's both, trim half of the percentage in inferior and superior see QtlThreshold. (Default "both")
-#' @param colMin <numeric> : Minimal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colMid <numeric> : Center value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colMax <numeric> : Maximal value of Heatmap, force color range. If Null automaticaly find. (Default NULL)
-#' @param colBreaks <numeric> : Repartition of colors. If Null automaticaly find. (Default NULL)
+#' @param trim <numeric> : A number between 0 and 100 that give the percentage
+#'  of trimming. (Default 0)
+#' @param tails <character> : Which boundary must be trim, if it's both, trim
+#'  half of the percentage in inferior and superior see QtlThreshold.
+#'  (Default "both")
+#' @param colMin <numeric> : Minimal value of Heatmap, force color range.
+#'  If Null automaticaly find. (Default NULL)
+#' @param colMid <numeric> : Center value of Heatmap, force color range.
+#'  If Null automaticaly find. (Default NULL)
+#' @param colMax <numeric> : Maximal value of Heatmap, force color range.
+#'  If Null automaticaly find. (Default NULL)
+#' @param colBreaks <numeric> : Repartition of colors.
+#'  If Null automaticaly find. (Default NULL)
 #' @param blurPass <numeric> : Number of blur pass. (Default 0)
-#' @param boxKernel <numeric> : If NULL automaticaly compute for 3 Sd. (Default NULL)
-#' @param kernSize <numeric> : Size of box applied to blurr if null automaticaly compute for 3 Sd. (Default NULL)
+#' @param boxKernel <numeric> : If NULL automaticaly compute for 3 Sd.
+#'  (Default NULL)
+#' @param kernSize <numeric> : Size of box applied to blurr if null automaticaly
+#'  compute for 3 Sd. (Default NULL)
 #' @param stdev <numeric> : SD of gaussian smooth. (Default 0.5)
-#' @param loTri <numeric> : The value that replace all value in the lower triangle of matrice (Usefull when blur is apply). (Default NULL)
-#' @param colors <character> : Heatmap color list. If NULL automaticaly compute. (Default NULL)
+#' @param loTri <numeric> : The value that replace all value in the lower
+#'  triangle of matrice (Usefull when blur is apply). (Default NULL)
+#' @param colors <character> : Heatmap color list. If NULL automaticaly compute.
+#'  (Default NULL)
 #' @param na.value <character> : Color of NA values. (Default "#F2F2F2")
-#' @param colorScale <character> : Shape of color scale on of "linear" or "density" based. (Default "linear")
-#' @param bias <numeric> : A positive number. Higher values give more widely spaced colors at the high end. See ?grDevices::colorRamp for more details. (Default 1)
-#' @param paletteLength <numeric> : The number of color in the palette. (Default 51)
+#' @param colorScale <character> : Shape of color scale on of "linear" or
+#'  "density" based. (Default "linear")
+#' @param bias <numeric> : A positive number. Higher values give more widely
+#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
+#'  (Default 1)
+#' @param paletteLength <numeric> : The number of color in the palette.
+#'  (Default 51)
 #' @return A ggplot object.
 #' @examples
 #' # Data
@@ -29,7 +44,8 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'

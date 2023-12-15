@@ -14,15 +14,21 @@ SearchPairs(
 )
 }
 \arguments{
-\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).}
+\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as pairs
+anchor (must be indexed using IndexFeatures()).}
 
-\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used instead (Default NULL)}
+\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as pairs
+bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used
+instead (Default NULL)}
 
-\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors and baits. (Default NULL)}
+\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors and baits.
+(Default NULL)}
 
-\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits. (Default NULL)}
+\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits.
+(Default NULL)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores to use. (Default 1)}
 }
@@ -30,7 +36,8 @@ SearchPairs(
 A GInteractions object.
 }
 \description{
-Creates pairs of coordinates from indexed anchor and bait genomic coordinates according to distance constraints.
+Creates pairs of coordinates from indexed anchor and bait
+genomic coordinates according to distance constraints.
 }
 \details{
 SearchPairs
@@ -42,7 +49,8 @@ data(Beaf32_Peaks.gnr)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"),
+        seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 

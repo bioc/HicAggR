@@ -11,23 +11,34 @@ PlotAPA(
   colMid = NULL,
   colMax = NULL,
   colMinCond = NULL,
-  colMaxCond = NULL
+  colMaxCond = NULL,
+  ...
 )
 }
 \arguments{
 \item{aggregatedMtx}{\if{html}{\out{<matrix>}}: The aggregated matrix.}
 
-\item{trim}{\if{html}{\out{<numeric>}}: A number between 0 and 100 thaht give the percentage of triming in matrices.}
+\item{trim}{\if{html}{\out{<numeric>}}: A number between 0 and 100 thaht give the percentage
+of triming in matrices.}
 
-\item{colMin}{\if{html}{\out{<matrix>}}: The minimal value in color scale. If Null automaticaly find.}
+\item{colMin}{\if{html}{\out{<matrix>}}: The minimal value in color scale.
+If Null automaticaly find.}
 
-\item{colMid}{\if{html}{\out{<matrix>}}: The middle value in color scale. If Null automaticaly find.}
+\item{colMid}{\if{html}{\out{<matrix>}}: The middle value in color scale.
+If Null automaticaly find.}
 
-\item{colMax}{\if{html}{\out{<matrix>}}: The mximal value in color scale. If Null automaticaly find.}
+\item{colMax}{\if{html}{\out{<matrix>}}: The mximal value in color scale.
+If Null automaticaly find.}
 
-\item{colMinCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation. The minimal value in color scale in the classsical aggregation plot. If Null automaticaly find.}
+\item{colMinCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation.
+The minimal value in color scale in the classsical aggregation plot.
+If Null automaticaly find.}
 
-\item{colMaxCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation. The maxiaml value in color scale in the classsical aggregation plot. If Null automaticaly find.}
+\item{colMaxCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation.
+The maxiaml value in color scale in the classsical aggregation plot.
+If Null automaticaly find.}
+
+\item{...}{additional arguments to \code{\link[=ggAPA]{ggAPA()}}}
 }
 \value{
 None
@@ -39,19 +50,45 @@ Draw aggregation plot from aggregation matrices.
 PlotAPA
 }
 \examples{
-library(GenomicED)
-data(aggreg.mtx)
+# Data
+data(Beaf32_Peaks.gnr)
+data(HiC_Ctrl.cmx_lst)
 
+# Index Beaf32
+Beaf32_Index.gnr <- IndexFeatures(
+    gRangeList = list(Beaf = Beaf32_Peaks.gnr),
+    chromSizes = data.frame(seqnames = c("2L", "2R"),
+        seqlengths = c(23513712, 25286936)),
+    binSize = 100000
+)
+
+# Beaf32 <-> Beaf32 Pairing
+Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
+Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+
+# Matrices extractions center on Beaf32 <-> Beaf32 point interaction
+interactions_PF.mtx_lst <- ExtractSubmatrix(
+    genomicFeature = Beaf_Beaf.gni,
+    hicLst = HiC_Ctrl.cmx_lst,
+    referencePoint = "pf"
+)
+
+# Aggregate matrices in one matrix
+aggreg.mtx <- Aggregation(interactions_PF.mtx_lst)
+
+# Visualization
+PlotAPA(
+    aggregatedMtx = aggreg.mtx
+)
 
 PlotAPA(
-    aggregatedMtx                  = aggreg.mtx,
-    trim             = 20,
-    colMin          = -2,
-    colMid               = 0,
-    colMax          = 2,
+    aggregatedMtx= aggreg.mtx,
+    trim= 20,
+    colMin= -2,
+    colMid= 0,
+    colMax= 2,
     colMinCond = 0,
     colMaxCond = 2
 )
-
 
 }

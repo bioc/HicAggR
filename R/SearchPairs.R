@@ -1,13 +1,20 @@
 #' Creates pairs from genomic index.
 #'
 #' SearchPairs
-#' @description Creates pairs of coordinates from indexed anchor and bait genomic coordinates according to distance constraints.
-#' @param indexAnchor <GRanges>: A first indexed GRanges object used as pairs anchor (must be indexed using IndexFeatures()).
-#' @param indexBait <GRanges>: A second indexed GRanges object used as pairs bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used instead (Default NULL)
-#' @param minDist <numeric>: Minimal distance between anchors and baits. (Default NULL)
-#' @param maxDist <numeric>: Maximal distance between anchors and baits. (Default NULL)
+#' @description Creates pairs of coordinates from indexed anchor and bait
+#'  genomic coordinates according to distance constraints.
+#' @param indexAnchor <GRanges>: A first indexed GRanges object used as pairs
+#'  anchor (must be indexed using IndexFeatures()).
+#' @param indexBait <GRanges>: A second indexed GRanges object used as pairs
+#'  bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used
+#'  instead (Default NULL)
+#' @param minDist <numeric>: Minimal distance between anchors and baits.
+#'  (Default NULL)
+#' @param maxDist <numeric>: Maximal distance between anchors and baits.
+#'  (Default NULL)
 #' @param cores <integer> : Number of cores to use. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A GInteractions object.
 #' @examples
 #' # Data
@@ -16,7 +23,8 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
@@ -131,15 +139,12 @@ SearchPairs <- function(
         columOrder.chr
     )
     names(pairs.gni) <- S4Vectors::mcols(pairs.gni)$name
-        if(is.null(GenomeInfoDb::seqinfo(pairs.gni))){
-        GenomeInfoDb::seqinfo(pairs.gni) = GenomeInfoDb::seqinfo(indexAnchor)
-    }
-    ## Add maybe a line to add Seqinfo object.
     ## To avoid error when using interactions built 
     ## with grangeslist for both the anchor and bait. eg:
-#       Error in new_Rle(values, lengths) : Rle of type 'NULL' is not supported
-#   seqinfo(pairs.gni) = Seqinfo(
-    # seqnames= chromSizes$seqnames,
-    # seqlengths=chromSizes$selengths)
+    ## Error in new_Rle(values, lengths) : Rle of type 'NULL' is not supported
+    if(is.null(GenomeInfoDb::seqinfo(pairs.gni))){
+        GenomeInfoDb::seqinfo(pairs.gni) <- GenomeInfoDb::seqinfo(indexAnchor)
+    }
+    
     return(pairs.gni)
 }

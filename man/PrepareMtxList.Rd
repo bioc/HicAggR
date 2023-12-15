@@ -22,7 +22,9 @@ PrepareMtxList(
 
 \item{rm0}{\if{html}{\out{<logical>}}: Whether 0 should be replaced with NA. (Default FALSE)}
 
-\item{transFun}{\if{html}{\out{<function or chracter>}}: The function used to transform or scale values in each submatrix before aggregation. The following characters can be submitted:
+\item{transFun}{\if{html}{\out{<function or chracter>}}: The function used to transform
+or scale values in each submatrix before aggregation. The following
+characters can be submitted:
 \itemize{
 \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 \item "percentile" or "prct" apply percentile.
@@ -33,13 +35,16 @@ PrepareMtxList(
 \item other or NULL don't apply transformation (Default).
 }}
 
-\item{orientate}{\if{html}{\out{<logical>}}: Whether matrices must be orientate before the aggregation.}
+\item{orientate}{\if{html}{\out{<logical>}}: Whether matrices must be orientate
+before the aggregation.}
 }
 \value{
 A matrix list ready for aggregation of values extraction.
 }
 \description{
-Prepares matrices list for further analysis (eg. Aggregation or GetQuantif). Orientation can be corrected, and per matrix transformation can be performed.
+Prepares matrices list for further analysis
+(eg. Aggregation or GetQuantif). Orientation can be corrected,
+and per matrix transformation can be performed.
 }
 \details{
 PrepareMtxList
@@ -53,7 +58,8 @@ data(HiC_HS.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"),
+          seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 

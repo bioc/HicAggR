@@ -2,13 +2,21 @@
 #'
 #' ImportHiC
 #' @description Import ..hic, .cool, .mcool or .bedpe data
-#' @param file <GRanges or Pairs[GRanges] or GInteractions>: The genomic feature on which compute the extraction of HiC submatrix. Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe" assuming .h5 et .hdf5 are only for cool (not mcool).
+#' @param file <GRanges or Pairs[GRanges] or GInteractions>:
+#'  The genomic feature on which compute the extraction of HiC submatrix.
+#'  Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe"
+#'  assuming .h5 and .hdf5 are only for cool (not mcool).
 #' @param hicResolution <numeric>: The HiC resolution.
-#' @param chromSizes <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
+#' @param chromSizes <data.frame>: A data.frame where first colum correspond
+#'  to the chromosomes names, and the second column correspond to the
+#'  chromosomes lengths in base pairs.
 #' @param chrom_1 <numeric>: The seqnames of firsts chromosmes (rows in matrix).
-#' @param chrom_2 <numeric>: The seqnames of second chromosmes (col in matrix). If is NULL is equal to chrom_1 (Defalt NULL)
-#' @param cores <numerical> : An integer to specify the number of cores. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param chrom_2 <numeric>: The seqnames of second chromosmes (col in matrix).
+#'  If is NULL is equal to chrom_1 (Defalt NULL)
+#' @param cores <numerical> : An integer to specify the number of cores.
+#'  (Default 1)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A matrices list.
 #' @examples
 #' \donttest{
@@ -85,7 +93,8 @@ ImportHiC <- function(
     } else {
         seqlevelsStyleHiC <- "ensembl"
     }
-    # This throws error when building vignettes, if chromSizes object is not supplied
+    # This throws error when building vignettes, if chromSizes
+    #  object is not supplied
     # line 115-120 in HicAggR.Rmd & 168-174 in InDepth.Rmd
     # # chromSizs needs to have colnames = c("name", "length")
     # colnames(chromSizes) = c("name", "length")
@@ -99,8 +108,10 @@ ImportHiC <- function(
         } else {
             chromSizes <- strawr::readHicChroms(file)
         }
-        if("index" %in% colnames(chromSizes)){chromSizes <- chromSizes |> dplyr::select(-"index")}
-        colnames(chromSizes) = c("name", "length")
+        if("index" %in% colnames(chromSizes)){
+            chromSizes <- chromSizes |>
+                dplyr::select(-"index")}
+        colnames(chromSizes) <- c("name", "length")
     } else if (GetFileExtension(file) %in%
         c("cool", "mcool", "HDF5", "hdf5", "h5")
     ) {
@@ -112,10 +123,10 @@ ImportHiC <- function(
         )
         # Get SeqInfo
         chromSizes <- data.frame(rhdf5::h5read(file, name = chr.group))
-    } else if (GetFileExtension(file) == "bedpe" &
+    } else if (GetFileExtension(file) == "bedpe" &&
         !is.null(chromSizes)
     ) {
-        colnames(chromSizes) = c("name", "length")        
+        colnames(chromSizes) <- c("name", "length")
         hic.gnp <- rtracklayer::import(file, format = "bedpe")
         megaHic.dtf <- data.frame(
             chrom_1 = as.vector(hic.gnp@first@seqnames),
@@ -128,7 +139,8 @@ ImportHiC <- function(
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
     rownames(chromSizes) <- chromSizes$name
-    # vignette building throws error InDepth.Rmd (177-183), data is in UCSC chrom_1 in Ensembl
+    # vignette building throws error InDepth.Rmd (177-183), 
+    # data is in UCSC chrom_1 in Ensembl
     # gives a void chromSizes table
     # # Standardize chromSizes and chrom.chr
     # chromSizes <- dplyr::filter(
@@ -139,8 +151,10 @@ ImportHiC <- function(
     # chrom.chr
     # This brings a problem when GetFileExtension(file) == "hic", 
     # sometimes it adds a first chrom called "All" with out chr, 
-    # So I changed rownames(chromSizes)[1] to rownames(chromSizes)[length(rownames(chromSizes))]
-    if (grepl("chr", rownames(chromSizes)[length(rownames(chromSizes))],fixed = TRUE) &
+    # So I changed rownames(chromSizes)[1] to 
+    # rownames(chromSizes)[length(rownames(chromSizes))]
+    if (grepl("chr", rownames(chromSizes)[
+        length(rownames(chromSizes))],fixed = TRUE) &&
         seqlevelsStyleHiC == "ensembl"
     ) {
         chromSizes$name <- unlist(lapply(
@@ -149,7 +163,8 @@ ImportHiC <- function(
         rownames(chromSizes) <- unlist(lapply(
             strsplit(rownames(chromSizes),"chr"),`[[`, 2
         ))
-    } else if (!grepl("chr", rownames(chromSizes)[length(rownames(chromSizes))], fixed = TRUE) &
+    } else if (!grepl("chr", rownames(chromSizes)[
+        length(rownames(chromSizes))], fixed = TRUE) &&
         seqlevelsStyleHiC == "UCSC"
     ) {
         chromSizes$name <- paste0("chr", rownames(chromSizes))
@@ -230,13 +245,13 @@ ImportHiC <- function(
                     GetFileExtension(file) %in%
                         c("cool", "HDF5", "hdf5", "h5"),
                     yes = "/indexes",
-                    no = paste("resolutions", hicResolution, "indexes", sep = "/")
+                    no = paste("resolutions",hicResolution,"indexes",sep = "/")
                 )
                 pixels.group <- ifelse(
                     GetFileExtension(file) %in%
                         c("cool", "HDF5", "hdf5", "h5"),
                     yes = "/pixels",
-                    no = paste("resolutions", hicResolution, "pixels", sep = "/")
+                    no = paste("resolutions", hicResolution,"pixels",sep = "/")
                 )
                 # Define start and end of chromosomes
                 ends.ndx <- chromSizes$dimension |>

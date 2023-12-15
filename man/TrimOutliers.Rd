@@ -9,15 +9,20 @@ TrimOutliers(x, thr = SdThreshold(x), clip = FALSE)
 \arguments{
 \item{x}{\if{html}{\out{<numeric>}}: Numeric vector.}
 
-\item{thr}{\if{html}{\out{<numeric>}}: Numeric vector of length 2. first value is minimal threshold, second value maximal threshold (Default find threshold based on standarrd deviation. see \code{SdThreshold} function)}
+\item{thr}{\if{html}{\out{<numeric>}}: Numeric vector of length 2. first value is minimal
+threshold, second value maximal threshold (Default find threshold based
+on standarrd deviation. see \code{SdThreshold} function)}
 
-\item{clip}{\if{html}{\out{<logical>}}: If TRUE the value out of bounds are replace with threshodls values. If FALSE the Values out of bound are replace with NA (Default FALSE).}
+\item{clip}{\if{html}{\out{<logical>}}: If TRUE the value out of bounds are replace with
+threshodls values. If FALSE the Values out of bound are replace with NA
+(Default FALSE).}
 }
 \value{
 Trimed Numerical vector.
 }
 \description{
-Replace values of a numerical vector that are below a minimal thresholds and/or above maximal thresholds.
+Replace values of a numerical vector that are below a minimal
+thresholds and/or above maximal thresholds.
 }
 \details{
 TrimOutliers
