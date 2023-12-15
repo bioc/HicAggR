@@ -1,25 +1,37 @@
 #' Aggregation of matrices list.
 #'
 #' Aggregation
-#' @description Aggregates all the matrices of a list (or two lists in case of differential aggregation) into a single matrix. This function allows to apply different aggregation (average, sum, ...), and differential (subtraction, ratio, ...) functions.
-#' @param ctrlMatrices <list[matrix]>: The matrices list to aggregate as control.
+#' @description Aggregates all the matrices of a list (or two lists in case
+#'  of differential aggregation) into a single matrix. This function allows
+#'  to apply different aggregation (average, sum, ...), and 
+#' differential (subtraction, ratio, ...) functions.
+#' @param ctrlMatrices <list[matrix]>: The matrices list to aggregate as
+#'  control.
 #' @param matrices <list[matrix]>: The matrices list to aggregate.
-#' @param aggFun <function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
+#' @param aggFun <function or chracter>: The function use to aggregate
+#'  each pixel in matrix. If the parameter is a character so:
 #' \itemize{
 #' \item "50%" or "median" apply the median
 #' \item "+" or "sum" apply the sum
 #' \item other (Default) apply the mean
 #' }
-#' @param diffFun <function or chracter>: The function use to compute differential. If the parameter is character so:
+#' @param diffFun <function or chracter>: The function use to compute
+#'  differential. If the parameter is character so:
 #' \itemize{
 #' \item "-", "substract" or "substraction" apply a substraction
 #' \item "/" or "ratio" apply a ratio
 #' \item "log2","log2-","log2/" or "log2ratio" apply a log2 on ratio
 #' \item other (Default) apply a log2 on 1+ratio
 #' }
-#' @param scaleCorrection <logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)
-#' @param correctionArea <list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)
-#' @param statCompare <logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.
+#' @param scaleCorrection <logical>: Whether a correction should be done
+#'  on the median value take in ane noising area. (Default TRUE)
+#' @param correctionArea <list>: Nested list of indice that define a noising
+#'  area fore correction. List muste contain in first an element "i"
+#'  (row indices) then an element called "j" (columns indices). 
+#' If NULL automatically take in upper left part of aggregated matrices.
+#'  (Default NULL)
+#' @param statCompare <logical>: Whether a t.test must be apply to each
+#'  pixel of the differential aggregated matrix.
 #' @return A matrix
 #' @examples
 #' # Data
@@ -30,13 +42,15 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"), 
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+#' # subset 2000 first for exemple
+#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)]
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
@@ -113,10 +127,6 @@ Aggregation <- function(
         )
         aggFun <- WrapFunction(aggFun)
     }
-    # matrices <- .PrepareMtxList(
-    #     matrices = matrices, minDist = minDist,
-    #     maxDist = maxDist, rm0 = rm0, transFun = transFun, orientate = orientate
-    # )
     # Aggregate
     agg.mtx <- apply(
         simplify2array(matrices),
@@ -125,21 +135,30 @@ Aggregation <- function(
     )
     gc()
     # Differential Case else Return
-    minDist = attributes(matrices)$minimalDistance
-    maxDist = attributes(matrices)$maximalDistance
-    transFun = attributes(matrices)$transformationMethod
-    rm0 = attributes(matrices)$zeroRemoved
+    minDist <- attributes(matrices)$minimalDistance
+    maxDist <- attributes(matrices)$maximalDistance
+    transFun <- attributes(matrices)$transformationMethod
+    rm0 <- attributes(matrices)$zeroRemoved
     if (!is.null(ctrlMatrices)) {
-        # Here we're checking if both matrices are treated equally just to warn the user.
-        if(!identical(deparse(transFun), deparse(attributes(ctrlMatrices)$transformationMethod))){warning("Different transformation methods were used with the 2 matrices list !!")}
-        if(!identical(minDist, attributes(ctrlMatrices)$minimalDistance)){warning("Different minimal distances were used with the 2 matrices list !!")}
-        if(!identical(maxDist, attributes(ctrlMatrices)$maximalDistance)){warning("Different maximal distances were used with the 2 matrices list !!")}
-        if(!identical(rm0, attributes(ctrlMatrices)$zeroRemoved)){warning("0 values were not treated equally on the 2 matrices list (we recommend consistent rm0 argument) !!")}
-        # Prepare Matrix List
-        # ctrlMatrices <- .PrepareMtxList(
-        #     matrices = ctrlMatrices, minDist = minDist,
-        #     maxDist = maxDist, rm0 = rm0, transFun = transFun, orientate = orientate
-        # )
+        # Here we're checking if both matrices are treated equally
+        #  just to warn the user.
+        if(!identical(deparse(transFun), 
+        deparse(attributes(ctrlMatrices)$transformationMethod))){
+            warning("Different transformation methods were used in
+                the 2 matrices!")
+            }
+        if(!identical(minDist, 
+        attributes(ctrlMatrices)$minimalDistance)){
+            warning("Different minimal distances were used with
+                the 2 matrices list !!")}
+        if(!identical(maxDist, 
+        attributes(ctrlMatrices)$maximalDistance)){
+            warning("Different maximal distances were used with
+                the 2 matrices list !!")}
+        if(!identical(rm0, 
+        attributes(ctrlMatrices)$zeroRemoved)){
+            warning("0 values were not treated equally on the 2 matrices list
+                (we recommend consistent rm0 argument) !!")}
         # Aggregate
         aggCtrl.mtx <- apply(
             simplify2array(ctrlMatrices),

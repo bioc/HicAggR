@@ -7,7 +7,8 @@
 JoinHiC(hicLst)
 }
 \arguments{
-\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
+The HiC maps list.}
 }
 \value{
 A ContactMatrix.

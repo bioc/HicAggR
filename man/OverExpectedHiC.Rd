@@ -7,9 +7,11 @@
 OverExpectedHiC(hicLst, verbose = FALSE, cores = 1)
 }
 \arguments{
-\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
+The HiC maps list.}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 
 \item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
 }
@@ -17,7 +19,8 @@ OverExpectedHiC(hicLst, verbose = FALSE, cores = 1)
 A matrices list.
 }
 \description{
-Function that normalises HiC matrices by expected values computing by genomic distance.
+Function that normalises HiC matrices by expected values
+computed per genomic distance.
 }
 \details{
 OverExpectedHiC

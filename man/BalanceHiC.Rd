@@ -15,25 +15,34 @@ BalanceHiC(
 )
 }
 \arguments{
-\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
+The HiC maps list.}
 
-\item{method}{\if{html}{\out{<character>}} : The kind of normalization method. One of "ICE", "VC" or "VC_SQRT" (Default "ICE")}
+\item{method}{\if{html}{\out{<character>}} : The kind of normalization method.
+One of "ICE", "VC" or "VC_SQRT" (Default "ICE")}
 
-\item{interactionType}{\if{html}{\out{<character>}} : "cis", "trans", c("cis", "trans"), "all". If NULL normalization is apply on cis contactMatrix then trans contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization is apply on all contactMatrix at once. (Default NULL)}
+\item{interactionType}{\if{html}{\out{<character>}} : "cis", "trans", c("cis", "trans"),
+"all".
+If NULL normalization is apply on cis contactMatrix then trans
+contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization
+is apply on all contactMatrix at once. (Default NULL)}
 
 \item{maxIter}{\if{html}{\out{<numerical>}}: The maximum iteration number.}
 
-\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which the bins will be ignored. (Default 0.15)}
+\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which the bins will
+be ignored. (Default 0.15)}
 
 \item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 }
 \value{
 A matrices list.
 }
 \description{
-Apply a matrix-balancing normalization method to a list of contacts matrix.
+Apply a matrix-balancing normalization method to a
+list of contacts matrix.
 }
 \details{
 BalanceHiC

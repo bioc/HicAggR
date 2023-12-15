@@ -11,7 +11,8 @@ ReduceRun(firstRle, secondRle, reduceMethod = "paste", ...)
 
 \item{secondRle}{\if{html}{\out{<rle or Rle>}}>: Second rle.}
 
-\item{reduceMethod}{\if{html}{\out{<character>}}: Name of a function to apply e.g paste, sum, mean.}
+\item{reduceMethod}{\if{html}{\out{<character>}}: Name of a function to apply
+e.g paste, sum, mean.}
 
 \item{...}{<...>: Other parameter for the reduce function.}
 }
@@ -27,7 +28,8 @@ ReduceRun
 \examples{
 firstRle <- rle(c("A", "A", "B"))
 secondRle <- rle(c("A", "B", "B"))
-ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "paste", sep = "_")
+ReduceRun(firstRle = firstRle, secondRle = secondRle,
+ reduceMethod = "paste", sep = "_")
 firstRle <- S4Vectors::Rle(c(1, 2, 3))
 secondRle <- S4Vectors::Rle(c(5, 5, 5))
 ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")

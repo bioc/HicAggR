@@ -15,18 +15,21 @@ Aggregation(
 )
 }
 \arguments{
-\item{ctrlMatrices}{<list\link{matrix}>: The matrices list to aggregate as control.}
+\item{ctrlMatrices}{<list\link{matrix}>: The matrices list to aggregate as
+control.}
 
 \item{matrices}{<list\link{matrix}>: The matrices list to aggregate.}
 
-\item{aggFun}{\if{html}{\out{<function or chracter>}}: The function use to aggregate each pixel in matrix. If the parameter is a character so:
+\item{aggFun}{\if{html}{\out{<function or chracter>}}: The function use to aggregate
+each pixel in matrix. If the parameter is a character so:
 \itemize{
 \item "50\%" or "median" apply the median
 \item "+" or "sum" apply the sum
 \item other (Default) apply the mean
 }}
 
-\item{diffFun}{\if{html}{\out{<function or chracter>}}: The function use to compute differential. If the parameter is character so:
+\item{diffFun}{\if{html}{\out{<function or chracter>}}: The function use to compute
+differential. If the parameter is character so:
 \itemize{
 \item "-", "substract" or "substraction" apply a substraction
 \item "/" or "ratio" apply a ratio
@@ -34,17 +37,26 @@ Aggregation(
 \item other (Default) apply a log2 on 1+ratio
 }}
 
-\item{scaleCorrection}{\if{html}{\out{<logical>}}: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)}
+\item{scaleCorrection}{\if{html}{\out{<logical>}}: Whether a correction should be done
+on the median value take in ane noising area. (Default TRUE)}
 
-\item{correctionArea}{\if{html}{\out{<list>}}: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)}
+\item{correctionArea}{\if{html}{\out{<list>}}: Nested list of indice that define a noising
+area fore correction. List muste contain in first an element "i"
+(row indices) then an element called "j" (columns indices).
+If NULL automatically take in upper left part of aggregated matrices.
+(Default NULL)}
 
-\item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply to each pxl of the differential aggregated matrix.}
+\item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply to each
+pixel of the differential aggregated matrix.}
 }
 \value{
 A matrix
 }
 \description{
-Aggregates all the matrices of a list (or two lists in case of differential aggregation) into a single matrix. This function allows to apply different aggregation (average, sum, ...), and differential (subtraction, ratio, ...) functions.
+Aggregates all the matrices of a list (or two lists in case
+of differential aggregation) into a single matrix. This function allows
+to apply different aggregation (average, sum, ...), and
+differential (subtraction, ratio, ...) functions.
 }
 \details{
 Aggregation
@@ -58,13 +70,15 @@ data(HiC_HS.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"), 
+        seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 
 # Beaf32 <-> Beaf32 Pairing
 Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+# subset 2000 first for exemple
+Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)]
 
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_Ctrl.mtx_lst <- ExtractSubmatrix(

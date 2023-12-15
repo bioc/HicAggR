@@ -1,8 +1,10 @@
 #' Change values of HiC map.
 #'
 #' SwitchMatrix
-#' @description Change values in matrix with observed, balanced, observed/expected or expected values according to what are be done in hic.
-#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
+#' @description Change values in matrix with observed, balanced,
+#'  observed/expected or expected values according to what are be done in hic.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
 #' @param matrixKind <character>: The kind of matrix you want.
 #' @return A ContactMatrix list.
 #' @examples

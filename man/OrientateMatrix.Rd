@@ -9,13 +9,16 @@ OrientateMatrix(mtx, verbose = TRUE)
 \arguments{
 \item{mtx}{<matrix or List\link{matrix}>: Matrix or matricies list to oriente}
 
-\item{verbose}{\if{html}{\out{<logical>}}: Report the number of matrices corrected. (Default: TRUE)}
+\item{verbose}{\if{html}{\out{<logical>}}: Report the number of matrices corrected.
+(Default: TRUE)}
 }
 \value{
 Oriented matrix or matricies list
 }
 \description{
-Oriente extracted Matrix according to the anchors and bait order. Apply a 180° rotation follow with a transposation on a matrix or on matricies in a list according to the interactions attributes of the list.
+Oriente extracted Matrix according to the anchors and bait
+order. Apply a 180° rotation follow with a transposation on a matrix or
+on matrices in a list according to the interactions attributes of the list.
 }
 \details{
 OrientateMatrix

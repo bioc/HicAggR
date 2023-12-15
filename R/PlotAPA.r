@@ -3,12 +3,20 @@
 #' PlotAPA
 #' @description Draw aggregation plot from aggregation matrices.
 #' @param aggregatedMtx <matrix>: The aggregated matrix.
-#' @param trim <numeric>: A number between 0 and 100 thaht give the percentage of triming in matrices.
-#' @param colMin <matrix>: The minimal value in color scale. If Null automaticaly find.
-#' @param colMid <matrix>: The middle value in color scale. If Null automaticaly find.
-#' @param colMax <matrix>: The mximal value in color scale. If Null automaticaly find.
-#' @param colMinCond <matrix>: Avalaible for plotting differantial aggregation. The minimal value in color scale in the classsical aggregation plot. If Null automaticaly find.
-#' @param colMaxCond <matrix>: Avalaible for plotting differantial aggregation. The maxiaml value in color scale in the classsical aggregation plot. If Null automaticaly find.
+#' @param trim <numeric>: A number between 0 and 100 thaht give the percentage
+#'  of triming in matrices.
+#' @param colMin <matrix>: The minimal value in color scale.
+#'  If Null automaticaly find.
+#' @param colMid <matrix>: The middle value in color scale.
+#'  If Null automaticaly find.
+#' @param colMax <matrix>: The mximal value in color scale.
+#'  If Null automaticaly find.
+#' @param colMinCond <matrix>: Avalaible for plotting differantial aggregation.
+#'  The minimal value in color scale in the classsical aggregation plot.
+#'  If Null automaticaly find.
+#' @param colMaxCond <matrix>: Avalaible for plotting differantial aggregation.
+#'  The maxiaml value in color scale in the classsical aggregation plot.
+#'  If Null automaticaly find.
 #' @param ... additional arguments to [ggAPA()]
 #' @return None
 #' @importFrom gridExtra grid.table
@@ -20,7 +28,8 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
@@ -54,8 +63,10 @@
 #' )
 #' 
 
-PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMax=NULL, colMinCond=NULL, colMaxCond=NULL,...){
-    .ggDensity <- function(data.lst=NULL, colour.col=NULL, mean.bln=TRUE, title=NULL){
+PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
+ colMax=NULL, colMinCond=NULL, colMaxCond=NULL,...){
+    .ggDensity <- function(data.lst=NULL, colour.col=NULL, mean.bln=TRUE,
+     title=NULL){
         data.lst_tbl <- lapply(seq_along(data.lst),function(element.ndx){
             return(tibble::tibble(
                 value = data.lst[[element.ndx]],
@@ -64,27 +75,34 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             }) 
         data.tbl <- dplyr::bind_rows(data.lst_tbl)
         if(is.null(colour.col)){
-            colour.col <- Hue(length(data.lst)) |> stats::setNames(names(data.lst))
+            colour.col <- Hue(length(data.lst)) |> 
+                stats::setNames(names(data.lst))
         }
-        plot.gp <- ggplot2::ggplot(data.tbl, ggplot2::aes(x=data.tbl$value, fill=data.tbl$class, colour=data.tbl$class)) + 
+        plot.gp <- ggplot2::ggplot(data.tbl, 
+            ggplot2::aes(x=data.tbl$value, fill=data.tbl$class,
+                colour=data.tbl$class)) + 
             ggplot2::geom_density(alpha=0.1) +
             ggplot2::scale_color_manual(values = colour.col)+
             ggplot2::scale_fill_manual(values = colour.col) +
             ggplot2::labs(title=title) 
         if (mean.bln){
             data.tbl <- dplyr::group_by(data.tbl, class = data.tbl$class)
-            mu.tbl <-  dplyr::summarise(data.tbl, grp.mean = mean(data.tbl$value))
+            mu.tbl <-  dplyr::summarise(data.tbl,
+                grp.mean = mean(data.tbl$value))
             plot.gp <- plot.gp + 
-                ggplot2::geom_vline(data = mu.tbl, ggplot2::aes(xintercept = mu.tbl$grp.mean, colour = mu.tbl$class), linetype = "dashed")
+                ggplot2::geom_vline(data = mu.tbl,
+                    ggplot2::aes(xintercept = mu.tbl$grp.mean,
+                        colour = mu.tbl$class),
+                    linetype = "dashed")
         }
         return(plot.gp)
     }
     # Differential or not?
         differential.bln <- !is.null(attributes(aggregatedMtx)$matrices)
         if(differential.bln){
-            colors = NULL
+            colors <- NULL
         }else{
-            colors = viridis(255)
+            colors <- viridis(255)
         }
     # Plot
     # Auto Scale
@@ -95,7 +113,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             yes="Agregation of differential matrices",
     no="Agregation"),...
     ) + ggplot2::labs(subtitle="scale (auto), center()")
-    print(plot.gp)
+    plot(plot.gp)
 # Auto Scale + Center
     if(!is.null(colMid)){
         plot.gp <- ggAPA(
@@ -106,7 +124,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 yes="Agregation of differential matrices",
                 no="Agregation"),...
         ) + ggplot2::labs(subtitle=paste0("scale (auto), center(",colMid,")"))
-        print(plot.gp)
+        plot(plot.gp)
     }
     # Trim Scale + Center
     if(!is.null(trim) && 0<trim){
@@ -118,8 +136,9 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             title=ifelse(differential.bln,
                 yes="Agregation of differential matrices",
                 no="Agregation"),...
-        ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%), center(",colMid,")"))
-        print(plot.gp)
+        ) + ggplot2::labs(subtitle=
+            paste0("scale (rm ",trim,"%), center(",colMid,")"))
+        plot(plot.gp)
     }
     # MinMax Scale + Center
     if(!is.null(colMin) || !is.null(colMax)){
@@ -132,12 +151,14 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             title=ifelse(differential.bln,
                 yes="Agregation of differential matrices",
                 no="Agregation"),...
-        ) + ggplot2::labs(subtitle=paste0("scale (",colMin,";",colMax,"), center(",colMid,")"))
-        print(plot.gp)
+        ) + ggplot2::labs(subtitle=
+            paste0("scale (",colMin,";",colMax,"), center(",colMid,")"))
+        plot(plot.gp)
     }
     if (differential.bln){
         # Pval + Auto Scale
-        if(!is.null(attributes(aggregatedMtx)$matrices$pVal) && sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
+        if(!is.null(attributes(aggregatedMtx)$matrices$pVal) &&
+        sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
             plot.gp <- ggAPA(
                 aggregatedMtx=attributes(aggregatedMtx)$matrices$pVal,
                 colors=YlOrRd(9),
@@ -147,40 +168,49 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             plot.gp <- ggplot2::ggplot() +
                 ggplot2::theme_void() +
                 ggplot2::annotate("text", x = 1, y = 1,
-                    label = "Not enough pval computed to plot a pval matrix (<3) or nothing significant")
+                    label = "Not enough pval computed to plot 
+                    a pval matrix (<3) or nothing significant")
         }
-        print(plot.gp)
+        plot(plot.gp)
         # FiltPval + Auto Scale + Center
-        if(!is.null(attributes(aggregatedMtx)$matrices$aggDiffPvalFilt) && sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
+        if(!is.null(attributes(aggregatedMtx)$matrices$aggDiffPvalFilt) &&
+        sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
             plot.gp <- ggAPA(
-                aggregatedMtx=attributes(aggregatedMtx)$matrices$aggDiffPvalFilt,
+                aggregatedMtx=
+                attributes(aggregatedMtx)$matrices$aggDiffPvalFilt,
                 colors=colors,
                 colMid=colMid,
                 title = paste0("Agregation of differential matrices"),...
-            ) + ggplot2::labs(subtitle=paste0("filtred by p.values, scale (auto), center(",colMid,")"))
+            ) + ggplot2::labs(subtitle=
+                paste0("filtred by p.values, scale (auto), center(",colMid,")"))
         }else{
             plot.gp <- ggplot2::ggplot() +
                 ggplot2::theme_void() +
                 ggplot2::annotate("text", x = 1, y = 1,
-                label = "Not enough pval computed to plot a pval matrix (<3) or nothing significant")
+                label = "Not enough pval computed to plot a pval
+                 matrix (<3) or nothing significant")
         }
-        print(plot.gp)
+        plot(plot.gp)
         # FiltPval + Trim Scale + Center
-        if(!is.null(attributes(aggregatedMtx)$matrices$aggDiffPvalFilt) && sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
+        if(!is.null(attributes(aggregatedMtx)$matrices$aggDiffPvalFilt) &&
+        sum(!is.na(attributes(aggregatedMtx)$matrices$pVal))>=3){
             plot.gp <- ggAPA(
-                aggregatedMtx=attributes(aggregatedMtx)$matrices$aggDiffPvalFilt,
+                aggregatedMtx=
+                attributes(aggregatedMtx)$matrices$aggDiffPvalFilt,
                 colors=colors,
                 trim=trim,
                 colMid=colMid,
                 title = paste0("Agregation of differential matrices"),...
-            ) + ggplot2::labs(subtitle=paste0("filtred by p.values, scale (rm ",trim,"%), center(",colMid,")"))
+            ) + ggplot2::labs(subtitle=paste0(
+                "filtred by p.vals, scale (rm ",trim,"%), center(",colMid,")"))
         }else{
             plot.gp <- ggplot2::ggplot() +
                 ggplot2::theme_void() +
                 ggplot2::annotate("text", x = 1, y = 1,
-                label = "Not enough pval computed to plot a pval matrix (<3) or nothing significant")
+                label = "Not enough pval computed to plot a pval
+                 matrix (<3) or nothing significant")
         }
-        print(plot.gp)
+        plot(plot.gp)
         # Delta + Auto Scale + Center
         plot.gp <- ggAPA(
             aggregatedMtx=attributes(aggregatedMtx)$matrices$aggDelta, 
@@ -188,7 +218,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colMid=colMid,
             title="Differential of agregated matrices",...
         ) + ggplot2::labs(subtitle=paste0("scale (auto), center(",colMid,")"))
-        print(plot.gp)
+        plot(plot.gp)
         # Delta + Trim Scale + Center
         if(!is.null(trim) && 0<trim){
             plot.gp <- ggAPA(
@@ -197,8 +227,9 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 trim=trim,
                 colMid=colMid,
                 title="Differential of agregated matrices",...
-            ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%), center(",colMid,")"))
-            print(plot.gp)
+            ) + ggplot2::labs(subtitle=
+                paste0("scale (rm ",trim,"%), center(",colMid,")"))
+            plot(plot.gp)
         }
         # Delta + Auto Scale + Center
         plot.gp <- ggAPA(
@@ -207,17 +238,19 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colMid=colMid,
             title="Differential of corrected agregated matrices",...
         ) + ggplot2::labs(subtitle=paste0("scale (auto), center(",colMid,")"))
-        print(plot.gp)
+        plot(plot.gp)
         # Delta + Trim Scale + Center
         if(!is.null(trim) && 0<trim){
             plot.gp <- ggAPA(
-                aggregatedMtx=attributes(aggregatedMtx)$matrices$aggCorrectedDelta, 
+                aggregatedMtx=
+                attributes(aggregatedMtx)$matrices$aggCorrectedDelta, 
                 colors=colors,
                 trim=trim,
                 colMid=colMid,
                 title="Differential of corrected agregated matrices",...
-            ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%), center(",colMid,")"))
-            print(plot.gp)
+            ) + ggplot2::labs(subtitle=
+                paste0("scale (rm ",trim,"%), center(",colMid,")"))
+            plot(plot.gp)
         }
         # Control + Auto Scale
         plot.gp <- ggAPA(
@@ -225,7 +258,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colors=viridis(51),
             title="Agregation control",...
         ) + ggplot2::labs(subtitle="scale (auto)")
-        print(plot.gp)
+        plot(plot.gp)
         # Control + Trim Scale
         if(!is.null(trim) && 0<trim){
             plot.gp <- ggAPA(
@@ -234,7 +267,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 trim=trim,
                 title="Agregation control",...
             ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%)"))
-            print(plot.gp)
+            plot(plot.gp)
         }
         # Control + MinMax Scale
         if(!is.null(colMinCond) || !is.null(colMaxCond)){
@@ -244,8 +277,9 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 colMin=colMinCond,
                 colMax=colMaxCond,
                 title="Agregation control",...
-            ) + ggplot2::labs(subtitle=paste0("scale (",colMinCond,";",colMaxCond,")"))
-            print(plot.gp)
+            ) + ggplot2::labs(subtitle=
+                paste0("scale (",colMinCond,";",colMaxCond,")"))
+            plot(plot.gp)
         }
         # Condition + Auto Scale
         plot.gp <- ggAPA(
@@ -253,7 +287,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colors=viridis(51),
             title="Agregation",...
         ) + ggplot2::labs(subtitle="scale (auto)")
-        print(plot.gp)
+        plot(plot.gp)
         # Condition + Trim Scale
         if(!is.null(trim) && 0<trim){
             plot.gp <- ggAPA(
@@ -262,7 +296,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 trim=trim,
                 title="Agregation",...
             ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%)"))
-            print(plot.gp)
+            plot(plot.gp)
         }
         # Condition + MinMax Scale
         if(!is.null(colMinCond) || !is.null(colMaxCond)){
@@ -272,8 +306,9 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 colMin=colMinCond,
                 colMax=colMaxCond,
                 title="Agregation",...
-            ) + ggplot2::labs(subtitle=paste0("scale (",colMinCond,";",colMaxCond,")"))
-            print(plot.gp)
+            ) + ggplot2::labs(subtitle=
+                paste0("scale (",colMinCond,";",colMaxCond,")"))
+            plot(plot.gp)
         }
         # Corrected condition + Auto Scale
         plot.gp <- ggAPA(
@@ -281,7 +316,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colors=viridis(51),
             title="Agregation corrected",...
         ) + ggplot2::labs(subtitle="scale (auto)")
-        print(plot.gp)
+        plot(plot.gp)
         # Corrected condition + Trim Scale
         if(!is.null(trim) && 0<trim){
             plot.gp <- ggAPA(
@@ -290,7 +325,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 trim=trim,
                 title="Agregation corrected",...
             ) + ggplot2::labs(subtitle=paste0("scale (rm ",trim,"%)"))
-            print(plot.gp)
+            plot(plot.gp)
         }
         # Corrected condition + MinMax Scale
         if(!is.null(colMinCond) || !is.null(colMaxCond)){
@@ -300,12 +335,14 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
                 colMin=colMinCond,
                 colMax=colMaxCond,
                 title="Agregation corrected",...
-            ) + ggplot2::labs(subtitle=paste0("scale (",colMinCond,";",colMaxCond,")"))
-            print(plot.gp)
+            ) + ggplot2::labs(subtitle=
+                paste0("scale (",colMinCond,";",colMaxCond,")"))
+            plot(plot.gp)
         }
         # Grouped Scale(Condition & Control)
         colBreaks.num <- BreakVector(
-            x=c(c(attributes(aggregatedMtx)$matrices$agg), c(attributes(aggregatedMtx)$matrices$aggCtrl)),
+            x=c(c(attributes(aggregatedMtx)$matrices$agg),
+                c(attributes(aggregatedMtx)$matrices$aggCtrl)),
             n=51)
         # Control + Grouped Scale(with Condition)
         plot.gp <- ggAPA(
@@ -314,7 +351,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colBreaks=colBreaks.num,
             title="Agregation control",...
         ) + ggplot2::labs(subtitle="scale (grouped with condition)")
-        print(plot.gp)
+        plot(plot.gp)
         # Condition + Grouped Scale(with Control)
         plot.gp <- ggAPA(
             aggregatedMtx=attributes(aggregatedMtx)$matrices$agg, 
@@ -322,10 +359,11 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colBreaks=colBreaks.num,
             title="Agregation",...
         ) + ggplot2::labs(subtitle="scale (grouped with control)")
-        print(plot.gp)
+        plot(plot.gp)
         # Grouped Scale(Corrected condition & Control)
         colBreaks.num <- BreakVector(
-            x=c(c(attributes(aggregatedMtx)$matrices$aggCorrected), c(attributes(aggregatedMtx)$matrices$aggCtrl)),
+            x=c(c(attributes(aggregatedMtx)$matrices$aggCorrected),
+                c(attributes(aggregatedMtx)$matrices$aggCtrl)),
             n=51)
         # Control + Grouped Scale(with corrected condition)
         plot.gp <- ggAPA(
@@ -334,7 +372,7 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colBreaks=colBreaks.num,
             title="Agregation control",...
         ) + ggplot2::labs(subtitle="scale (grouped with condition corrected)")
-        print(plot.gp)
+        plot(plot.gp)
         # Corrected condition + Grouped Scale(with Control)
         plot.gp <- ggAPA(
             aggregatedMtx=attributes(aggregatedMtx)$matrices$aggCorrected, 
@@ -342,53 +380,61 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
             colBreaks=colBreaks.num,
             title="Agregation corrected",...
         ) + ggplot2::labs(subtitle="scale (grouped with control)")
-        print(plot.gp)
+        plot(plot.gp)
         # Density
 
         plot.gp <- .ggDensity(
             data.lst=list(differential=stats::na.omit(c(aggregatedMtx))),
             colour.col=Hue(3)[[1]],
             title="Agregation of differential matrices density")
-        print(plot.gp)
+        plot(plot.gp)
 
         data.lst <- list(
-            control=stats::na.omit(c(attributes(aggregatedMtx)$matrices$aggCtrl)),
+            control=stats::na.omit(
+                c(attributes(aggregatedMtx)$matrices$aggCtrl)),
             condition=stats::na.omit(c(attributes(aggregatedMtx)$matrices$agg))
         )
         plot.gp <- .ggDensity(
             data.lst=data.lst,
             colour.col=Hue(3)[2:3],
             title="Condition and control densities")
-        print(plot.gp)
+        plot(plot.gp)
         
         plot.gp <- .ggDensity(
-            data.lst=list(deltaCorrected=stats::na.omit(c(attributes(aggregatedMtx)$matrices$aggCorrectedDelta))),
+            data.lst=list(deltaCorrected=
+                stats::na.omit(
+                    c(attributes(aggregatedMtx)$matrices$aggCorrectedDelta))),
             colour.col=Hue(3)[[1]],
             title="Differential of corrected agregated matrices density")
-        print(plot.gp)
+        plot(plot.gp)
 
         data.lst <- list(
-            control=stats::na.omit(c(attributes(aggregatedMtx)$matrices$aggCtrl)),
-            correctedCondition=stats::na.omit(c(attributes(aggregatedMtx)$matrices$aggCorrected))
+            control=stats::na.omit(
+                c(attributes(aggregatedMtx)$matrices$aggCtrl)),
+            correctedCondition=stats::na.omit(
+                c(attributes(aggregatedMtx)$matrices$aggCorrected))
         )
         plot.gp <- .ggDensity(
             data.lst=data.lst,
             colour.col=Hue(3)[2:3],
             title="Condition corrected and control densities")
-        print(plot.gp)
+        plot(plot.gp)
     }
     # Attributes
     grid::grid.newpage()
     attr.ndx <- aggregatedMtx |>
         attributes() |>
         names() |>
-        NotIn(c("dim","matrices","interactions", "dimnames")) # NotIn to replace by %ni%
+         # NotIn to replace by %ni%
+        NotIn(c("dim","matrices","interactions", "dimnames"))
     attr.lst <- attributes(aggregatedMtx)[attr.ndx]
-    attr.lst$aggregationMethod <- function(pxl){pxl[is.na(pxl)]<-0;mean(pxl,na.rm=TRUE)}
+    attr.lst$aggregationMethod <- function(pxl){
+        pxl[is.na(pxl)]<-0;mean(pxl,na.rm=TRUE)}
     attr1.ndx <- attr.lst |>
         lapply(class) |>
         unlist() |>
-        NotIn(c("matrix", "list","GInteractions","function")) # NotIn to replace by %ni% 
+        # NotIn to replace by %ni% 
+        NotIn(c("matrix", "list","GInteractions","function"))
     attr1.lst <- attr.lst[attr1.ndx] |>
                 lapply(as.character) |>
                 unlist()
@@ -412,18 +458,26 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
 #' Draw aggregation plots for interactions with different distances.
 #' 
 #' PlotAPA_byDistance
-#' @description Separates matrices based on interaction distance, performs aggregation and plots Aggregated signal for each chunk of interaction distances.
-#' @param submatrices <listmatrix>: The matrices list to separate using interaction distances and aggregate.
+#' @description Separates matrices based on interaction distance, performs
+#'  aggregation and plots Aggregated signal for each chunk of interaction
+#'  distances.
+#' @param submatrices <listmatrix>: The matrices list to separate using
+#'  interaction distances and aggregate.
 #' Chunks of distances are created with:
 #' `c(0,50000*2 ^ seq(0,5,by=1))`. 
-#' Other matrices with distances over 1.6 Mb are aggregated in the same final chunk.
-#' @param ctrlSubmatrices <listmatrix>: The matrices list to use as control condition for differential aggregation.
+#' Other matrices with distances over 1.6 Mb are aggregated in the same
+#'  final chunk.
+#' @param ctrlSubmatrices <listmatrix>: The matrices list to use as control
+#'  condition for differential aggregation.
 #' @param ... : Additional arguments to pass to [Aggregation()]
-#' For differential aggregation plot, `submatrices` will take the matrices of the treated condition. 
+#' For differential aggregation plot, `submatrices` will take the matrices
+#'  of the treated condition. 
 #' eg:
-#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlSubmatrices = interactions_Ctrl.mtx_lst)`
+#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst,
+#' ctrlSubmatrices = interactions_Ctrl.mtx_lst)`
 #' @param plot.opts list of arguments to pass to [ggAPA()].
-#' @return A plot with separate APAs per distance and a list of aggregated matrices as invisible output.
+#' @return A plot with separate APAs per distance and a list of aggregated
+#'  matrices as invisible output.
 #' @importFrom gridExtra grid.arrange
 #' @examples
 #' #' # Data
@@ -434,13 +488,14 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'         seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
 #' # Beaf32 <-> Beaf32 Pairing
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for eg
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
@@ -473,67 +528,77 @@ PlotAPA = function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL, colMa
 #'     plot.opts = list(colors = list("blue","white","red"))
 #' )
 #' 
-PlotAPA_byDistance = function(submatrices = NULL,ctrlSubmatrices=NULL,...,plot.opts=NULL){
+PlotAPA_byDistance <- function(submatrices = NULL,
+    ctrlSubmatrices=NULL,
+    ...,
+    plot.opts=NULL){
     # exchange variables if submatrices is null
-    two_conditions = TRUE
+    two_conditions <- TRUE
     if(is.null(submatrices) & !is.null(ctrlSubmatrices)){
-        submatrices = ctrlSubmatrices
-        two_conditions = FALSE
+        submatrices <- ctrlSubmatrices
+        two_conditions <- FALSE
     }
     if(is.null(submatrices) & is.null(ctrlSubmatrices)){
         stop("Argument submatrices is null")
     }
 
-    maxCol = log2(max(attributes(submatrices)$interactions$distance)/50000)
+    maxCol <- log2(max(attributes(submatrices)$interactions$distance)/50000)
     if(maxCol>5){
-        vector_dist = c(c(0,50000*2 ^ seq(0,5,by=1)),
+        vector_dist <- c(c(0,50000*2 ^ seq(0,5,by=1)),
             max(attributes(submatrices)$interactions$distance))
     }else{
-        vector_dist = c(0,50000*2 ^ seq(0,maxCol,by=1))
+        vector_dist <- c(0,50000*2 ^ seq(0,maxCol,by=1))
     }
-    by_dist_vec_list = list()
-    noValues_vector = c()
-    n_cples = c()
-    all_cples = attr(submatrices,"interactions")
+    by_dist_vec_list <- list()
+    noValues_vector <- c()
+    n_cples <- c()
+    all_cples <- attr(submatrices,"interactions")
     for(d in seq(2,length(vector_dist))){
-        samples = all_cples$name[which(all_cples$distance < vector_dist[d] & 
+        samples <- all_cples$name[which(all_cples$distance < vector_dist[d] & 
             all_cples$distance >= vector_dist[d-1])]
-        filtered = FilterInteractions(submatrices,targets=list(name=samples))
+        filtered <- FilterInteractions(submatrices,targets=list(name=samples))
 
         if(!is.null(ctrlSubmatrices) & two_conditions){
-            filtered_ctrl = FilterInteractions(ctrlSubmatrices,targets=list(name=samples))
+            filtered_ctrl <- FilterInteractions(ctrlSubmatrices,targets=
+                list(name=samples))
             if(length(filtered)>0 & length(filtered_ctrl)){
-                by_dist_vec_list = append(by_dist_vec_list,
-                list(Aggregation(matrices = filtered,ctrlMatrices = filtered_ctrl,...)))
-                n_cples = c(n_cples,length(attr(filtered,"interactions")))
+                by_dist_vec_list <- append(by_dist_vec_list,
+                list(Aggregation(matrices = filtered,
+                    ctrlMatrices = filtered_ctrl,...)))
+                n_cples <- c(n_cples,length(attr(filtered,"interactions")))
             }else{
-                noValues_vector = c(noValues_vector,d)
+                noValues_vector <- c(noValues_vector,d)
             }
         }else{
             if(length(filtered)>0){
-                by_dist_vec_list = append(by_dist_vec_list,
+                by_dist_vec_list <- append(by_dist_vec_list,
                 list(Aggregation(matrices = filtered,...)))
-                n_cples = c(n_cples,length(attr(filtered,"interactions")))
+                n_cples <- c(n_cples,length(attr(filtered,"interactions")))
             }else{
-                noValues_vector = c(noValues_vector,d)
+                noValues_vector <- c(noValues_vector,d)
             }
         }
     }
     if(length(noValues_vector)>0){
-        vector_dist=vector_dist[-noValues_vector]
+        vector_dist <- vector_dist[-noValues_vector]
     }    
-    plotList = list()
+    plotList <- list()
     for(p in seq(1,length(by_dist_vec_list))){
         if(!is.null(plot.opts) & length(plot.opts)>0){
-            chunk.plot = list(do.call(ggAPA,c(list(aggregatedMtx = by_dist_vec_list[[p]]),
+            chunk.plot <- list(do.call(ggAPA,c(list(
+                aggregatedMtx = by_dist_vec_list[[p]]),
                 as.list(plot.opts)))+
-                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p])))
-            plotList = append(plotList,chunk.plot)
+                ggplot2::labs(title=paste0("distance < ",
+                vector_dist[p+1],"\nn = ",n_cples[p])))
+            plotList <- append(plotList,chunk.plot)
         }else{
-            plotList = append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
-                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],"\nn = ",n_cples[p]))))
+            plotList <- append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
+                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],
+                "\nn = ",n_cples[p]))))
         }
     }
     gridExtra::grid.arrange(grobs = plotList,ncol=length(plotList),nrow=1)
-    return(invisible(list("agg.matrices" = by_dist_vec_list,"distance.chunks"=vector_dist[-1],"nb.couples"=n_cples)))
+    return(invisible(list("agg.matrices" = by_dist_vec_list,
+    "distance.chunks"=vector_dist[-1],
+    "nb.couples"=n_cples)))
 }

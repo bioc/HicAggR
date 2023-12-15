@@ -7,11 +7,14 @@
 MergeGRanges(..., sortRanges = FALSE, reduceRanges = FALSE)
 }
 \arguments{
-\item{...}{<GRanges or GRangesList or list\link{GRanges}>: Some GRanges or a list of GRanges or a GRangesList.}
+\item{...}{<GRanges or GRangesList or list\link{GRanges}>: Some GRanges or a list
+of GRanges or a GRangesList.}
 
-\item{sortRanges}{\if{html}{\out{<logical>}}: Whether the result should be sorted. (Default FALSE)}
+\item{sortRanges}{\if{html}{\out{<logical>}}: Whether the result should be sorted.
+(Default FALSE)}
 
-\item{reduceRanges}{\if{html}{\out{<logical>}}: Whether the result should be reduce. See GenomicRanges::reduce for more details. (Default FALSE)}
+\item{reduceRanges}{\if{html}{\out{<logical>}}: Whether the result should be reduce.
+See GenomicRanges::reduce for more details. (Default FALSE)}
 }
 \value{
 a GRange object.
@@ -25,14 +28,17 @@ MergeGRanges
 \examples{
 GRange_1.grn <- GenomicRanges::GRanges(
     seqnames = S4Vectors::Rle(c("chr1", "chr2", "chr1"), c(1, 3, 1)),
-    ranges = IRanges::IRanges(101:105, end = 111:115, names = letters[seq_len(5)]),
-    strand = S4Vectors::Rle(BiocGenerics::strand(c("-", "+", "*", "+")), c(1, 1, 2, 1)),
+    ranges = IRanges::IRanges(101:105, end = 111:115,
+        names = letters[seq_len(5)]),
+    strand = S4Vectors::Rle(BiocGenerics::strand(c("-", "+", "*", "+")),
+        c(1, 1, 2, 1)),
     score = seq_len(5)
 )
 GRange_2.grn <- GenomicRanges::GRanges(
     seqnames = S4Vectors::Rle(c("chr1", "chr3"), c(1, 4)),
     ranges = IRanges::IRanges(106:110, end = 116:120, names = letters[6:10]),
-    strand = S4Vectors::Rle(BiocGenerics::strand(c("*", "+", "-")), c(2, 1, 2)),
+    strand = S4Vectors::Rle(BiocGenerics::strand(c("*", "+", "-")),
+        c(2, 1, 2)),
     score = 6:10
 )
 GRange_1.grn

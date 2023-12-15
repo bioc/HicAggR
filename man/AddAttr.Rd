@@ -11,7 +11,8 @@ AddAttr(x = NULL, attrs = NULL, overwrite = FALSE)
 
 \item{attrs}{\if{html}{\out{<list>}}: A named list of new attributes.}
 
-\item{overwrite}{\if{html}{\out{<logical>}}: Whether an overwrite is required on attributes with the same name.(Default FALSE)}
+\item{overwrite}{\if{html}{\out{<logical>}}: Whether an overwrite is required on attributes
+with the same name.(Default FALSE)}
 }
 \value{
 The object with new attributes.

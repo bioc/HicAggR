@@ -1,12 +1,16 @@
 #' Prepare matrices list for further analysis.
 #'
 #' PrepareMtxList
-#' @description Prepares matrices list for further analysis (eg. Aggregation or GetQuantif). Orientation can be corrected, and per matrix transformation can be performed.
+#' @description Prepares matrices list for further analysis
+#'  (eg. Aggregation or GetQuantif). Orientation can be corrected,
+#'  and per matrix transformation can be performed.
 #' @param matrices <list[matrix]>: The matrices list to prepare.
 #' @param minDist <numeric>: The minimal distance between anchor and bait.
 #' @param maxDist <numeric>: The maximal distance between anchor and bait.
 #' @param rm0 <logical>: Whether 0 should be replaced with NA. (Default FALSE)
-#' @param transFun <function or chracter>: The function used to transform or scale values in each submatrix before aggregation. The following characters can be submitted:
+#' @param transFun <function or chracter>: The function used to transform
+#'  or scale values in each submatrix before aggregation. The following
+#'  characters can be submitted:
 #' \itemize{
 #' \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 #' \item "percentile" or "prct" apply percentile.
@@ -16,7 +20,8 @@
 #' \item "mu" apply a HicAggR::MeanScale.
 #' \item other or NULL don't apply transformation (Default).
 #' }
-#' @param orientate <logical>: Whether matrices must be orientate before the aggregation.
+#' @param orientate <logical>: Whether matrices must be orientate
+#'  before the aggregation.
 #' @return A matrix list ready for aggregation of values extraction.
 #' @examples
 #' # Data
@@ -27,7 +32,8 @@
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'     chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+#'     chromSizes = data.frame(seqnames = c("2L", "2R"),
+#'           seqlengths = c(23513712, 25286936)),
 #'     binSize = 100000
 #' )
 #'
@@ -71,7 +77,7 @@ PrepareMtxList <- function(
     # Get attributes
     attributes.lst <- attributes(matrices)
     # Transformation Function
-    if (!is.function(transFun) &
+    if (!is.function(transFun) &&
         !is.null(transFun)) {
         transFun <- dplyr::case_when(
             tolower(transFun) %in% c("quantile", "qtl") ~
@@ -161,7 +167,9 @@ PrepareMtxList <- function(
             )]
         ]
     }
-    # Here changed order between the filtering in line 169 with orientation because somehow the filtering removes the attributes. This is a cause for error in OrientateMatrix
+    # Here changed order between the filtering in line 169 with orientation
+    # because somehow the filtering removes the attributes. This is a cause
+    #  for error in OrientateMatrix
     # Orientation
     if(orientate){
         matrices  <- OrientateMatrix(matrices)
@@ -183,7 +191,8 @@ PrepareMtxList <- function(
             return(mat.mtx)
         }
     )
-    # if transFun is null, it can not be added as attribute to the matrices list object
+    # if transFun is null, it can not be added as attribute to the
+    #  matrices list object
     if (is.null(transFun)) {
         transFun <- NA
     }

@@ -16,21 +16,33 @@ ExtractSubmatrix(
 )
 }
 \arguments{
-\item{genomicFeature}{<GRanges or Pairs\link{GRanges} or GInteractions>: The genomic coordinates on which compute the extraction of HiC submatrix.}
+\item{genomicFeature}{<GRanges or Pairs\link{GRanges} or GInteractions>:
+The genomic coordinates on which compute the extraction of HiC submatrix.}
 
-\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
+The HiC maps list.}
 
-\item{referencePoint}{\if{html}{\out{<character>}}: Type of extracted submatrices. "rf" for "region feature" to extract triangle-shaped matrices around regions or "pf" for "point feature" to extract square-shaped matrices around points. (Default "rf")}
+\item{referencePoint}{\if{html}{\out{<character>}}: Type of extracted submatrices.
+"rf" for "region feature" to extract triangle-shaped matrices around
+regions or "pf" for "point feature" to extract square-shaped matrices
+around points. (Default "rf")}
 
-\item{hicResolution}{\if{html}{\out{<numeric>}}: The resolution in used in hicLst. If NULL automatically find in resolution attributes of hicLst. (Default NULL)}
+\item{hicResolution}{\if{html}{\out{<numeric>}}: The resolution in used in hicLst.
+If NULL automatically find in resolution attributes of hicLst.
+(Default NULL)}
 
 \item{matriceDim}{\if{html}{\out{<numeric>}}: The size of matrices in output. (Default 21).}
 
-\item{shift}{\if{html}{\out{<numeric>}}: Only when "referencePoint" is "rf". Factor defining how much of the distance between anchor and bait is extracted before and after the region (Default 1). Ex: for shift=2, extracted matrices will be 2\emph{regionSize+regionSize+2}regionSize.}
+\item{shift}{\if{html}{\out{<numeric>}}: Only when "referencePoint" is "rf". Factor defining
+how much of the distance between anchor and bait is extracted before and
+after the region (Default 1). Ex: for shift=2, extracted matrices will
+be 2\emph{regionSize+regionSize+2}regionSize.}
 
-\item{cores}{\if{html}{\out{<integer>}} : An integer to specify the number of cores. (Default 1)}
+\item{cores}{\if{html}{\out{<integer>}} : An integer to specify the number of cores.
+(Default 1)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 }
 \value{
 A matrices list.
@@ -49,7 +61,8 @@ data(HiC_Ctrl.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"),
+        seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 
@@ -57,7 +70,8 @@ Beaf32_Index.gnr <- IndexFeatures(
 Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
 Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
 
-# Matrices extractions of regions defined between Beaf32 <-> Beaf32 interactions
+# Matrices extractions of regions defined between
+# Beaf32 <-> Beaf32 interactions
 interactions_RF.mtx_lst <- ExtractSubmatrix(
     genomicFeature = Beaf_Beaf.gni,
     hicLst = HiC_Ctrl.cmx_lst,

@@ -5,8 +5,10 @@
 #' @description Add a value around a matrix.
 #' @param mtx <matrix>: Numerical matrix.
 #' @param padSize <numeric>: Number of columns or rows to add. (Default 1)
-#' @param val <numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)
-#' @param side <character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )
+#' @param val <numeric>: Value to add. If Null create mirror of choosen sides.
+#'  (Default 0)
+#' @param side <character>: Side to pad, must be one or some of 'top','bot',
+#' 'right' or 'left'. (Default c('top','bot','right','left') )
 #' @return A matrix.
 #' @examples
 #' mtx <- matrix(seq_len(25), 5, 5)

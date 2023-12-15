@@ -26,45 +26,64 @@ The HiC maps list.}
 
 \item{matrices}{<list\link{matrix}>: The matrices list.}
 
-\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as pairs anchor (must be indexed using \code{IndexFeatures()}).}
+\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as
+pairs anchor (must be indexed using \code{IndexFeatures()}).}
 
-\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as pairs bait (must be indexed using \code{IndexFeatures()}).}
+\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as
+pairs bait (must be indexed using \code{IndexFeatures()}).}
 
 \item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of constraint regions.
 If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
 
-\item{secondaryConst.var}{\if{html}{\out{<character>}}: A string defining column name containing compartment information in the metadata of anchor and bait \if{html}{\out{<GRanges>}} objects. (Default NULL)}
+\item{secondaryConst.var}{\if{html}{\out{<character>}}: A string defining column name
+containing compartment information in the metadata of anchor and
+bait \if{html}{\out{<GRanges>}} objects. (Default NULL)}
 
-\item{chromSizes}{<data.frame>: A data.frame containing chromosomes names and lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame containing chromosomes
+names and lengths in base pairs.}
 
-\item{n_background}{\if{html}{\out{<integer>}} : Number of background couples to keep. (Default NULL)}
+\item{n_background}{\if{html}{\out{<integer>}} : Number of background couples to keep.
+(Default NULL)}
 
-\item{areaFun}{\if{html}{\out{<character or function>}}: A character or function that allows to extract an area from each matrix that composes the matrices list (Default "center"). Look at \link{GetQuantif} for more info.}
+\item{areaFun}{\if{html}{\out{<character or function>}}: A character or function that allows
+to extract an area from each matrix that composes the matrices list
+(Default "center"). Look at \link{GetQuantif} for more info.}
 
-\item{operationFun}{\if{html}{\out{<character or function>}}: A character or function specifying the operation applied to the selected area (Default "mean"). Look at \link{GetQuantif} for more info.}
+\item{operationFun}{\if{html}{\out{<character or function>}}: A character or function
+specifying the operation applied to the selected area (Default "mean").
+Look at \link{GetQuantif} for more info.}
 
 \item{bg_type}{\if{html}{\out{<character>}}: Type of background couples to generate.
 \itemize{
-\item "random_anchors": picks random bins as anchors and forms couples with bait bins.
-If genomicConstraint is supplied, only intra-TAD random-bait couples are kept.
-Else intra-TAD random-bait couples within a distance constraint corresponding
-to the minimal and maximal distances of target couples.
-\item "inter_TAD": If target couples were formed using TAD information with non \code{NULL}
-genomicConstraint argument, then inter-TAD anchor-bait couples are used as background.
-Distance constraint applied correspond to the minimal distance of target couples and
+\item "random_anchors": picks random bins as anchors and forms couples
+with bait bins.
+If genomicConstraint is supplied, only intra-TAD random-bait couples are
+kept.
+Else intra-TAD random-bait couples within a distance constraint
+corresponding to the minimal and maximal distances of target couples.
+\item "inter_TAD": If target couples were formed using TAD information
+with non \code{NULL}
+genomicConstraint argument, then inter-TAD anchor-bait couples are used
+as background.
+Distance constraint applied correspond to the minimal distance of target
+couples and
 maximal width of supplied TADs.
-\item "inter_compartment": If \code{secondaryConst.var} is not \code{NULL} and both indexAnchor and indexBait
-objects contain the provided variable name, then background couples are formed
-between anchors and baits located in different compartments.
+\item "inter_compartment": If \code{secondaryConst.var} is not \code{NULL} and both
+indexAnchor and indexBait objects contain the provided variable name,
+then background couples are formed between anchors and baits located in
+different compartments.
 \item "NULL": If \code{NULL}, \code{random_anchors} are set by default.
 }}
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
 
-\item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat background matrices.}
+\item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat
+background matrices.}
 }
 \value{
-returns a \if{html}{\out{<list>}} object with the z.test output for each target couple, values for the target couples and values for the background couples.
+returns a \if{html}{\out{<list>}} object with the z.test output for each
+target couple, values for the target couples and values for the
+background couples.
 }
 \description{
 Computes z.test for each target couple over background couples.
@@ -72,7 +91,9 @@ Computes z.test for each target couple over background couples.
 \examples{
 temp.dir <- file.path(tempdir(), "HIC_DATA")
 dir.create(temp.dir)
-Hic.url <- "https://4dn-open-data-public.s3.amazonaws.com/fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/4DNFIOTPSS3L.hic"
+Hic.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
+    "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
+    "4DNFIOTPSS3L.hic")
 HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
 download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
 binSize=1000

@@ -13,7 +13,8 @@ MeltSpm(spMtx = NULL)
 A tibble.
 }
 \description{
-Coerce a sparse matrix M in tibble where columns: i is row index, j is column index and x the value M\code{[}i,j\verb{]}.
+Coerce a sparse matrix M in tibble where columns:
+i is row index, j is column index and x the value M\code{[}i,j\verb{]}.
 }
 \details{
 MeltSpm

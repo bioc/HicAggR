@@ -43,7 +43,9 @@ Imports:
     strawr,
     tibble,
     tidyr,
-    gridExtra
+    gridExtra,
+    BSDA,
+    broom
 Suggests:
     covr,
     kableExtra,

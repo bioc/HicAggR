@@ -9,15 +9,18 @@ VCnorm(hic = NULL, qtlTh = 0.15, vcsqrt = TRUE)
 \arguments{
 \item{hic}{\if{html}{\out{<contactMatrix>}}: The HiC maps chunk to normalize.}
 
-\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which the bins will be ignored. (Default 0.15)}
+\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which the bins will
+be ignored. (Default 0.15)}
 
-\item{vcsqrt}{\if{html}{\out{<logical>}}: Whether the square root must be apply. (Default TRUE)}
+\item{vcsqrt}{\if{html}{\out{<logical>}}: Whether the square root must be apply.
+(Default TRUE)}
 }
 \value{
 A matrices list.
 }
 \description{
-Compute Vanilla Count or Vanilla Count square root correction normalization on hic maps.
+Compute Vanilla Count or Vanilla Count square root correction
+normalization on hic maps.
 }
 \details{
 VCnorm

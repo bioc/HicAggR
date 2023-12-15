@@ -3,7 +3,8 @@
 #'
 #' JoinHiC
 #' @description Create mega contactMatrix from a list of contactMatrix.
-#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>: The HiC maps list.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
 #' @return A ContactMatrix.
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
