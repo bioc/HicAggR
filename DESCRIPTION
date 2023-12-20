@@ -45,7 +45,8 @@ Imports:
     tidyr,
     gridExtra,
     BSDA,
-    broom
+    broom,
+    data.table
 Suggests:
     covr,
     kableExtra,

@@ -1,17 +1,30 @@
 #' Import called loops in .bedpe format to use in HicAggR
 #'
 #' import_loops
-#' @param file_bedpe bedpe file path
-#' @param genomicConstraint 
-#' @param discard_trans 
-#' @param chromSizes 
-#' @param binSize 
-#' @param minDist 
-#' @param maxDist 
-#' @param verbose 
-#' @param cores 
+#' @description Imports bedpe file formats as GInteractions object usable
+#' to perform submatrix extraction with `ExtractSubmatrix()`
+#' @param file_bedpe bedpe file path (Default NULL)
+#' @param genomicConstraint <GRanges>: GRanges object of constraint regions.
+#'  If NULL chromosomes in chromSizes are used as constraints (Default NULL)
+#' @param discard_trans <logical>: If TRUE discard loops where anchor and bait
+#'  are in different genomic constraint elements, either different TADs or
+#'  chromosomes, if `genomicConstraint = NULL`. (Default FALSE)
+#' @param chromSizes <data.frame>: A data.frame containing chromosomes names
+#'  and lengths in base pairs (see example). (Default NULL)
+#' @param binSize <integer>: Bin size in bp - corresponds to matrix resolution.
+#' @param minDist <numeric>: Minimal distance between anchors and baits.
+#'  (Default NULL)
+#' @param maxDist <numeric>: Maximal distance between anchors and baits.
+#'  (Default NULL)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
+#' @param cores <integer>: Number of cores to use. (Default 1)
 #'
-#' @return
+#' @return A GInteractions object.
+#' @import data.table
+#' @import S4Vectors
+#' @import InteractionSet
+#' @importFrom GenomeInfoDb seqinfo
 #' @export
 #'
 #' @examples
@@ -49,7 +62,7 @@
 #' )
 #' }
 #' 
-import_loops = function(
+import_loops <- function(
     file_bedpe = NULL,
     genomicConstraint = NULL,
     discard_trans = FALSE,
@@ -57,21 +70,21 @@ import_loops = function(
     binSize = NULL,
     minDist = NULL,
     maxDist = NULL,
-    verbose = TRUE,
+    verbose = FALSE,
     cores=1){
-  loops = rtracklayer::import(file_bedpe,format="bedpe")
-  anchor_bins = BinGRanges(
+  loops <- rtracklayer::import(file_bedpe,format="bedpe")
+  anchor_bins <- BinGRanges(
     S4Vectors::first(loops),
     chromSizes = chromSizes,
     cores=cores,
     binSize=binSize,
-    na.rm = F)
-  bait_bins = BinGRanges(
+    na.rm = FALSE)
+  bait_bins <- BinGRanges(
     S4Vectors::second(loops),
     chromSizes = chromSizes,
     cores=cores,
     binSize=binSize,
-    na.rm = F)
+    na.rm = FALSE)
   # Constraint Informations
   if (is.null(genomicConstraint)) {
     genomicConstraint <- GenomicRanges::GRanges(
@@ -106,16 +119,16 @@ import_loops = function(
   )
   # loops_dt = data.table::as.data.table(loops)
   # data.table::setkey(loops_dt,"seqnames","start","end")
-  loops_gni = InteractionSet::GInteractions(
+  loops_gni <- InteractionSet::GInteractions(
     S4Vectors::first(loops),
     S4Vectors::second(loops))
-  loops_gni$anchor.bin = data.table::foverlaps(
+  loops_gni$anchor.bin <- data.table::foverlaps(
     x=data.table::as.data.table(S4Vectors::first(loops)),
     y=data.table::as.data.table(anchor_bins)|>
       data.table::setkey("seqnames","start","end"),
     by.x=c("seqnames","start","end"),
     by.y=c("seqnames","start","end"))$bin
-  loops_gni$bait.bin = data.table::foverlaps(
+  loops_gni$bait.bin <- data.table::foverlaps(
     x=data.table::as.data.table(S4Vectors::second(loops)),
     y=data.table::as.data.table(bait_bins)|>
       data.table::setkey("seqnames","start","end"),
