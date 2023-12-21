@@ -1,5 +1,5 @@
 #' Draw aggregation plot.
-#' 
+#'
 #' PlotAPA
 #' @description Draw aggregation plot from aggregation matrices.
 #' @param aggregatedMtx <matrix>: The aggregated matrix.
@@ -64,9 +64,9 @@
 #' 
 
 PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
- colMax=NULL, colMinCond=NULL, colMaxCond=NULL,...){
+    colMax=NULL, colMinCond=NULL, colMaxCond=NULL,...){
     .ggDensity <- function(data.lst=NULL, colour.col=NULL, mean.bln=TRUE,
-     title=NULL){
+    title=NULL){
         data.lst_tbl <- lapply(seq_along(data.lst),function(element.ndx){
             return(tibble::tibble(
                 value = data.lst[[element.ndx]],
@@ -188,7 +188,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
                 ggplot2::theme_void() +
                 ggplot2::annotate("text", x = 1, y = 1,
                 label = "Not enough pval computed to plot a pval
-                 matrix (<3) or nothing significant")
+                matrix (<3) or nothing significant")
         }
         plot(plot.gp)
         # FiltPval + Trim Scale + Center
@@ -208,7 +208,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
                 ggplot2::theme_void() +
                 ggplot2::annotate("text", x = 1, y = 1,
                 label = "Not enough pval computed to plot a pval
-                 matrix (<3) or nothing significant")
+                matrix (<3) or nothing significant")
         }
         plot(plot.gp)
         # Delta + Auto Scale + Center
@@ -425,7 +425,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
     attr.ndx <- aggregatedMtx |>
         attributes() |>
         names() |>
-         # NotIn to replace by %ni%
+        # NotIn to replace by %ni%
         NotIn(c("dim","matrices","interactions", "dimnames"))
     attr.lst <- attributes(aggregatedMtx)[attr.ndx]
     attr.lst$aggregationMethod <- function(pxl){
@@ -534,11 +534,11 @@ PlotAPA_byDistance <- function(submatrices = NULL,
     plot.opts=NULL){
     # exchange variables if submatrices is null
     two_conditions <- TRUE
-    if(is.null(submatrices) & !is.null(ctrlSubmatrices)){
+    if(is.null(submatrices) && !is.null(ctrlSubmatrices)){
         submatrices <- ctrlSubmatrices
         two_conditions <- FALSE
     }
-    if(is.null(submatrices) & is.null(ctrlSubmatrices)){
+    if(is.null(submatrices) && is.null(ctrlSubmatrices)){
         stop("Argument submatrices is null")
     }
 
@@ -558,10 +558,10 @@ PlotAPA_byDistance <- function(submatrices = NULL,
             all_cples$distance >= vector_dist[d-1])]
         filtered <- FilterInteractions(submatrices,targets=list(name=samples))
 
-        if(!is.null(ctrlSubmatrices) & two_conditions){
+        if(!is.null(ctrlSubmatrices) && two_conditions){
             filtered_ctrl <- FilterInteractions(ctrlSubmatrices,targets=
                 list(name=samples))
-            if(length(filtered)>0 & length(filtered_ctrl)){
+            if(length(filtered)>0 && length(filtered_ctrl)){
                 by_dist_vec_list <- append(by_dist_vec_list,
                 list(Aggregation(matrices = filtered,
                     ctrlMatrices = filtered_ctrl,...)))
@@ -584,7 +584,7 @@ PlotAPA_byDistance <- function(submatrices = NULL,
     }    
     plotList <- list()
     for(p in seq(1,length(by_dist_vec_list))){
-        if(!is.null(plot.opts) & length(plot.opts)>0){
+        if(!is.null(plot.opts) && length(plot.opts)>0){
             chunk.plot <- list(do.call(ggAPA,c(list(
                 aggregatedMtx = by_dist_vec_list[[p]]),
                 as.list(plot.opts)))+

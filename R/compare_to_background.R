@@ -118,7 +118,7 @@ compare_to_background <- function(hicList = NULL,
                     bg_type = NULL,
                     cores = 1,
                     ...){
-  
+
     targetCouples <- attributes(matrices)$interactions
     resolution <- attributes(matrices)$resolution
     .findRandomBins <- function(
@@ -170,7 +170,7 @@ compare_to_background <- function(hicList = NULL,
                                             genomicConstraint,
                                             chromSizes,
                                             binSize = resolution,cores=cores)
-        if(dist_const[1]==0){dist_const[1]=resolution+1}
+        if(dist_const[1]==0){dist_const[1]<-resolution+1}
         background_pairs <- SearchPairs(binned_constraint.idx,
                                     bait.idx,
                                     minDist = dist_const[1],
@@ -208,7 +208,7 @@ compare_to_background <- function(hicList = NULL,
             GenomeInfoDb::seqlevels(indexAnchor)) && 
         !all(unique(indexBait$constraint)%in%
             GenomeInfoDb::seqlevels(indexBait))){
-        dist_const = c(min(targetCouples$distance),
+        dist_const <- c(min(targetCouples$distance),
             max(GenomicRanges::width(genomicConstraint)))
         }else{
         stop("Inter-TAD background couples require TADs info!
@@ -240,7 +240,7 @@ compare_to_background <- function(hicList = NULL,
         bg_couples <- bg_couples[
         which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
         ]
-        message(paste0("Number of inter-TAD couples ",length(bg_couples)))
+        message("Number of inter-TAD couples ",length(bg_couples))
         if(!is.null(secondaryConst.var)){
         # discard couples in the same compartment
         # names of compartment info in couples

@@ -25,7 +25,7 @@ AddAttr <- function(
         names(attributes(x)),
         names(attrs)
     )
-    if (overwrite & length(intersectAttr)) {
+    if (overwrite && length(intersectAttr)) {
         attrs <- c(
             attributes(x)[
                 which(names(attributes(x)) != intersectAttr)

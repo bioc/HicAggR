@@ -430,9 +430,9 @@ ExtractSubmatrix <- function(
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
 
-    message(paste0(" TOTAL extracted submat: ", length(submatrix.spm_lst)))
+    message(" TOTAL extracted submat: ", length(submatrix.spm_lst))
     submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
-    message(paste0(" FILTERED extracted submat: ", length(submatrix.spm_lst)))
+    message(" FILTERED extracted submat: ", length(submatrix.spm_lst))
     interactions.ndx <- seq_along(genomicFeature$name) |>
         stats::setNames(genomicFeature$name)
     interactions.ndx <- interactions.ndx[featureFilt.gni$name]
