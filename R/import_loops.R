@@ -89,6 +89,10 @@ import_loops <- function(
     verbose = FALSE,
     cores = 1) {
     loops <- rtracklayer::import(file_bedpe, format = "bedpe")
+    if ("ALL" %in% toupper(chromSizes[, 1])){
+        chromSizes <- chromSizes[-which(toupper(chromSizes[, 1]) == "ALL"), ]
+        message("ALL removed from chromSizes")
+    }
     anchor_bins <- BinGRanges(
         S4Vectors::first(loops),
         chromSizes = chromSizes,
@@ -192,7 +196,6 @@ import_loops <- function(
             loops_gni@elementMetadata$distance <= maxDist
         )]
     }
-    # S4Vectors::mcols(loops_gni) = S4Vectors::mcols(loops)
     S4Vectors::mcols(loops_gni)$name <- paste0(
         S4Vectors::mcols(loops_gni)$anchor.bin, "_",
         S4Vectors::mcols(loops_gni)$bait.bin
@@ -236,6 +239,11 @@ import_loops <- function(
         colum_order
     )
     names(loops_gni) <- S4Vectors::mcols(loops_gni)$name
+    GenomeInfoDb::seqlevels(loops_gni)<-
+    GenomeInfoDb::seqlevels(GenomeInfoDb::Seqinfo(
+            seqnames = chromSizes[, 1],
+            seqlengths = chromSizes[, 2]
+        ))
     GenomeInfoDb::seqinfo(loops_gni) <-
         GenomeInfoDb::Seqinfo(
             seqnames = chromSizes[, 1],
