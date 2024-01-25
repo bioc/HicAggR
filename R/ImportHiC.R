@@ -300,8 +300,10 @@ ImportHiC <- function(
             } else if (GetFileExtension(file) == "bedpe") {
                 hic.dtf <- dplyr::filter(
                     megaHic.dtf,
-                    megaHic.dtf$chrom_1 == chrom_1 &
-                    megaHic.dtf$chrom_2 == chrom_2
+                    # https://github.com/tidyverse/dplyr/issues/3139
+                    # conflicting variable name
+                    megaHic.dtf$chrom_1 == (!!chrom_1) &
+                    megaHic.dtf$chrom_2 == (!!chrom_2)
                 )
             }
             # Create Contact matrix
