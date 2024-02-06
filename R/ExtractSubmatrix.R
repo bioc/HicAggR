@@ -18,6 +18,10 @@
 #'  how much of the distance between anchor and bait is extracted before and
 #'  after the region (Default 1). Ex: for shift=2, extracted matrices will
 #'  be 2*regionSize+regionSize+2*regionSize.
+#' @param remove_duplicates <Logical>: remove duplicated submatrices.
+#'  This avoids duplicated submatrices when both anchor and bait bins are from
+#'  the same feature. ex. BEAF32-BEAF32, same submatrix twice with opposite
+#'  orientations(Default TRUE)
 #' @param cores <integer> : An integer to specify the number of cores.
 #'  (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console.
@@ -60,8 +64,8 @@
 
 ExtractSubmatrix <- function(
     genomicFeature = NULL, hicLst = NULL, referencePoint = "pf",
-    hicResolution = NULL, matriceDim = 21, shift = 1, cores = 1,
-    verbose = FALSE
+    hicResolution = NULL, matriceDim = 21, shift = 1, 
+    remove_duplicates = TRUE, cores = 1,verbose = FALSE
 ) {
     .GInteractionFormatting <- function(
         genomicFeature, hicResolution
@@ -430,12 +434,22 @@ ExtractSubmatrix <- function(
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
 
-    message(" TOTAL extracted submat: ", length(submatrix.spm_lst))
-    submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
     message(" FILTERED extracted submat: ", length(submatrix.spm_lst))
+    if(!remove_duplicates){
+        submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
+        message("You have chosen to keep duplicated submatrices.")
+    }else{
+
+    }
+    message(" TOTAL extracted submat: ", length(submatrix.spm_lst))
     interactions.ndx <- seq_along(genomicFeature$name) |>
         stats::setNames(genomicFeature$name)
-    interactions.ndx <- interactions.ndx[featureFilt.gni$name]
+    if(remove_duplicates){
+        interactions.ndx <- interactions.ndx[featureNoDup.gni$name]
+    }else{
+        interactions.ndx <- interactions.ndx[featureFilt.gni$name]
+    }
+    
     attributes(submatrix.spm_lst)$interactions <- genomicFeature[
         interactions.ndx]
     attributes(submatrix.spm_lst)$resolution <- hicResolution
