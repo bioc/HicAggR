@@ -11,6 +11,7 @@ ExtractSubmatrix(
   hicResolution = NULL,
   matriceDim = 21,
   shift = 1,
+  remove_duplicates = TRUE,
   cores = 1,
   verbose = FALSE
 )
@@ -37,6 +38,11 @@ If NULL automatically find in resolution attributes of hicLst.
 how much of the distance between anchor and bait is extracted before and
 after the region (Default 1). Ex: for shift=2, extracted matrices will
 be 2\emph{regionSize+regionSize+2}regionSize.}
+
+\item{remove_duplicates}{\if{html}{\out{<Logical>}}: remove duplicated submatrices.
+This avoids duplicated submatrices when both anchor and bait bins are from
+the same feature. ex. BEAF32-BEAF32, same submatrix twice with opposite
+orientations(Default TRUE)}
 
 \item{cores}{\if{html}{\out{<integer>}} : An integer to specify the number of cores.
 (Default 1)}
