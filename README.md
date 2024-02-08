@@ -20,7 +20,7 @@ analysis of HiC contacts through aggregation.
 
 ## Installation
 
-Development version is avalaible from [GitHub](https://github.com/):
+Development version is avalaible from [GitHub](https://github.com/CuvierLab/HicAggR):
 
 ``` r
 remotes::install_github("CuvierLab/HicAggR")
