@@ -5,7 +5,7 @@
 # HicAggR 0.99.1
 
 * Corrected with Bioconductor's reviews
-* Added PrepareMtxList, import_loops & compare_to_background functions
+* Added PrepareMtxList, import_loops, PlotAPA_byDistance & compare_to_background functions
 * Corrected bugs on seqlevels consistancy and name column for GRanges objects
 * Encapsulated small and internal functions in utilities.R
 * ExtractSubMatrix has option to remove duplicated submatrices
