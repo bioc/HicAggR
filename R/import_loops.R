@@ -131,6 +131,7 @@ import_loops <- function(
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
         GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
+    genomicConstraint <- GenomeInfoDb::sortSeqlevels(genomicConstraint)
     binned_constraint <- BinGRanges(
         gRange = genomicConstraint,
         chromSizes = chromSizes,

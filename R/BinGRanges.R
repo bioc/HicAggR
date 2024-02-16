@@ -52,10 +52,10 @@ BinGRanges <- function(
     } else {
         seqlengths.lst <- dplyr::pull(chromSizes, 2) |>
             stats::setNames(dplyr::pull(chromSizes, 1))
-        seqlengths.lst <- seqlengths.lst[intersect(
-            names(seqlengths.lst),
-            levels(GenomeInfoDb::seqnames(gRange)@values)
-        )]
+        seqlengths.lst <- seqlengths.lst[na.omit(match(
+            levels(GenomeInfoDb::seqnames(gRange)@values),
+            names(seqlengths.lst)
+        ))]
         gRange <- GenomeInfoDb::keepSeqlevels(
             gRange, value = names(seqlengths.lst),
             "coarse"
