@@ -331,23 +331,18 @@ ImportHiC <- function(
                 attributes.tbl$name == paste(ele.lst, collapse = "_")
             ) |>
             tibble::add_column(resolution = hicResolution) |>
-            {if (hic_norm!="NONE") tibble::add_column(
-                    removedCounts=NULL
-                )}() |>
-            {if (hic_norm!="NONE") tibble::add_column(
-                    observed=NULL
-                )}() |>
-            {if (hic_norm!="NONE") tibble::add_column(
-                    normalizer=NULL
-                )}() |>
-            
-            {if (hic_norm!="NONE") tibble::add_column(
-                    mtx=hic_norm
-                )}() |>
-            {if (hic_matrix!="observed") tibble::add_column(
-                    expected=hic_matrix
-                )}() |>
             as.list()
+            if(hic_norm!="NONE"){
+                hic@metadata <- append(hic@metadata,
+                list(observed = NULL,
+                normalizer = NULL,
+                mtx = hic_norm))
+                }
+            if(hic_matrix!="observed"){
+                hic@metadata <- append(hic@metadata,
+                list(expected=hic_matrix))
+                }
+            
             return(hic)
         }
     )
