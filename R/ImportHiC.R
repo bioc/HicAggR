@@ -64,7 +64,8 @@
 
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
-    chrom_2 = NULL, verbose = FALSE, cores = 1
+    chrom_2 = NULL, verbose = FALSE, cores = 1, 
+    hic_norm="NONE",hic_matrix = "observed"
 ) {
     # Resolution Format
     options(scipen = 999)
@@ -227,13 +228,13 @@ ImportHiC <- function(
             if (GetFileExtension(file) == "hic") {
                 # Read .hic file
                 hic.dtf <- strawr::straw(
-                    "NONE",
+                    hic_norm,
                     file,
                     chrom_1,
                     chrom_2,
                     "BP",
                     hicResolution,
-                    "observed"
+                    hic_matrix
                 )
                 hic.dtf$j <- ceiling((hic.dtf$y + 1)/hicResolution)
                 hic.dtf$i <- ceiling((hic.dtf$x + 1)/hicResolution)
@@ -330,20 +331,51 @@ ImportHiC <- function(
                 attributes.tbl$name == paste(ele.lst, collapse = "_")
             ) |>
             tibble::add_column(resolution = hicResolution) |>
+            {if (hic_norm!="NONE") tibble::add_column(
+                    removedCounts=NULL
+                )}() |>
+            {if (hic_norm!="NONE") tibble::add_column(
+                    observed=NULL
+                )}() |>
+            {if (hic_norm!="NONE") tibble::add_column(
+                    normalizer=NULL
+                )}() |>
+            
+            {if (hic_norm!="NONE") tibble::add_column(
+                    mtx=hic_norm
+                )}() |>
+            {if (hic_matrix!="observed") tibble::add_column(
+                    expected=hic_matrix
+                )}() |>
             as.list()
             return(hic)
         }
     )
-    # Add attributes
-    hic.lst_cmx <- hic.lst_cmx |>
-        stats::setNames(chromComb.lst) |>
-        AddAttr(
-            attrs = list(
-                resolution = hicResolution,
-                chromSize = tibble::as_tibble(chromSizes),
-                matricesKind = attributes.tbl,
-                mtx = "obs"
+    if(hic_matrix!="observed"){
+        # Add attributes
+        hic.lst_cmx <- hic.lst_cmx |>
+            stats::setNames(chromComb.lst) |>
+            AddAttr(
+                attrs = list(
+                    resolution = hicResolution,
+                    chromSize = tibble::as_tibble(chromSizes),
+                    matricesKind = attributes.tbl,
+                    mtx = hic_matrix
+                )
             )
-        )
+    }else{
+        # Add attributes
+        hic.lst_cmx <- hic.lst_cmx |>
+            stats::setNames(chromComb.lst) |>
+            AddAttr(
+                attrs = list(
+                    resolution = hicResolution,
+                    chromSize = tibble::as_tibble(chromSizes),
+                    matricesKind = attributes.tbl,
+                    mtx = "obs"
+                )
+            )
+
+    }
     return(hic.lst_cmx)
 }

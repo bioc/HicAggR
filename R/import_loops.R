@@ -89,8 +89,8 @@ import_loops <- function(
     verbose = FALSE,
     cores = 1) {
     loops <- rtracklayer::import(file_bedpe, format = "bedpe")
-    if ("ALL" %in% toupper(chromSizes[, 1])){
-        chromSizes <- chromSizes[-which(toupper(chromSizes[, 1]) == "ALL"), ]
+    if ("ALL" %in% toupper(chromSizes[[1]])){
+        chromSizes <- chromSizes[-which(toupper(chromSizes[[1]]) == "ALL"), ]
         message("ALL removed from chromSizes")
     }
     anchor_bins <- BinGRanges(
@@ -110,12 +110,12 @@ import_loops <- function(
     # Constraint Informations
     if (is.null(genomicConstraint)) {
         genomicConstraint <- GenomicRanges::GRanges(
-            seqnames = chromSizes[, 1],
+            seqnames = chromSizes[[1]],
             ranges = IRanges::IRanges(
-                start = rep(1, length(chromSizes[, 2])),
-                end = chromSizes[, 2]
+                start = rep(1, nrow(chromSizes)),
+                end = chromSizes[[2]]
             ),
-            strand = "*", name = chromSizes[, 1]
+            strand = "*", name = chromSizes[[1]]
         )
     } else {
         if (is.null(genomicConstraint$name) ||
@@ -236,18 +236,18 @@ import_loops <- function(
     ))
     S4Vectors::mcols(loops_gni) <- dplyr::select(
         data.frame(S4Vectors::mcols(loops_gni)),
-        colum_order
+        dplyr::all_of(colum_order)
     )
     names(loops_gni) <- S4Vectors::mcols(loops_gni)$name
     GenomeInfoDb::seqlevels(loops_gni)<-
     GenomeInfoDb::seqlevels(GenomeInfoDb::Seqinfo(
-            seqnames = chromSizes[, 1],
-            seqlengths = chromSizes[, 2]
+            seqnames = chromSizes[[1]],
+            seqlengths = chromSizes[[2]]
         ))
     GenomeInfoDb::seqinfo(loops_gni) <-
         GenomeInfoDb::Seqinfo(
-            seqnames = chromSizes[, 1],
-            seqlengths = chromSizes[, 2]
+            seqnames = chromSizes[[1]],
+            seqlengths = chromSizes[[2]]
         )
 
     return(loops_gni)

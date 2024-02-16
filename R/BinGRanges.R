@@ -148,7 +148,7 @@ BinGRanges <- function(
     }
     binnedGRanges.gnr <- sort(binnedGRanges.gnr)
     GenomeInfoDb::seqinfo(binnedGRanges.gnr) <- GenomeInfoDb::seqinfo(
-        gRange
+        sort(GenomeInfoDb::sortSeqlevels(gRange))
     )
     return(binnedGRanges.gnr)
 }
