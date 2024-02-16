@@ -200,9 +200,10 @@ ImportHiC <- function(
             tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
-    binnedGenome.grn <- GenomeInfoDb::sortSeqlevels(binnedGenome.grn)
     GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
         stats::setNames(chromSizes$name)
+    binnedGenome.grn <- GenomeInfoDb::sortSeqlevels(binnedGenome.grn)
+    
     chromComb.lst <- paste(chrom_1, chrom_2, sep = "_")
     matrixSymmetric.bln <- strsplit(chromComb.lst, "_") |>
         lapply(function(name.chr) {name.chr[[1]] == name.chr[[2]]}) |>
