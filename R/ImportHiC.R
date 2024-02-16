@@ -17,6 +17,19 @@
 #'  (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
+#' @param hic_norm <character>: "norm" argument to supply to [strawr::straw()].
+#'  This argument is for .hic format data only. Available norms can be obtained
+#'  through [strawr::readHicNormTypes()].
+#'  (Default "NONE").
+#' @param hic_matrix <character>: "matrix" argument to supply to
+#' [strawr::straw()].
+#'  This argument is for .hic format data only.
+#'  Other options can be: "oe", "expected". (Default "observed").
+#' 
+#' @details If you request "expected" values when importing .hic format data,
+#' you must do yourself the "oe" by importing manually the observed counts
+#' as well.
+#'  
 #' @return A matrices list.
 #' @examples
 #' \donttest{
@@ -65,7 +78,7 @@
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
     chrom_2 = NULL, verbose = FALSE, cores = 1, 
-    hic_norm="NONE",hic_matrix = "observed"
+    hic_norm="NONE", hic_matrix = "observed"
 ) {
     # Resolution Format
     options(scipen = 999)
@@ -79,19 +92,8 @@ ImportHiC <- function(
         stop("chrom_1 and chrom_2 must have the same length")
     }
     
-    # This throws error when building vignettes, if chromSizes
-    #  object is not supplied
-    # line 115-120 in HicAggR.Rmd & 168-174 in InDepth.Rmd
-    # # chromSizs needs to have colnames = c("name", "length")
-    # colnames(chromSizes) = c("name", "length")
-    # Get SeqInfo
-    # These lines make no sense to me, why check "index" presence,
-    # if we are getting the chromSizes from file anyways...
     if (GetFileExtension(file) == "hic") {
-        if ("index" %in% colnames(chromSizes)) {
-            chromSizes <- strawr::readHicChroms(file) |>
-                dplyr::select(-"index")
-        } else {
+        if(is.null(chromSizes)){
             chromSizes <- strawr::readHicChroms(file)
         }
         if("index" %in% colnames(chromSizes)){
@@ -121,6 +123,11 @@ ImportHiC <- function(
             j = ceiling(hic.gnp@second@ranges@start/hicResolution),
             counts = hic.gnp@elementMetadata$score
         )
+    } else if (GetFileExtension(file) == "bedpe" &&
+        is.null(chromSizes)
+    ) {
+        stop("To import HiC data in bedpe format, non null chromSizes
+            argument is required!")
     } else {
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
