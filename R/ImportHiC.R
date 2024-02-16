@@ -78,22 +78,7 @@ ImportHiC <- function(
     } else if (length(chrom_1) != length(chrom_2)) {
         stop("chrom_1 and chrom_2 must have the same length")
     }
-    if ("ALL" %in% toupper(chrom_1)){
-        chrom_1 <- chrom_1[-which(toupper(chrom_1) == "ALL")]
-        message("ALL removed from chrom_1")
-    }
-    if ("ALL" %in% toupper(chrom_2)){
-        chrom_2 <- chrom_2[-which(toupper(chrom_2) == "ALL")]
-        message("ALL removed from chrom_2")
-    }
-    chrom.chr <- c(chrom_1, chrom_2) |>
-        unlist() |>
-        unique()
-    if (grepl(pattern = "chr", chrom.chr[1], fixed = TRUE)) {
-        seqlevelsStyleHiC <- "UCSC"
-    } else {
-        seqlevelsStyleHiC <- "ensembl"
-    }
+    
     # This throws error when building vignettes, if chromSizes
     #  object is not supplied
     # line 115-120 in HicAggR.Rmd & 168-174 in InDepth.Rmd
@@ -154,6 +139,27 @@ ImportHiC <- function(
     # sometimes it adds a first chrom called "All" with out chr, 
     # So I changed rownames(chromSizes)[1] to 
     # rownames(chromSizes)[length(rownames(chromSizes))]
+    if(is.null(chrom_1) && is.null(chrom_2)){
+        message("chrom_1 and chrom_2 are NULL, so all chromosomes are chosen")
+        chrom_1 <- chromSizes$name
+        chrom_2 <- chromSizes$name
+    }
+    if ("ALL" %in% toupper(chrom_1)){
+        chrom_1 <- chrom_1[-which(toupper(chrom_1) == "ALL")]
+        message("ALL removed from chrom_1")
+    }
+    if ("ALL" %in% toupper(chrom_2)){
+        chrom_2 <- chrom_2[-which(toupper(chrom_2) == "ALL")]
+        message("ALL removed from chrom_2")
+    }
+    chrom.chr <- c(chrom_1, chrom_2) |>
+        unlist() |>
+        unique()
+    if (grepl(pattern = "chr", chrom.chr[1], fixed = TRUE)) {
+        seqlevelsStyleHiC <- "UCSC"
+    } else {
+        seqlevelsStyleHiC <- "ensembl"
+    }
     if (grepl("chr", rownames(chromSizes)[
         length(rownames(chromSizes))],fixed = TRUE) &&
         seqlevelsStyleHiC == "ensembl"
@@ -178,6 +184,7 @@ ImportHiC <- function(
     chrom.chr <- chrom.chr[chrom.chr %in% chromSizes$name]
     chrom_1 <- chrom_1[chrom_1 %in% chromSizes$name]
     chrom_2 <- chrom_2[chrom_2 %in% chromSizes$name]
+    chromSizes <- chromSizes[which(chromSizes$name%in%chrom.chr),]
     # Create Genome as GRanges
     binnedGenome.grn <- chromSizes |>
         dplyr::pull("length") |>
@@ -186,6 +193,7 @@ ImportHiC <- function(
             tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
+    binnedGenome.grn <- GenomeInfoDb::sortSeqlevels(binnedGenome.grn)
     GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
         stats::setNames(chromSizes$name)
     chromComb.lst <- paste(chrom_1, chrom_2, sep = "_")
