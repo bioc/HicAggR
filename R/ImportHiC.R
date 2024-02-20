@@ -416,7 +416,7 @@ ImportHiC <- function(
                 hic@metadata <- append(hic@metadata,
                     list(observed = hic.dtf$counts,
                     normalizer = (hic.dtf$weight1 * hic.dtf$weight2),
-                    mtx = "norm"))
+                    mtx = "obs"))
             }
             if(hic_matrix!="obs"){
                 hic@metadata <- append(hic@metadata,
