@@ -446,7 +446,7 @@ ImportHiC <- function(
                     resolution = hicResolution,
                     chromSize = tibble::as_tibble(chromSizes),
                     matricesKind = attributes.tbl,
-                    mtx = "norm"
+                    mtx = "obs"
                 )
             )
         hic.lst_cmx <- SwitchMatrix(hicLst = hic.lst_cmx,matrixKind = "norm")
