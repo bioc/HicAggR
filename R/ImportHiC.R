@@ -386,7 +386,7 @@ ImportHiC <- function(
             hic.spm <- Matrix::sparseMatrix(
                 i = hic.dtf$i,
                 j = hic.dtf$j,
-                x = hic.dtf$counts,
+                x = (hic.dtf$counts*hic.dtf$weight1*hic.dtf$weight2),
                 dims = dims.num
             )
             row.regions <- binnedGenome.grn[which(
@@ -407,7 +407,7 @@ ImportHiC <- function(
             ) |>
             tibble::add_column(resolution = hicResolution) |>
             as.list()
-            if(hic_norm!="NONE"){
+            if(hic_norm!="NONE" && GetFileExtension(file)=="hic"){
                 hic@metadata <- append(hic@metadata,
                 list(observed = hic.dtf$counts,
                 normalizer = NULL,
@@ -416,9 +416,9 @@ ImportHiC <- function(
                 hic@metadata <- append(hic@metadata,
                     list(observed = hic.dtf$counts,
                     normalizer = (hic.dtf$weight1 * hic.dtf$weight2),
-                    mtx = "obs"))
+                    mtx = "norm"))
             }
-            if(hic_matrix!="obs"){
+            if(hic_matrix!="obs" && GetFileExtension(file)=="hic"){
                 hic@metadata <- append(hic@metadata,
                 list(expected=hic_matrix))
                 }
@@ -426,7 +426,7 @@ ImportHiC <- function(
             return(hic)
         }
     )
-    if(hic_matrix!="obs"){
+    if(hic_matrix!="obs" && GetFileExtension(file)=="hic"){
         # Add attributes
         hic.lst_cmx <- hic.lst_cmx |>
             stats::setNames(chromComb.lst) |>
@@ -446,10 +446,9 @@ ImportHiC <- function(
                     resolution = hicResolution,
                     chromSize = tibble::as_tibble(chromSizes),
                     matricesKind = attributes.tbl,
-                    mtx = "obs"
+                    mtx = "norm"
                 )
             )
-        hic.lst_cmx <- SwitchMatrix(hicLst = hic.lst_cmx,matrixKind = "norm")
     }else {
         # Add attributes
         hic.lst_cmx <- hic.lst_cmx |>
