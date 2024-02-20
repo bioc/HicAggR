@@ -25,10 +25,21 @@
 #' [strawr::straw()].
 #'  This argument is for .hic format data only.
 #'  Other options can be: "oe", "expected". (Default "observed").
+#' @param cool_balanced <logical> Import already balanced matrix?
+#'  (Default: FALSE)
+#' @param cool_weight_name <character> Name of the correcter in the cool file.
+#'  (Default: weight). [rhdf5::h5ls()] to see the available correcters.
+#' @param cool_divisive_weights <logical> Does the correcter vector contain
+#'  divisive biases as in hicExplorer or multiplicative as in cooltools?
+#'  (Default: FALSE)
 #' 
 #' @details If you request "expected" values when importing .hic format data,
 #' you must do yourself the "oe" by importing manually the observed counts
 #' as well.
+#' 
+#' Prior to v.0.9.0 cooltools had multiplicative weight only, so make sure
+#' your correcters are divisive or multiplicative.
+#' https://cooler.readthedocs.io/en/stable/releasenotes.html#v0-9-0
 #'  
 #' @return A matrices list.
 #' @examples
@@ -78,7 +89,8 @@
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
     chrom_2 = NULL, verbose = FALSE, cores = 1, 
-    hic_norm="NONE", hic_matrix = "observed"
+    hic_norm="NONE", hic_matrix = "obs", cool_balanced=FALSE,
+    cool_weight_name="weight",cool_divisive_weights=FALSE
 ) {
     # Resolution Format
     options(scipen = 999)
@@ -303,9 +315,56 @@ ImportHiC <- function(
                         index = list(chunk.num)
                     ))
                 )
+                if(cool_balanced){
+                    bins.group <- ifelse(
+                        GetFileExtension(file) %in%
+                            c("cool", "HDF5", "hdf5", "h5"),
+                        yes = "/bins",
+                        no = paste("resolutions",
+                            hicResolution,"bins",sep = "/")
+                    )
+                    bins <- data.frame(weight=
+                        rhdf5::h5read(file, 
+                        name = paste(bins.group,
+                            get("cool_weight_name"),sep="/"),
+                        bit64conversion = 'double',
+                        index = list(
+                            starts.ndx[chrom_1]:ends.ndx[chrom_1]))) |>
+                        dplyr::mutate(
+                            bin_id=c(starts.ndx[chrom_1]:ends.ndx[chrom_1])-1)
+                    bins2 <- data.frame(weight=
+                        rhdf5::h5read(file, 
+                        name = paste(bins.group,
+                            get("cool_weight_name"),sep="/"),
+                        bit64conversion = 'double',
+                        index = list(
+                            starts.ndx[chrom_2]:ends.ndx[chrom_2]))) |>
+                        dplyr::mutate(
+                            bin_id=c(starts.ndx[chrom_2]:ends.ndx[chrom_2])-1)
+                    hic.dtf <- dplyr::left_join(
+                        (dplyr::mutate(hic.dtf, "bin1_id" = hic.dtf$i-1)),
+                        (dplyr::rename(bins, "weight1" = "weight")),
+                        dplyr::join_by("bin1_id"=="bin_id"))
+                    hic.dtf <- dplyr::left_join(
+                        (dplyr::mutate(hic.dtf, "bin2_id" = hic.dtf$j-1)),
+                        (dplyr::rename(bins2, "weight2" = "weight")),
+                        dplyr::join_by("bin2_id"=="bin_id"))
+                    if(cool_divisive_weights){
+                        hic.dtf <- dplyr::mutate(
+                            hic.dtf,
+                            "weight1"=1/hic.dtf$weight1
+                        )
+                        hic.dtf <- dplyr::mutate(
+                            hic.dtf,
+                            "weight2"=1/hic.dtf$weight2
+                        )
+                    }
+                }
                 filter.bin2 <- hic.dtf$j %in%
                     starts.ndx[chrom_2]:ends.ndx[chrom_2]
                 hic.dtf <- hic.dtf[filter.bin2, ]
+                # I have no idea what's the intent of the following lines
+                # just leaving them as they were...
                 hic.dtf <- dplyr::mutate(
                     hic.dtf,
                     i = hic.dtf$i - starts.ndx[chrom_1] + 1
@@ -350,11 +409,17 @@ ImportHiC <- function(
             as.list()
             if(hic_norm!="NONE"){
                 hic@metadata <- append(hic@metadata,
-                list(observed = NULL,
+                list(observed = hic.dtf$counts,
                 normalizer = NULL,
-                mtx = hic_norm))
-                }
-            if(hic_matrix!="observed"){
+                mtx = "norm"))
+            }else if (cool_balanced) {
+                hic@metadata <- append(hic@metadata,
+                    list(observed = hic.dtf$counts,
+                    normalizer = (hic.dtf$weight1 * hic.dtf$weight2),
+                    mtx = "norm"))
+                SwitchMatrix()
+            }
+            if(hic_matrix!="obs"){
                 hic@metadata <- append(hic@metadata,
                 list(expected=hic_matrix))
                 }
@@ -362,7 +427,7 @@ ImportHiC <- function(
             return(hic)
         }
     )
-    if(hic_matrix!="observed"){
+    if(hic_matrix!="obs"){
         # Add attributes
         hic.lst_cmx <- hic.lst_cmx |>
             stats::setNames(chromComb.lst) |>
@@ -374,7 +439,19 @@ ImportHiC <- function(
                     mtx = hic_matrix
                 )
             )
-    }else{
+    }else if (cool_balanced) {
+        hic.lst_cmx <- hic.lst_cmx |>
+            stats::setNames(chromComb.lst) |>
+            AddAttr(
+                attrs = list(
+                    resolution = hicResolution,
+                    chromSize = tibble::as_tibble(chromSizes),
+                    matricesKind = attributes.tbl,
+                    mtx = "norm"
+                )
+            )
+        hic.lst_cmx <- SwitchMatrix(hicLst = hic.lst_cmx,matrixKind = "norm")
+    }else {
         # Add attributes
         hic.lst_cmx <- hic.lst_cmx |>
             stats::setNames(chromComb.lst) |>
@@ -386,7 +463,6 @@ ImportHiC <- function(
                     mtx = "obs"
                 )
             )
-
     }
     return(hic.lst_cmx)
 }
