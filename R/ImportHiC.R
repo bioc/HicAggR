@@ -32,6 +32,8 @@
 #' @param cool_divisive_weights <logical> Does the correcter vector contain
 #'  divisive biases as in hicExplorer or multiplicative as in cooltools?
 #'  (Default: FALSE)
+#' @param h5_fill_upper <logical> Do the matrix in h5 format need to be
+#'  transposed? (Default: TRUE)
 #' 
 #' @details If you request "expected" values when importing .hic format data,
 #' you must do yourself the "oe" by importing manually the observed counts
@@ -41,6 +43,11 @@
 #' your correcters are divisive or multiplicative.
 #' https://cooler.readthedocs.io/en/stable/releasenotes.html#v0-9-0
 #'  
+#' When loading hic matrix in h5 format make sure you have enough momory
+#' to load the full matrix with all chromosomes regardless of values for
+#' chrom_1 and chrom_2 arguments. The function first loads the whole matrix,
+#' then extracts matrices per chromosome for the time being, it's easier ;).
+#' 
 #' @return A matrices list.
 #' @examples
 #' \donttest{
@@ -89,8 +96,9 @@
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
     chrom_2 = NULL, verbose = FALSE, cores = 1, 
-    hic_norm="NONE", hic_matrix = "obs", cool_balanced=FALSE,
-    cool_weight_name="weight",cool_divisive_weights=FALSE
+    hic_norm="NONE", hic_matrix = "obs", cool_balanced = FALSE,
+    cool_weight_name = "weight", cool_divisive_weights= FALSE, 
+    h5_fill_upper = TRUE
 ) {
     # Resolution Format
     options(scipen = 999)
@@ -126,9 +134,37 @@ ImportHiC <- function(
     } else if ((GetFileExtension(file) == "h5")){
         # Get SeqInfo
         chromSizes <- data.frame(rhdf5::h5read(file, name = "intervals")) |>
-            dplyr::group_by("chr_list") |> 
-            dplyr::summarise(length = max("end_list"))|>
+            dplyr::group_by(.data$chr_list) |> 
+            dplyr::summarise("length" = max(.data$end_list))|>
             dplyr::rename("name"="chr_list")
+        i.group <- "/matrix/indices"
+        p.group <- "/matrix/indptr"
+        x.group <- "/matrix/data"
+        # got the structure from these
+        # https://github.com/deeptools/HiCMatrix/blob/master/
+        # hicmatrix/lib/h5.py lines 38:39
+        # https://docs.scipy.org/doc/scipy/reference/
+        # generated/scipy.sparse.csc_matrix.html
+        # https://github.com/rstudio/reticulate/blob/main/R/conversion.R
+        # lines 499-507
+        # indices in csr_matrix correspond to i, indptr to p and data to x
+        hic_spm_full_h5 <- Matrix::sparseMatrix(
+            i=as.vector(rhdf5::h5read(
+            file,
+            name = i.group
+            )),
+            p=as.vector(rhdf5::h5read(
+            file,
+            name = p.group
+            )),
+            x = as.vector(rhdf5::h5read(
+            file,
+            name = x.group
+            )),symmetric = TRUE,index1 = FALSE
+        )
+        if(h5_fill_upper){
+            hic_spm_full_h5 <- t(hic_spm_full_h5)
+        }
     } else if (GetFileExtension(file) == "bedpe" &&
         !is.null(chromSizes)
     ) {
@@ -273,18 +309,18 @@ ImportHiC <- function(
                 hic.dtf$j <- ceiling((hic.dtf$y + 1)/hicResolution)
                 hic.dtf$i <- ceiling((hic.dtf$x + 1)/hicResolution)
             } else if (GetFileExtension(file) %in%
-                c("cool", "mcool", "HDF5", "hdf5", "h5")
+                c("cool", "mcool", "HDF5", "hdf5")
             ) {
                 # Define HDF5groups
                 indexes.group <- ifelse(
                     GetFileExtension(file) %in%
-                        c("cool", "HDF5", "hdf5", "h5"),
+                        c("cool", "HDF5", "hdf5"),
                     yes = "/indexes",
                     no = paste("resolutions",hicResolution,"indexes",sep = "/")
                 )
                 pixels.group <- ifelse(
                     GetFileExtension(file) %in%
-                        c("cool", "HDF5", "hdf5", "h5"),
+                        c("cool", "HDF5", "hdf5"),
                     yes = "/pixels",
                     no = paste("resolutions", hicResolution,"pixels",sep = "/")
                 )
@@ -324,7 +360,7 @@ ImportHiC <- function(
                 if(cool_balanced){
                     bins.group <- ifelse(
                         GetFileExtension(file) %in%
-                            c("cool", "HDF5", "hdf5", "h5"),
+                            c("cool", "HDF5", "hdf5"),
                         yes = "/bins",
                         no = paste("resolutions",
                             hicResolution,"bins",sep = "/")
@@ -379,6 +415,10 @@ ImportHiC <- function(
                     hic.dtf,
                     j = hic.dtf$j - starts.ndx[chrom_2] + 1
                 )
+            }else if (GetFileExtension(file) == "h5") {
+                hic.spm <- hic_spm_full_h5[
+                    starts.ndx[chrom_1]:ends.ndx[chrom_1],
+                    starts.ndx[chrom_2]:ends.ndx[chrom_2]]
             } else if (GetFileExtension(file) == "bedpe") {
                 hic.dtf <- dplyr::filter(
                     megaHic.dtf,
@@ -396,7 +436,7 @@ ImportHiC <- function(
                     x = (hic.dtf$counts*hic.dtf$weight1*hic.dtf$weight2),
                     dims = dims.num
                 )
-            }else{
+            }else if(GetFileExtension(file) != "h5"){
                 hic.spm <- Matrix::sparseMatrix(
                     i = hic.dtf$i,
                     j = hic.dtf$j,
@@ -455,7 +495,8 @@ ImportHiC <- function(
                     mtx = hic_matrix
                 )
             )
-    }else if (cool_balanced) {
+    }else if (cool_balanced && 
+            GetFileExtension(file)%in%c("cool","mcool")) {
         hic.lst_cmx <- hic.lst_cmx |>
             stats::setNames(chromComb.lst) |>
             AddAttr(
