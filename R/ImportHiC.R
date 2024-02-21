@@ -160,7 +160,9 @@ ImportHiC <- function(
             x = as.vector(rhdf5::h5read(
             file,
             name = x.group
-            )),symmetric = TRUE,index1 = FALSE
+            )), dims = c(sum(ceiling(chromSizes$length/hicResolution)),
+                sum(ceiling(chromSizes$length/hicResolution))),
+            index1 = FALSE, repr = "C"
         )
         if(h5_fill_upper){
             hic_spm_full_h5 <- t(hic_spm_full_h5)
@@ -185,6 +187,9 @@ ImportHiC <- function(
     } else {
         stop("file must be .hic, .cool, .mcool, .hdf5, .HDF5 or .bedpe")
     }
+    # to avoid warning if chromSizes is tibble, cause setting row.names
+    # for tibble is deprecated
+    chromSizes <- as.data.frame(chromSizes)
     rownames(chromSizes) <- chromSizes$name
     # vignette building throws error InDepth.Rmd (177-183), 
     # data is in UCSC chrom_1 in Ensembl
