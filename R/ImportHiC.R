@@ -165,7 +165,7 @@ ImportHiC <- function(
             index1 = FALSE, repr = "C"
         )
         if(h5_fill_upper){
-            hic_spm_full_h5 <- t(hic_spm_full_h5)
+            hic_spm_full_h5 <- Matrix::t(hic_spm_full_h5)
         }
     } else if (GetFileExtension(file) == "bedpe" &&
         !is.null(chromSizes)
