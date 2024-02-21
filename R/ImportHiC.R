@@ -113,16 +113,22 @@ ImportHiC <- function(
                 dplyr::select(-"index")}
         colnames(chromSizes) <- c("name", "length")
     } else if (GetFileExtension(file) %in%
-        c("cool", "mcool", "HDF5", "hdf5", "h5")
+        c("cool", "mcool", "HDF5", "hdf5")
     ) {
         # Define HDF5groups
         chr.group <- ifelse(
-            GetFileExtension(file) %in% c("cool", "HDF5", "hdf5", "h5"),
+            GetFileExtension(file) %in% c("cool", "HDF5", "hdf5"),
             yes = "/chroms",
             no = paste("resolutions", hicResolution, "chroms", sep = "/")
         )
         # Get SeqInfo
         chromSizes <- data.frame(rhdf5::h5read(file, name = chr.group))
+    } else if ((GetFileExtension(file) == "h5")){
+        # Get SeqInfo
+        chromSizes <- data.frame(rhdf5::h5read(file, name = "intervals")) |>
+            dplyr::group_by("chr_list") |> 
+            dplyr::summarise(length = max("end_list"))|>
+            dplyr::rename("name"="chr_list")
     } else if (GetFileExtension(file) == "bedpe" &&
         !is.null(chromSizes)
     ) {
@@ -383,12 +389,22 @@ ImportHiC <- function(
                 )
             }
             # Create Contact matrix
-            hic.spm <- Matrix::sparseMatrix(
-                i = hic.dtf$i,
-                j = hic.dtf$j,
-                x = (hic.dtf$counts*hic.dtf$weight1*hic.dtf$weight2),
-                dims = dims.num
-            )
+            if(cool_balanced && GetFileExtension(file)%in%c("cool","mcool")){
+                hic.spm <- Matrix::sparseMatrix(
+                    i = hic.dtf$i,
+                    j = hic.dtf$j,
+                    x = (hic.dtf$counts*hic.dtf$weight1*hic.dtf$weight2),
+                    dims = dims.num
+                )
+            }else{
+                hic.spm <- Matrix::sparseMatrix(
+                    i = hic.dtf$i,
+                    j = hic.dtf$j,
+                    x = hic.dtf$counts,
+                    dims = dims.num
+                )
+            }
+            
             row.regions <- binnedGenome.grn[which(
                 as.vector(binnedGenome.grn@seqnames) == chrom_1
             )]
@@ -412,7 +428,8 @@ ImportHiC <- function(
                 list(observed = hic.dtf$counts,
                 normalizer = NULL,
                 mtx = "norm"))
-            }else if (cool_balanced) {
+            }else if (cool_balanced && 
+            GetFileExtension(file)%in%c("cool","mcool")) {
                 hic@metadata <- append(hic@metadata,
                     list(observed = hic.dtf$counts,
                     normalizer = (hic.dtf$weight1 * hic.dtf$weight2),
