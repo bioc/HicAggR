@@ -8,10 +8,11 @@
 #' @param cores <numerical> : Number of cores to be used. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
-#'  @param plot_contact_vs_dist Whether to plot contact vs distance curve
+#' @param plot_contact_vs_dist Whether to plot contact vs distance curve
 #'  per chromosome ("per_seq"), all chromosomes ("total") or not (NULL). 
 #'  (Default "per_seq")
 #' @return A matrices list.
+#' @importFrom rlang .data
 #' @import ggplot2
 #' @examples
 #' # Note: run HicAggR::BalanceHiC before OverExpectedHiC calculation.
@@ -79,15 +80,15 @@ OverExpectedHiC <- function(
 			lapply(
 				seq_along(expected.lst),
 				function(i){return(expected.lst[[i]] |>
-				dplyr::filter(distance>1) |>
+				dplyr::filter(.data$distance>1) |>
 				dplyr::filter(
-				!duplicated(distance)|!duplicated(expected)) |>
+				!duplicated(.data$distance)|!duplicated(.data$expected)) |>
 						dplyr::mutate(seqnames=names(expected.lst)[i]))
 			})
 		)
     p <- ggplot2::ggplot(data,
-		ggplot2::aes(x=log10(distance),
-			y=log10(expected),col=seqnames))+
+		ggplot2::aes_string(x=log10("distance"),
+			y=log10("expected"),col="seqnames"))+
 		ggplot2::geom_line()+
 		ggplot2::ggtitle(label = "Contact vs distance (per chromosome)")+
 		ggplot2::theme_bw()
@@ -99,11 +100,11 @@ OverExpectedHiC <- function(
         dplyr::summarise_at(.vars = "expected", .funs = list(expected = mean))
   	if(plot_contact_vs_dist=="total" && length(expected.lst)>0){
     	data <- attributes(hicLst)$expected |>
-      	dplyr::filter(distance>1)
+      	dplyr::filter(.data$distance>1)
                       
     p <- ggplot2::ggplot(data,
-		ggplot2::aes(x=log10(distance),
-			y=log10(expected),col="#619CFF"))+
+		ggplot2::aes_string(x=log10("distance"),
+			y=log10("expected"),col="#619CFF"))+
 		ggplot2::geom_line(show.legend = F)+
 		ggplot2::ggtitle(label = "Contact vs distance")+
 		ggplot2::theme_bw()

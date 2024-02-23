@@ -21,6 +21,7 @@
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
 #' @return A binned GRanges.
+#' @importFrom stats na.omit
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2"), c(3, 1)),
@@ -52,7 +53,7 @@ BinGRanges <- function(
     } else {
         seqlengths.lst <- dplyr::pull(chromSizes, 2) |>
             stats::setNames(dplyr::pull(chromSizes, 1))
-        seqlengths.lst <- seqlengths.lst[na.omit(match(
+        seqlengths.lst <- seqlengths.lst[stats::na.omit(match(
             levels(GenomeInfoDb::seqnames(gRange)@values),
             names(seqlengths.lst)
         ))]

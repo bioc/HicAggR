@@ -11,6 +11,7 @@
 #' @importFrom stringr str_split str_remove str_c str_replace str_detect
 #' @importFrom rhdf5 h5ls h5read h5closeAll
 #' @importFrom strawr readHicBpResolutions readHicChroms readHicNormTypes
+#' @importFrom utils head tail
 #' @export
 #' @examples
 #' h5_path <- system.file("extdata",
@@ -170,9 +171,9 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
                 paste(ifelse(length(file_chroms) <=
                 25, stringr::str_c(file_chroms,
                 collapse = " "),
-                paste0(stringr::str_c(head(file_chroms,
+                paste0(stringr::str_c(utils::head(file_chroms,
                   n = 4), collapse = " ; "),
-                  " (...) ", stringr::str_c(tail(file_chroms,
+                  " (...) ", stringr::str_c(utils::tail(file_chroms,
                     n = 4), collapse = " ; "),
                   " (", length(file_chroms),
                   " total)")),
@@ -181,9 +182,9 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
                 paste(ifelse(length(chrom_lengths) <=
                 25, stringr::str_c(chrom_lengths,
                 collapse = " "),
-                paste0(stringr::str_c(head(chrom_lengths,
+                paste0(stringr::str_c(utils::head(chrom_lengths,
                   n = 4), collapse = " ; "),
-                  " (...) ", stringr::str_c(tail(chrom_lengths,
+                  " (...) ", stringr::str_c(utils::tail(chrom_lengths,
                     n = 4), collapse = " ; "),
                   " (", length(chrom_lengths),
                   " total)")),
