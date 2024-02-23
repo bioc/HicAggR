@@ -73,42 +73,42 @@ OverExpectedHiC <- function(
     attributes(hicLst)$mtx <- "o/e"
     expected.dtf <- expected.lst[cisNames.chr] |>
         do.call(what = rbind)
-	expected.lst <- expected.lst[cisNames.chr]
-	
-	if(plot_contact_vs_dist=="per_seq" && length(expected.lst)>0){
-		data <- do.call(rbind,
-			lapply(
-				seq_along(expected.lst),
-				function(i){return(expected.lst[[i]] |>
-				dplyr::filter(.data$distance>1) |>
-				dplyr::filter(
-				!duplicated(.data$distance)|!duplicated(.data$expected)) |>
-						dplyr::mutate(seqnames=names(expected.lst)[i]))
-			})
-		)
-    p <- ggplot2::ggplot(data,
-		ggplot2::aes_string(x=log10(.data$distance),
-			y=log10(.data$expected),col="seqnames"))+
-		ggplot2::geom_line()+
-		ggplot2::ggtitle(label = "Contact vs distance (per chromosome)")+
-		ggplot2::theme_bw()
-    print(p)
-  	}
+    expected.lst <- expected.lst[cisNames.chr]
+    
+    if(plot_contact_vs_dist=="per_seq" && length(expected.lst)>0){
+        data <- do.call(rbind,
+            lapply(
+                seq_along(expected.lst),
+                function(i){return(expected.lst[[i]] |>
+                dplyr::filter(.data$distance>1) |>
+                dplyr::filter(
+                !duplicated(.data$distance)|!duplicated(.data$expected)) |>
+                        dplyr::mutate(seqnames=names(expected.lst)[i]))
+            })
+        )
+        p <- ggplot2::ggplot(data,
+            ggplot2::aes(x=log10(.data$distance),
+                y=log10(.data$expected),col=.data$seqnames))+
+            ggplot2::geom_line()+
+            ggplot2::ggtitle(label = "Contact vs distance (per chromosome)")+
+            ggplot2::theme_bw()
+            plot(p)
+        }
     attributes(hicLst)$expected <- dplyr::group_by(
         expected.dtf,
         distance = expected.dtf$distance) |>
         dplyr::summarise_at(.vars = "expected", .funs = list(expected = mean))
-  	if(plot_contact_vs_dist=="total" && length(expected.lst)>0){
-    	data <- attributes(hicLst)$expected |>
-      	dplyr::filter(.data$distance>1)
-                      
-    p <- ggplot2::ggplot(data,
-		ggplot2::aes(x=log10(.data$distance),
-			y=log10(.data$expected),col="#619CFF"))+
-		ggplot2::geom_line(show.legend = F)+
-		ggplot2::ggtitle(label = "Contact vs distance")+
-		ggplot2::theme_bw()
-    print(p)
-  	}
+        if(plot_contact_vs_dist=="total" && length(expected.lst)>0){
+        data <- attributes(hicLst)$expected |>
+            dplyr::filter(.data$distance>1)
+
+        p <- ggplot2::ggplot(data,
+            ggplot2::aes(x=log10(.data$distance),
+                y=log10(.data$expected),col="#619CFF"))+
+            ggplot2::geom_line(show.legend = FALSE)+
+            ggplot2::ggtitle(label = "Contact vs distance")+
+            ggplot2::theme_bw()
+        plot(p)
+        }
     return(hicLst)
 }

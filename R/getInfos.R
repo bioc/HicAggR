@@ -81,14 +81,14 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
         } else {
             file_normsLst <- rhdf5::h5read(file = file,
                 name = paste0(file_head[["group"]],
-                  file_head[["name"]],
-                  "/", file_res[1],
-                  "/bins"), recursive = FALSE)
+                    file_head[["name"]],
+                    "/", file_res[1],
+                    "/bins"), recursive = FALSE)
             rhdf5::h5closeAll()
             file_norms <- stringr::str_replace(
                 names(file_normsLst)[which(!names(file_normsLst) %in%
                 c("chrom", "end",
-                  "start"))], "weight",
+                    "start"))], "weight",
                 "ICE_balanced")
             file_seqStyle <- ifelse(any(stringr::str_detect(file_normsLst$chrom,
                 "^chr")), "UCSC",
@@ -99,10 +99,10 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
                 file_chroms <- levels(file_chroms)
             }
             chrom_lengths <- as.data.frame(rhdf5::h5read(file = file,
-                                           name = paste0(file_head[["group"]],
-                                                         file_head[["name"]],
-                                                         "/", file_res[1],
-                                                         "/chroms")))$length
+                                            name = paste0(file_head[["group"]],
+                                                        file_head[["name"]],
+                                                        "/", file_res[1],
+                                                        "/chroms")))$length
             rhdf5::h5closeAll()
         }
     } else if (dim(file_head)[1] ==
@@ -128,7 +128,7 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
             file_chroms <- levels(file_chroms)
         }
         chrom_lengths <- as.data.frame(rhdf5::h5read(file = file,
-                                       name = "/chroms"))$length
+                                        name = "/chroms"))$length
     } else if (GetFileExtension(file) ==
         "h5") {
         # for h5 :
@@ -156,38 +156,38 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
     
     if (printInfos) {
         message("file name: ",
-                paste(file_name, sep = " "))
-        message("file path: ", paste(file_path,
+                stringr::str_c(file_name, sep = " "))
+        message("file path: ", stringr::str_c(file_path,
             sep = " "))
         message("resolution(s): ",
-                paste(file_res, collapse = " "))
+                stringr::str_c(file_res, collapse = " "))
         message("normalization(s): ",
-                paste(file_norms, collapse = " "))
-        message("unit(s): ", paste(file_units,
-                                   collapse = " "))
-        message("seqStyle: ", paste(file_seqStyle,
+                stringr::str_c(file_norms, collapse = " "))
+        message("unit(s): ", stringr::str_c(file_units,
+                                    collapse = " "))
+        message("seqStyle: ", stringr::str_c(file_seqStyle,
                                     collapse = " "))
         message("chromosom(s): ",
-                paste(ifelse(length(file_chroms) <=
+                stringr::str_c(ifelse(length(file_chroms) <=
                 25, stringr::str_c(file_chroms,
                 collapse = " "),
                 paste0(stringr::str_c(utils::head(file_chroms,
-                  n = 4), collapse = " ; "),
-                  " (...) ", stringr::str_c(utils::tail(file_chroms,
                     n = 4), collapse = " ; "),
-                  " (", length(file_chroms),
-                  " total)")),
+                    " (...) ", stringr::str_c(utils::tail(file_chroms,
+                    n = 4), collapse = " ; "),
+                    " (", length(file_chroms),
+                    " total)")),
                 collapse = " "))
         message("chromosom length(s): ",
-                paste(ifelse(length(chrom_lengths) <=
+                stringr::str_c(ifelse(length(chrom_lengths) <=
                 25, stringr::str_c(chrom_lengths,
                 collapse = " "),
                 paste0(stringr::str_c(utils::head(chrom_lengths,
-                  n = 4), collapse = " ; "),
-                  " (...) ", stringr::str_c(utils::tail(chrom_lengths,
                     n = 4), collapse = " ; "),
-                  " (", length(chrom_lengths),
-                  " total)")),
+                    " (...) ", stringr::str_c(utils::tail(chrom_lengths,
+                    n = 4), collapse = " ; "),
+                    " (", length(chrom_lengths),
+                    " total)")),
                 collapse = " "))
     }
     if (returnInfos) {

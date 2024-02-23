@@ -28,29 +28,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' temp.dir <- file.path(tempdir(), "HIC_DATA")
-#' dir.create(temp.dir)
-#' Hic.url <- paste0(
-#'     "https://4dn-open-data-public.s3.amazonaws.com/",
-#'     "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
-#'     "4DNFIOTPSS3L.hic"
-#' )
-#' HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-#' download.file(Hic.url, HicOutput.pth, method = "auto", extra = "-k")
-#' hicLst <- ImportHiC(
-#'     file = HicOutput.pth,
-#'     hicResolution = 5000,
-#'     chromSizes = data.frame(
-#'         c("2L", "2R", "3L", "3R", "4", "X", "Y"),
-#'         c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
-#'     ),
-#'     chrom_1 = c("2L", "2R", "3L", "3R", "4", "X", "Y")
-#' )
-#' hicLst <- BalanceHiC(hicLst)
-#' hicLst <- OverExpectedHiC(hicLst)
-#' }
-#'
+#' 
 #' bedpe_path <- system.file("extdata",
 #'     "postprocessed_pixels_5000.bedpe",
 #'     package = "HicAggR", mustWork = TRUE
@@ -63,20 +41,6 @@
 #'     ),
 #'     binSize = 5000, minDist = 105000
 #' )
-#' \donttest{
-#' Beaf.mtx_lst <- ExtractSubmatrix(
-#'     genomicFeature = loops,
-#'     hicLst = hicLst
-#' )
-#' Beaf.mtx_lst <- PrepareMtxList(
-#'     matrices = Beaf.mtx_lst
-#' )
-#' aggreg.mtx <- Aggregation(Beaf.mtx_lst)
-#' ggAPA(
-#'     aggregatedMtx = aggreg.mtx,
-#'     title = "APA on called loops (distance > 100.5KB)"
-#' )
-#' }
 #'
 import_loops <- function(
     file_bedpe = NULL,
