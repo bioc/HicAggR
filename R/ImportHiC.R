@@ -96,7 +96,7 @@
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
     chrom_2 = NULL, verbose = FALSE, cores = 1, 
-    hic_norm="NONE", hic_matrix = "obs", cool_balanced = FALSE,
+    hic_norm="NONE", hic_matrix = "observed", cool_balanced = FALSE,
     cool_weight_name = "weight", cool_divisive_weights= FALSE, 
     h5_fill_upper = TRUE
 ) {
