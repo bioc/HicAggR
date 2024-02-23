@@ -87,8 +87,8 @@ OverExpectedHiC <- function(
 			})
 		)
     p <- ggplot2::ggplot(data,
-		ggplot2::aes_string(x=log10("distance"),
-			y=log10("expected"),col="seqnames"))+
+		ggplot2::aes_string(x=log10(.data$distance),
+			y=log10(.data$expected),col="seqnames"))+
 		ggplot2::geom_line()+
 		ggplot2::ggtitle(label = "Contact vs distance (per chromosome)")+
 		ggplot2::theme_bw()
@@ -103,8 +103,8 @@ OverExpectedHiC <- function(
       	dplyr::filter(.data$distance>1)
                       
     p <- ggplot2::ggplot(data,
-		ggplot2::aes_string(x=log10("distance"),
-			y=log10("expected"),col="#619CFF"))+
+		ggplot2::aes(x=log10(.data$distance),
+			y=log10(.data$expected),col="#619CFF"))+
 		ggplot2::geom_line(show.legend = F)+
 		ggplot2::ggtitle(label = "Contact vs distance")+
 		ggplot2::theme_bw()

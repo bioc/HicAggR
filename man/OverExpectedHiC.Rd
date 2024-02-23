@@ -16,12 +16,13 @@ OverExpectedHiC(
 The HiC maps list.}
 
 \item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
-(Default FALSE)
-@param plot_contact_vs_dist Whether to plot contact vs distance curve
-per chromosome ("per_seq"), all chromosomes ("total") or not (NULL).
-(Default "per_seq")}
+(Default FALSE)}
 
 \item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
+
+\item{plot_contact_vs_dist}{Whether to plot contact vs distance curve
+per chromosome ("per_seq"), all chromosomes ("total") or not (NULL).
+(Default "per_seq")}
 }
 \value{
 A matrices list.
