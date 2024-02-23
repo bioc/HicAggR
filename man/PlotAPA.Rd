@@ -12,6 +12,7 @@ PlotAPA(
   colMax = NULL,
   colMinCond = NULL,
   colMaxCond = NULL,
+  extra_info = FALSE,
   ...
 )
 }
@@ -37,6 +38,9 @@ If Null automaticaly find.}
 \item{colMaxCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation.
 The maxiaml value in color scale in the classsical aggregation plot.
 If Null automaticaly find.}
+
+\item{extra_info}{\if{html}{\out{<logical>}} do you want to have a recall of your arguments
+values? (Default FALSE)}
 
 \item{...}{additional arguments to \code{\link[=ggAPA]{ggAPA()}}}
 }
