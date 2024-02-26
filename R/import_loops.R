@@ -206,13 +206,13 @@ import_loops <- function(
     names(loops_gni) <- S4Vectors::mcols(loops_gni)$name
     GenomeInfoDb::seqlevels(loops_gni)<-
     GenomeInfoDb::seqlevels(GenomeInfoDb::Seqinfo(
-            seqnames = chromSizes[[1]],
-            seqlengths = chromSizes[[2]]
+            seqnames = as.character(chromSizes[[1]]),
+            seqlengths = as.numeric(chromSizes[[2]])
         ))
     GenomeInfoDb::seqinfo(loops_gni) <-
         GenomeInfoDb::Seqinfo(
-            seqnames = chromSizes[[1]],
-            seqlengths = chromSizes[[2]]
+            seqnames = as.character(chromSizes[[1]]),
+            seqlengths = as.numeric(chromSizes[[2]])
         )
 
     return(loops_gni)
