@@ -114,28 +114,28 @@ import_loops <- function(
         y = data.table::as.data.table(anchor_bins) |>
             data.table::setkey("seqnames", "start", "end"),
         by.x = c("seqnames", "start", "end"),
-        by.y = c("seqnames", "start", "end")
+        by.y = c("seqnames", "start", "end"), mult="first"
     )$bin
     loops_gni$bait.bin <- data.table::foverlaps(
         x = data.table::as.data.table(S4Vectors::second(loops)),
         y = data.table::as.data.table(bait_bins) |>
             data.table::setkey("seqnames", "start", "end"),
         by.x = c("seqnames", "start", "end"),
-        by.y = c("seqnames", "start", "end")
+        by.y = c("seqnames", "start", "end"), mult="first"
     )$bin
     loops_gni$anchor_constraint <- data.table::foverlaps(
         x = data.table::as.data.table(S4Vectors::first(loops)),
         y = data.table::as.data.table(binned_constraint) |>
             data.table::setkey("seqnames", "start", "end"),
         by.x = c("seqnames", "start", "end"),
-        by.y = c("seqnames", "start", "end")
+        by.y = c("seqnames", "start", "end"),mult="first"
     )$name
     loops_gni$bait_constraint <- data.table::foverlaps(
         x = data.table::as.data.table(S4Vectors::second(loops)),
         y = data.table::as.data.table(binned_constraint) |>
             data.table::setkey("seqnames", "start", "end"),
         by.x = c("seqnames", "start", "end"),
-        by.y = c("seqnames", "start", "end")
+        by.y = c("seqnames", "start", "end"),mult="first"
     )$name
 
     if (discard_trans) {
