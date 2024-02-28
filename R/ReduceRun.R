@@ -30,6 +30,12 @@ ReduceRun <- function(
         firstValues <- as.numeric(firstRle)
     } else if (is.character(S4Vectors::runValue(firstRle))) {
         firstValues <- as.character(firstRle)
+    } else if (is.factor(S4Vectors::runValue(firstRle))) {
+        if(is.numeric(levels(S4Vectors::runValue(firstRle)))) {
+            firstValues <- as.numeric(firstRle)
+        } else if (is.character(levels(S4Vectors::runValue(firstRle)))) {
+            firstValues <- as.character(firstRle)
+        }
     }
     if (methods::is(secondRle, "rle")) {
         secondRle <- S4Vectors::Rle(
@@ -40,6 +46,12 @@ ReduceRun <- function(
         secondValues <- as.numeric(secondRle)
     }else if (is.character(S4Vectors::runValue(secondRle))) {
         secondValues <- as.character(secondRle)
+    } else if (is.factor(S4Vectors::runValue(secondRle))) {
+        if(is.numeric(levels(S4Vectors::runValue(secondRle)))) {
+            secondValues <- as.numeric(secondRle)
+        } else if (is.character(levels(S4Vectors::runValue(secondRle)))) {
+            secondValues <- as.character(secondRle)
+        }
     }
     vals.lst <- list(
         firstVal.vec = firstValues,
