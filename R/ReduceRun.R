@@ -27,9 +27,9 @@ ReduceRun <- function(
         lengths = firstRle$lengths)
     }
     if(is.numeric(S4Vectors::runValue(firstRle))) {
-        firstVal.vec <- as.numeric(firstRle)
+        firstValues <- as.numeric(firstRle)
     } else if (is.character(S4Vectors::runValue(firstRle))) {
-        firstVal.vec <- as.character(firstRle)
+        firstValues <- as.character(firstRle)
     }
     if (methods::is(secondRle, "rle")) {
         secondRle <- S4Vectors::Rle(
@@ -37,30 +37,30 @@ ReduceRun <- function(
         lengths = secondRle$lengths)
     }
     if (is.numeric(S4Vectors::runValue(secondRle))) {
-        secondVal.vec <- as.numeric(secondRle)
+        secondValues <- as.numeric(secondRle)
     }else if (is.character(S4Vectors::runValue(secondRle))) {
-        secondVal.vec <- as.character(secondRle)
+        secondValues <- as.character(secondRle)
     }
     vals.lst <- list(
-        firstVal.vec = firstVal.vec,
-        secondVal.vec = secondVal.vec
+        firstVal.vec = firstValues,
+        secondVal.vec = secondValues
     )
 
     # These changes were made to simplify the code and remove super-assignment
     # Trials with list2env were consistent failures...
 
-    if(is.character(firstVal.vec)){
+    if(is.character(firstValues)){
         # walking across the first values vector is risky,
         # but in both uses of this function (in ExtractSubmatrix),
         # first and second values should have the same length
-        newVal.vec <- vapply(seq_along(firstVal.vec), 
+        newVal.vec <- vapply(seq_along(firstValues), 
             FUN = function(x){eval(parse(text = reduceMethod))(
                 vals.lst[[1]][x],
                 vals.lst[[2]][x],
         ...
         )}, FUN.VALUE = character(1))
-    } else if(is.numeric(firstVal.vec)){
-        newVal.vec <- vapply(seq_along(firstVal.vec), 
+    } else if(is.numeric(firstValues)){
+        newVal.vec <- vapply(seq_along(firstValues), 
             FUN = function(x){eval(parse(text = reduceMethod))(
                 vals.lst[[1]][x],
                 vals.lst[[2]][x],
