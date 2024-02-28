@@ -22,50 +22,50 @@ ReduceRun <- function(
     firstRle, secondRle, reduceMethod = "paste", ...
 ) {
     if (methods::is(firstRle, "rle")) {
-        firstLen.num <- firstRle$length
-        firstVal.vec <- firstRle$values
-    } else if (methods::is(firstRle, "Rle")) {
-        firstLen.num <- S4Vectors::runLength(firstRle)
-        firstVal.vec <- S4Vectors::runValue(firstRle)
+        firstRle <- S4Vectors::Rle(
+        values = firstRle$values,
+        lengths = firstRle$lengths)
+    }
+    if(is.numeric(S4Vectors::runValue(firstRle))) {
+        firstVal.vec <- as.numeric(firstRle)
+    } else if (is.character(S4Vectors::runValue(firstRle))) {
+        firstVal.vec <- as.character(firstRle)
     }
     if (methods::is(secondRle, "rle")) {
-        secondLen.num <- secondRle$length
-        secondVal.vec <- secondRle$values
-    } else if (methods::is(secondRle, "Rle")) {
-        secondLen.num <- S4Vectors::runLength(secondRle)
-        secondVal.vec <- S4Vectors::runValue(secondRle)
+        secondRle <- S4Vectors::Rle(
+        values = secondRle$values,
+        lengths = secondRle$lengths)
     }
-    newLen.num <- NULL
-    newVal.vec <- NULL
-    lens.lst <- list(
-        firstLen.num = firstLen.num,
-        secondLen.num = secondLen.num)
+    if (is.numeric(S4Vectors::runValue(secondRle))) {
+        secondVal.vec <- as.numeric(secondRle)
+    }else if (is.character(S4Vectors::runValue(secondRle))) {
+        secondVal.vec <- as.character(secondRle)
+    }
     vals.lst <- list(
         firstVal.vec = firstVal.vec,
-        secondVal.vec = secondVal.vec)
-    while (
-        !is.na(lens.lst[[1]][1]) &&
-        !is.na(lens.lst[[2]][1]) &&
-        !is.na(vals.lst[[1]][1]) &&
-        !is.na(vals.lst[[2]][1])
-    ) {
-        A.len <- lens.lst[[which.min(c(lens.lst[[1]][1],lens.lst[[2]][1]))]][1]
-        A.val <- eval(parse(text = reduceMethod))(
-            vals.lst[[1]][1],
-            vals.lst[[2]][1],
-            ...
-        )
-        newVal.vec <- c(newVal.vec, A.val)
-        newLen.num <- c(newLen.num, A.len)
-        lapply(seq_along(lens.lst), function(i) {
-            if ((lens.lst[[i]][1] - A.len) > 0) {
-                lens.lst[[i]][1] <<- (lens.lst[[i]][1] - A.len)
-            } else {
-                lens.lst[[i]] <<- lens.lst[[i]][-1]
-                vals.lst[[i]] <<- vals.lst[[i]][-1]
-            }
-        }) |>
-            invisible()
+        secondVal.vec = secondVal.vec
+    )
+
+    # These changes were made to simplify the code and remove super-assignment
+    # Trials with list2env were consistent failures...
+
+    if(is.character(firstVal.vec)){
+        # walking across the first values vector is risky,
+        # but in both uses of this function (in ExtractSubmatrix),
+        # first and second values should have the same length
+        newVal.vec <- vapply(seq_along(firstVal.vec), 
+            FUN = function(x){eval(parse(text = reduceMethod))(
+                vals.lst[[1]][x],
+                vals.lst[[2]][x],
+        ...
+        )}, FUN.VALUE = character(1))
+    } else if(is.numeric(firstVal.vec)){
+        newVal.vec <- vapply(seq_along(firstVal.vec), 
+            FUN = function(x){eval(parse(text = reduceMethod))(
+                vals.lst[[1]][x],
+                vals.lst[[2]][x],
+        ...
+        )}, FUN.VALUE = numeric(1))
     }
-    return(S4Vectors::Rle(values = newVal.vec, lengths = newLen.num))
+    return(S4Vectors::Rle(newVal.vec))
 }

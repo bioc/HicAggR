@@ -37,24 +37,29 @@ SwitchMatrix <- function(
         stop(err.chr)
     }
     if (attributes(hicLst)$mtx != matrixKind) {
-        lapply(names(hicLst), function(hicName.chr) {
-            hicLst[[hicName.chr]]@matrix@x <<- dplyr::case_when(
-                matrixKind == "obs" ~
-                    (hicLst[[hicName.chr]]@metadata$observed),
-                matrixKind == "norm" ~
-                    (hicLst[[hicName.chr]]@metadata$observed *
-                    hicLst[[hicName.chr]]@metadata$normalizer),
-                matrixKind == "o/e" ~
-                    (hicLst[[hicName.chr]]@metadata$observed *
-                    hicLst[[hicName.chr]]@metadata$normalizer /
-                    hicLst[[hicName.chr]]@metadata$expected),
-                matrixKind == "exp" ~
-                    (hicLst[[hicName.chr]]@metadata$expected)
-            )
-        })
+        # https://stackoverflow.com/questions/26228625/
+        # updating-columns-using-lapply
+        # this is to avoid the use <<-
+        list2env(lapply(hicLst, function(hicName.chr) {
+        hicName.chr@matrix@x <- dplyr::case_when(
+            matrixKind == "obs" ~
+            (hicName.chr@metadata$observed),
+            matrixKind == "norm" ~
+            (hicName.chr@metadata$observed *
+                hicName.chr@metadata$normalizer),
+            matrixKind == "o/e" ~
+            (hicName.chr@metadata$observed *
+                hicName.chr@metadata$normalizer /
+                hicName.chr@metadata$expected),
+            matrixKind == "exp" ~
+            (hicName.chr@metadata$expected)
+        )
+        }),envir = .GlobalEnv)
         attributes(hicLst)$mtx <- matrixKind
         return(hicLst)
     } else {
         message("\nhicLst is already ", matrixKind, ".\n")
+        # Should return the hicLst as is!!
+        return(hicLst)
     }
 }
