@@ -206,17 +206,23 @@ ImportHiC <- function(
     # So I changed rownames(chromSizes)[1] to 
     # rownames(chromSizes)[length(rownames(chromSizes))]
     if(is.null(chrom_1) && is.null(chrom_2)){
-        message("chrom_1 and chrom_2 are NULL, so all chromosomes are chosen")
+        if(verbose){
+            message("chrom_1 and chrom_2 are NULL, so all chromosomes are chosen")
+        }        
         chrom_1 <- chromSizes$name
         chrom_2 <- chromSizes$name
     }
     if ("ALL" %in% toupper(chrom_1)){
         chrom_1 <- chrom_1[-which(toupper(chrom_1) == "ALL")]
-        message("ALL removed from chrom_1")
+        if(verbose){
+            message("ALL removed from chrom_1")
+        }
     }
     if ("ALL" %in% toupper(chrom_2)){
         chrom_2 <- chrom_2[-which(toupper(chrom_2) == "ALL")]
-        message("ALL removed from chrom_2")
+        if(verbose){
+            message("ALL removed from chrom_2")
+        }        
     }
     chrom.chr <- c(chrom_1, chrom_2) |>
         unlist() |>

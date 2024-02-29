@@ -55,7 +55,9 @@ import_loops <- function(
     loops <- rtracklayer::import(file_bedpe, format = "bedpe")
     if ("ALL" %in% toupper(chromSizes[[1]])){
         chromSizes <- chromSizes[-which(toupper(chromSizes[[1]]) == "ALL"), ]
-        message("ALL removed from chromSizes")
+        if(verbose){
+            message("ALL removed from chromSizes")
+        }
     }
     anchor_bins <- BinGRanges(
         S4Vectors::first(loops),

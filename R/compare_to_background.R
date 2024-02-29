@@ -45,6 +45,7 @@
 #' different compartments.
 #' \item "NULL": If `NULL`, `random_anchors` are set by default.
 #' }
+#' @param verbose <logical> details on progress? (Default: FALSE)
 #' @param ... arguments to pass to [PrepareMtxList], inorder to treat 
 #' background matrices.
 #' @return returns a <list> object with the z.test output for each 
@@ -117,6 +118,7 @@ compare_to_background <- function(hicList = NULL,
                     operationFun="mean",
                     bg_type = NULL,
                     cores = 1,
+                    verbose = FALSE,
                     ...){
 
     targetCouples <- attributes(matrices)$interactions
@@ -130,7 +132,10 @@ compare_to_background <- function(hicList = NULL,
         resolution,
         N=n_background,
         cores=cores){
-        message("random bins")
+        
+        if(verbose){
+            message("random bins")
+        }
         if(!is.null(genomicConstraint)){
         dist_const <- c(min(targetCouples$distance),
             max(GenomicRanges::width(genomicConstraint)))
@@ -179,8 +184,10 @@ compare_to_background <- function(hicList = NULL,
         background_pairs <- background_pairs[
             sample(seq(1,length(background_pairs)),size = N)]
         }
-        message("Number of background pairs: ",
+        if(verbose){
+            message("Number of background pairs: ",
             length(background_pairs))
+        }
         return(background_pairs)
     }
     
@@ -202,7 +209,9 @@ compare_to_background <- function(hicList = NULL,
                             N=n_background,
                             secondaryConst.var = NULL,
                             cores=cores){
-        message("inter-TADs")
+        if(verbose){
+            message("inter-TADs")
+        }
         if(!is.null(genomicConstraint) && 
         !all(unique(indexAnchor$constraint)%in%
             GenomeInfoDb::seqlevels(indexAnchor)) && 
@@ -240,7 +249,9 @@ compare_to_background <- function(hicList = NULL,
         bg_couples <- bg_couples[
         which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
         ]
-        message("Number of inter-TAD couples ",length(bg_couples))
+        if(verbose){
+            message("Number of inter-TAD couples ",length(bg_couples))
+        }
         if(!is.null(secondaryConst.var)){
         # discard couples in the same compartment
         # names of compartment info in couples
@@ -306,7 +317,9 @@ compare_to_background <- function(hicList = NULL,
                                     resolution,
                                     n_background)
         bg_couples <- .cleanCouples(bg_couples,matrices)
-        message(length(bg_couples))
+        if(verbose){
+            message(length(bg_couples))
+        }
     }
     
     GenomeInfoDb::seqinfo(bg_couples) <- 
