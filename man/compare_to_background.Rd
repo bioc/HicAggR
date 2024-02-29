@@ -17,6 +17,7 @@ compare_to_background(
   operationFun = "mean",
   bg_type = NULL,
   cores = 1,
+  verbose = FALSE,
   ...
 )
 }
@@ -76,6 +77,8 @@ different compartments.
 }}
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
+
+\item{verbose}{\if{html}{\out{<logical>}} details on progress? (Default: FALSE)}
 
 \item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat
 background matrices.}
