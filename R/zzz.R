@@ -22,10 +22,10 @@ ifelse("package:InteractionSet"%in%search(),"\u{2713}","\u{0058}"))
 
 .onAttach <- function(lib, pkg)
 {
-  suppressPackageStartupMessages(library("InteractionSet"))
-  msg <- hicaggrStartupMessage()
-  if(!interactive())
-    msg[1] <- paste("Package 'HicAggR' version", packageVersion("HicAggR"))
-  packageStartupMessage(msg)
-  invisible()
+    suppressMessages(require("InteractionSet"))
+    msg <- hicaggrStartupMessage()
+    if(!interactive())
+        msg[1] <- paste("Package 'HicAggR' version", packageVersion("HicAggR"))
+    packageStartupMessage(msg)
+    invisible()
 }
