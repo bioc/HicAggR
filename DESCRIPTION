@@ -22,9 +22,9 @@ License: MIT + file LICENSE
 URL: https://cuvierlab.github.io/HicAggR/,
     https://github.com/CuvierLab/HicAggR
 Depends:
-    R (>= 4.2.0),
-    InteractionSet
+    R (>= 4.2.0)
 Imports:
+    InteractionSet,
     BiocGenerics,
     BiocParallel,
     dplyr,

@@ -13,8 +13,8 @@ _/    _/  _/    _/_/_/  _/    _/    _/_/_/    _/_/_/  _/    _/
 ".......version ",
 packageVersion("HicAggR")),
 "\nType 'citation(\"HicAggR\")' for citing this R package in publications.",
-"Imported---------------------",
-paste0("InteractionSet--------------",
+"\n\nImported---------------------",
+paste0("\nInteractionSet--------------",
 ifelse("package:InteractionSet"%in%search(),"\u{2713}","\u{0058}"))
 )
   return(msg)
@@ -22,7 +22,7 @@ ifelse("package:InteractionSet"%in%search(),"\u{2713}","\u{0058}"))
 
 .onAttach <- function(lib, pkg)
 {
-    suppressMessages(require("InteractionSet"))
+    suppressMessages(library(InteractionSet))
     msg <- hicaggrStartupMessage()
     if(!interactive())
         msg[1] <- paste("Package 'HicAggR' version", packageVersion("HicAggR"))
