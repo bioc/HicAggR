@@ -51,15 +51,14 @@ Imports:
     data.table
 Suggests:
     covr,
-    kableExtra,
-    knitr,
+    kableExtra (>= 1.3.4),
+    knitr (>= 1.45),
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
-LazyDataCompression: xz
-LazyData: true
+LazyData: false
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)

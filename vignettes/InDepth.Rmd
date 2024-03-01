@@ -6,7 +6,7 @@ output: rmarkdown::html_vignette
 description: >
     In depth tutorial about HicAggR functions.
 vignette: >
-    %\VignetteIndexEntry{Introduction to HicAggR}
+    %\VignetteIndexEntry{HicAggR - In depth tutorial}
     %\usepackage[UTF-8]{inputenc}
     %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -343,27 +343,29 @@ interactions.dtf <- interactions.gni |>
     as.data.frame() |>
     head(n=3L)
 interactions.dtf <- interactions.dtf[,-c(4,5,9,10)]
-interactions.dtf[,c(1:11,13,12,17,16,18,15,14,20,19,21)] |>
-    knitr::kable(
-        col.names = c(
+interactions.dtf <- interactions.dtf[,c(1:11,13,12,17,16,18,15,14,20,19,21)] |>
+    `colnames<-`(c(
             "seq","start","end",
             "seq","start","end",
             "name", "constraint" ,"distance", "orientation", "submatrix.name",
             "name", "bin", "Beaf.name", "Beaf.score", "Beaf.bln",
             "name", "bin", "Tss.name", "Tss.class", "Tss.bln"
-        ),
+        ))
+
+    knitr::kable(x=interactions.dtf,
         align  = "rccrccccccccccccccccc",
         digits = 1
     ) |>
     kableExtra::add_header_above(c(
-        "Names" = 1,
+        #"Names",
         "First" = 3,
         "Second" = 3,
         "Interaction"=5,
         "Anchor"=5,
         "Bait"=5)
     ) |>
-    kableExtra::add_header_above(c("Ranges" = 7 , "Metadata"=15))
+    kableExtra::add_header_above(c(#" ",
+    "Ranges" = 6 , "Metadata"=15))
 ```
 </details>
 
@@ -604,14 +606,15 @@ interactions_RFmatrix_ctrl.dtf[,c(1:11,13,12,17,16,18,15,14,20,19,21)] |>
         digits = 1
     ) |>
     kableExtra::add_header_above(c(
-        "Names"=1,
+        # "Names",
         "First" = 3,
         "Second" = 3,
         "Interaction"=5,
         "Anchor"=5,
         "Bait"=5)
     ) |>
-    kableExtra::add_header_above(c("Ranges" = 7, "Metadata"=15))
+    kableExtra::add_header_above(c(#" ",
+    "Ranges" = 6, "Metadata"=15))
 ```
 </details>  
 

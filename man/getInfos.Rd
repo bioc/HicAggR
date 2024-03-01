@@ -21,7 +21,7 @@ getInfos
 }
 \examples{
 h5_path <- system.file("extdata",
-    "HiC_Ctrl_2L_100Kres.h5",
+    "Control_HIC_10k_2L.h5",
     package = "HicAggR", mustWork = TRUE
 )
 getInfos(h5_path)

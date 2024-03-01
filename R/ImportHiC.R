@@ -91,7 +91,19 @@
 #'     chrom_2 = c("2L", "2R", "2R")
 #' )
 #' }
-#'
+#' # Import .h5 file
+#' h5_path <- system.file("extdata",
+#'     "Control_HIC_10k_2L.h5",
+#'     package = "HicAggR", mustWork = TRUE
+#' )
+#' binSize=10000
+#' hicLst <- ImportHiC(
+#'   file      = h5_path,
+#'   hicResolution       = binSize,
+#'   chromSizes = data.frame(seqnames = c("2L"), 
+#'   seqlengths = c(23513712)),
+#'   chrom_1   = c("2L")
+#' )
 
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
@@ -427,6 +439,12 @@ ImportHiC <- function(
                     j = hic.dtf$j - starts.ndx[chrom_2] + 1
                 )
             }else if (GetFileExtension(file) == "h5") {
+                # Define start and end of chromosomes
+                ends.ndx <- chromSizes$dimension |>
+                    cumsum() |>
+                    stats::setNames(chromSizes$name)
+                starts.ndx <- 1 + c(0, ends.ndx[-length(ends.ndx)]) |>
+                    stats::setNames(chromSizes$name)
                 hic.spm <- hic_spm_full_h5[
                     starts.ndx[chrom_1]:ends.ndx[chrom_1],
                     starts.ndx[chrom_2]:ends.ndx[chrom_2]]

@@ -130,5 +130,17 @@ HiC_HS.cmx_lst <- ImportHiC(
     chrom_2 = c("2L", "2R", "2R")
 )
 }
-
+# Import .h5 file
+h5_path <- system.file("extdata",
+    "Control_HIC_10k_2L.h5",
+    package = "HicAggR", mustWork = TRUE
+)
+binSize=10000
+hicLst <- ImportHiC(
+  file      = h5_path,
+  hicResolution       = binSize,
+  chromSizes = data.frame(seqnames = c("2L"), 
+  seqlengths = c(23513712)),
+  chrom_1   = c("2L")
+)
 }
