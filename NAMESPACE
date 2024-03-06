@@ -1,8 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 import(InteractionSet)
 import(data.table)
-importFrom(BSDA, z.test)
-importFrom(broom, tidy)
 importFrom("rlang", ".data")
 importFrom(gridExtra,grid.arrange)
 importFrom(gridExtra,grid.table)

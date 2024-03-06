@@ -55,9 +55,8 @@
 #' @export
 #' @importFrom GenomeInfoDb seqlevels
 #' @importFrom IRanges subsetByOverlaps
-#' @importFrom BSDA z.test
-#' @importFrom stats p.adjust sd
-#' @importFrom broom tidy
+#' @importFrom stats p.adjust sd pnorm
+#' @importFrom rlang .data
 #' @examples
 #' h5_path <- system.file("extdata",
 #'     "Control_HIC_10k_2L.h5",
@@ -222,14 +221,14 @@ compare_to_background <- function(hicList = NULL,
         }
         indexAnchor.tmp <- indexAnchor |>
         as.data.frame() |>
-        dplyr::mutate(tad_name = "constraint") |>
-        dplyr::mutate(constraint = "seqnames")|>
+        dplyr::mutate(tad_name = .data$constraint) |>
+        dplyr::mutate(constraint = .data$seqnames)|>
         GenomicRanges::GRanges()
         
         indexBait.tmp <- indexBait |>
         as.data.frame() |>
-        dplyr::mutate(tad_name = "constraint") |>
-        dplyr::mutate(constraint = "seqnames")|>
+        dplyr::mutate(tad_name = .data$constraint) |>
+        dplyr::mutate(constraint = .data$seqnames)|>
         GenomicRanges::GRanges()
         
         bg_couples <- SearchPairs(
@@ -241,7 +240,7 @@ compare_to_background <- function(hicList = NULL,
         cores = cores)
         
         diff.tad.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
-        dplyr::filter("anchor.tad_name"!="bait.tad_name") |>
+        dplyr::filter(.data$anchor.tad_name!=.data$bait.tad_name) |>
         rownames()
         bg_couples <- bg_couples[
         which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
@@ -320,8 +319,8 @@ compare_to_background <- function(hicList = NULL,
     }
     
     GenomeInfoDb::seqinfo(bg_couples) <- 
-        GenomeInfoDb::Seqinfo(seqnames = chromSizes$seqnames,
-                                    seqlengths = chromSizes$seqlengths)
+        GenomeInfoDb::Seqinfo(seqnames = chromSizes[[1]],
+                                    seqlengths = chromSizes[[2]])
     bg_counts <- ExtractSubmatrix(genomicFeature = bg_couples,
                     hicLst = hicList,
                     hicResolution = resolution,
@@ -332,24 +331,30 @@ compare_to_background <- function(hicList = NULL,
         matrices = bg_counts,
         areaFun = areaFun,
         operationFun = operationFun
-    ) |> as.numeric()
-    sigma.bg <- stats::sd(bg_quantifs)
-    
+    ) |> as.numeric() |> 
+        `names<-`(attr(bg_counts,"names"))
+    # sigma.bg <- stats::sd(bg_quantifs)
+
     target_quantifs <- GetQuantif(
         matrices = matrices,
         areaFun = areaFun,
         operationFun = operationFun
     ) |> as.numeric() |> 
         `names<-`(attr(matrices,"names"))
-    z.output <- lapply(target_quantifs, 
-            function(i){broom::tidy(BSDA::z.test(x=bg_quantifs,
-                                            sigma.x = sigma.bg,
-                                            mu=i,
-                                            alternative = "less"))}
-            ) |> dplyr::bind_rows() |> 
-        dplyr::mutate(names = names(target_quantifs)) |>
-        dplyr::mutate(adj.p = stats::p.adjust(p = "p.value",
-            method="bonferroni",n=length(target_quantifs)))
-    return(list(z.test = z.output,target_quantifs=target_quantifs,
-        bg_quantifs=bg_quantifs))
+    z_scores <- (target_quantifs - mean(bg_quantifs))- stats::sd(bg_quantifs)
+    pval_vector <- stats::pnorm(q = z_scores, lower.tail = FALSE)
+    z_output <- data.frame(names = names(target_quantifs),
+                    z.score = z_scores,
+                    p.value = pval_vector)
+    # z.output <- lapply(target_quantifs, 
+    #         function(i){broom::tidy(BSDA::z.test(x=bg_quantifs,
+    #                                         sigma.x = sigma.bg,
+    #                                         mu=i,
+    #                                         alternative = "less"))}
+    #         ) |> dplyr::bind_rows() |> 
+    #     dplyr::mutate(names = names(target_quantifs)) |>
+        # dplyr::mutate(adj.p = stats::p.adjust(p = .data$p.value,
+        #     method="bonferroni",n=length(target_quantifs)))
+    return(list(z.test = z_output, target_quantifs = target_quantifs,
+        bg_quantifs = bg_quantifs))
 }

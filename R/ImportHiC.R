@@ -219,7 +219,8 @@ ImportHiC <- function(
     # rownames(chromSizes)[length(rownames(chromSizes))]
     if(is.null(chrom_1) && is.null(chrom_2)){
         if(verbose){
-            message("chrom_1 and chrom_2 are NULL, so all chromosomes are chosen")
+            message("chrom_1 and chrom_2 are NULL,
+             so all chromosomes are chosen")
         }        
         chrom_1 <- chromSizes$name
         chrom_2 <- chromSizes$name

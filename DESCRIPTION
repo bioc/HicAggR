@@ -46,8 +46,6 @@ Imports:
     stringr,
     tidyr,
     gridExtra,
-    BSDA,
-    broom,
     data.table
 Suggests:
     covr,
