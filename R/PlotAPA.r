@@ -17,6 +17,8 @@
 #' @param colMaxCond <matrix>: Avalaible for plotting differantial aggregation.
 #'  The maxiaml value in color scale in the classsical aggregation plot.
 #'  If Null automaticaly find.
+#' @param extra_info <logical> do you want to have a recall of your arguments
+#' values? (Default FALSE)
 #' @param ... additional arguments to [ggAPA()]
 #' @return None
 #' @importFrom gridExtra grid.table
@@ -64,7 +66,7 @@
 #' 
 
 PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
-    colMax=NULL, colMinCond=NULL, colMaxCond=NULL,...){
+    colMax=NULL, colMinCond=NULL, colMaxCond=NULL, extra_info = FALSE,...){
     .ggDensity <- function(data.lst=NULL, colour.col=NULL, mean.bln=TRUE,
     title=NULL){
         data.lst_tbl <- lapply(seq_along(data.lst),function(element.ndx){
@@ -420,38 +422,40 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
             title="Condition corrected and control densities")
         plot(plot.gp)
     }
-    # Attributes
-    grid::grid.newpage()
-    attr.ndx <- aggregatedMtx |>
-        attributes() |>
-        names() |>
-        # NotIn to replace by %ni%
-        NotIn(c("dim","matrices","interactions", "dimnames"))
-    attr.lst <- attributes(aggregatedMtx)[attr.ndx]
-    attr.lst$aggregationMethod <- function(pxl){
-        pxl[is.na(pxl)]<-0;mean(pxl,na.rm=TRUE)}
-    attr1.ndx <- attr.lst |>
-        lapply(class) |>
-        unlist() |>
-        # NotIn to replace by %ni% 
-        NotIn(c("matrix", "list","GInteractions","function"))
-    attr1.lst <- attr.lst[attr1.ndx] |>
-                lapply(as.character) |>
-                unlist()
-    attr2.ndx <- unlist(lapply(attr.lst, class)) %in% "function"
-    attr2.lst <- attr.lst[attr2.ndx] |>
-                lapply(function(function.fun){
-                    function.chr <- deparse(function.fun)
-                    function.chr[3:(length(function.chr)-1)] |>
-                    paste0(collapse=";\n")
-                    return(gsub(" ","",function.chr))
-                    }) |>
-                unlist()
-    attr.lst <- c(attr1.lst, attr2.lst)
-    attr.tbl  <- tibble::as_tibble_col(attr.lst) |>
-        tibble::add_column(name=names(attr.lst)) |>
-        tibble::column_to_rownames("name")
-    gridExtra::grid.table(attr.tbl)
+    if(extra_info){
+        # Attributes
+        grid::grid.newpage()
+        attr.ndx <- aggregatedMtx |>
+            attributes() |>
+            names() |>
+            # NotIn to replace by %ni%
+            NotIn(c("dim","matrices","interactions", "dimnames"))
+        attr.lst <- attributes(aggregatedMtx)[attr.ndx]
+        attr.lst$aggregationMethod <- function(pxl){
+            pxl[is.na(pxl)]<-0;mean(pxl,na.rm=TRUE)}
+        attr1.ndx <- attr.lst |>
+            lapply(class) |>
+            unlist() |>
+            # NotIn to replace by %ni% 
+            NotIn(c("matrix", "list","GInteractions","function"))
+        attr1.lst <- attr.lst[attr1.ndx] |>
+                    lapply(as.character) |>
+                    unlist()
+        attr2.ndx <- unlist(lapply(attr.lst, class)) %in% "function"
+        attr2.lst <- attr.lst[attr2.ndx] |>
+                    lapply(function(function.fun){
+                        function.chr <- deparse(function.fun)
+                        function.chr[3:(length(function.chr)-1)] |>
+                        paste0(collapse=";\n")
+                        return(gsub(" ","",function.chr))
+                        }) |>
+                    unlist()
+        attr.lst <- c(attr1.lst, attr2.lst)
+        attr.tbl  <- tibble::as_tibble_col(attr.lst) |>
+            tibble::add_column(name=names(attr.lst)) |>
+            tibble::column_to_rownames("name")
+        gridExtra::grid.table(attr.tbl)
+    }
 }
 
 

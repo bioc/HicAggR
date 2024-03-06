@@ -11,7 +11,13 @@ ImportHiC(
   chrom_1 = NULL,
   chrom_2 = NULL,
   verbose = FALSE,
-  cores = 1
+  cores = 1,
+  hic_norm = "NONE",
+  hic_matrix = "observed",
+  cool_balanced = FALSE,
+  cool_weight_name = "weight",
+  cool_divisive_weights = FALSE,
+  h5_fill_upper = TRUE
 )
 }
 \arguments{
@@ -36,6 +42,29 @@ If is NULL is equal to chrom_1 (Defalt NULL)}
 
 \item{cores}{\if{html}{\out{<numerical>}} : An integer to specify the number of cores.
 (Default 1)}
+
+\item{hic_norm}{\if{html}{\out{<character>}}: "norm" argument to supply to \code{\link[strawr:straw]{strawr::straw()}}.
+This argument is for .hic format data only. Available norms can be obtained
+through \code{\link[strawr:readHicNormTypes]{strawr::readHicNormTypes()}}.
+(Default "NONE").}
+
+\item{hic_matrix}{\if{html}{\out{<character>}}: "matrix" argument to supply to
+\code{\link[strawr:straw]{strawr::straw()}}.
+This argument is for .hic format data only.
+Other options can be: "oe", "expected". (Default "observed").}
+
+\item{cool_balanced}{\if{html}{\out{<logical>}} Import already balanced matrix?
+(Default: FALSE)}
+
+\item{cool_weight_name}{\if{html}{\out{<character>}} Name of the correcter in the cool file.
+(Default: weight). \code{\link[rhdf5:h5ls]{rhdf5::h5ls()}} to see the available correcters.}
+
+\item{cool_divisive_weights}{\if{html}{\out{<logical>}} Does the correcter vector contain
+divisive biases as in hicExplorer or multiplicative as in cooltools?
+(Default: FALSE)}
+
+\item{h5_fill_upper}{\if{html}{\out{<logical>}} Do the matrix in h5 format need to be
+transposed? (Default: TRUE)}
 }
 \value{
 A matrices list.
@@ -45,6 +74,19 @@ Import ..hic, .cool, .mcool or .bedpe data
 }
 \details{
 ImportHiC
+
+If you request "expected" values when importing .hic format data,
+you must do yourself the "oe" by importing manually the observed counts
+as well.
+
+Prior to v.0.9.0 cooltools had multiplicative weight only, so make sure
+your correcters are divisive or multiplicative.
+https://cooler.readthedocs.io/en/stable/releasenotes.html#v0-9-0
+
+When loading hic matrix in h5 format make sure you have enough momory
+to load the full matrix with all chromosomes regardless of values for
+chrom_1 and chrom_2 arguments. The function first loads the whole matrix,
+then extracts matrices per chromosome for the time being, it's easier ;).
 }
 \examples{
 \donttest{
@@ -88,5 +130,17 @@ HiC_HS.cmx_lst <- ImportHiC(
     chrom_2 = c("2L", "2R", "2R")
 )
 }
-
+# Import .h5 file
+h5_path <- system.file("extdata",
+    "Control_HIC_10k_2L.h5",
+    package = "HicAggR", mustWork = TRUE
+)
+binSize=10000
+hicLst <- ImportHiC(
+  file      = h5_path,
+  hicResolution       = binSize,
+  chromSizes = data.frame(seqnames = c("2L"), 
+  seqlengths = c(23513712)),
+  chrom_1   = c("2L")
+)
 }

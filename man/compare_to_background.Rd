@@ -17,6 +17,7 @@ compare_to_background(
   operationFun = "mean",
   bg_type = NULL,
   cores = 1,
+  verbose = FALSE,
   ...
 )
 }
@@ -77,6 +78,8 @@ different compartments.
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
 
+\item{verbose}{\if{html}{\out{<logical>}} details on progress? (Default: FALSE)}
+
 \item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat
 background matrices.}
 }
@@ -89,30 +92,27 @@ background couples.
 Computes z.test for each target couple over background couples.
 }
 \examples{
-temp.dir <- file.path(tempdir(), "HIC_DATA")
-dir.create(temp.dir)
-Hic.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
-    "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
-    "4DNFIOTPSS3L.hic")
-HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
-binSize=1000
+h5_path <- system.file("extdata",
+    "Control_HIC_10k_2L.h5",
+    package = "HicAggR", mustWork = TRUE
+)
+binSize=10000
 data(Beaf32_Peaks.gnr)
 data(TADs_Domains.gnr)
 hicLst <- ImportHiC(
-  file      = HicOutput.pth,
+  file      = h5_path,
   hicResolution       = binSize,
-  chromSizes = data.frame(seqnames = c("2L", "2R"), 
-  seqlengths = c(23513712, 25286936)),
-  chrom_1   = c("2L", "2R")
+  chromSizes = data.frame(seqnames = c("2L"), 
+  seqlengths = c(23513712)),
+  chrom_1   = c("2L")
 )
 hicLst <- BalanceHiC(hicLst)
 hicLst <- OverExpectedHiC(hicLst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
   gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-  chromSizes = data.frame(seqnames = c("2L", "2R"), 
-   seqlengths = c(23513712, 25286936)),
+  chromSizes = data.frame(seqnames = c("2L"), 
+   seqlengths = c(23513712)),
   genomicConstraint = TADs_Domains.gnr,
   binSize = binSize
 )
@@ -131,8 +131,8 @@ output_bgInterTAD = compare_to_background(hicList = hicLst,
  indexAnchor = Beaf32_Index.gnr,
  indexBait = Beaf32_Index.gnr,
  genomicConstraint = TADs_Domains.gnr,
- chromSizes = data.frame(seqnames = c("2L", "2R"), 
-   seqlengths = c(23513712, 25286936)),
+ chromSizes = data.frame(seqnames = c("2L"), 
+   seqlengths = c(23513712)),
  bg_type="inter_TAD"
 )
 

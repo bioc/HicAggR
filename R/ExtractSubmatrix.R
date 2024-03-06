@@ -426,22 +426,30 @@ ExtractSubmatrix <- function(
                     return(as.matrix(spMtx))
                 }
             )
-            message("extracted : ", length(tempSubmatrix.spm_lst), 
+            if(verbose){
+                message("extracted : ", length(tempSubmatrix.spm_lst), 
             " Matrices on ", combinaisonName.chr)
+            }
+            
             return(tempSubmatrix.spm_lst)
         }
     ) |>
         do.call(what = c) |>
         stats::setNames(featureNoDup.gni$submatrix.name)
-
-    message(" FILTERED extracted submat: ", length(submatrix.spm_lst))
+    if(verbose){
+        message(" FILTERED extracted submat: ", length(submatrix.spm_lst))
+    }
+    
     if(!remove_duplicates){
         submatrix.spm_lst <- submatrix.spm_lst[featureFilt.gni$submatrix.name]
-        message("You have chosen to keep duplicated submatrices.")
-    }else{
-
+        if(verbose){
+            message("You have chosen to keep duplicated submatrices.")
+        }
     }
-    message(" TOTAL extracted submat: ", length(submatrix.spm_lst))
+    if(verbose){
+        message(" TOTAL extracted submat: ", length(submatrix.spm_lst))
+    }
+    
     interactions.ndx <- seq_along(genomicFeature$name) |>
         stats::setNames(genomicFeature$name)
     if(remove_duplicates){

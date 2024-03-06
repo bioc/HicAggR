@@ -8,14 +8,19 @@
 #' @param cores <numerical> : Number of cores to be used. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
+#' @param plot_contact_vs_dist Whether to plot contact vs distance curve
+#'  per chromosome ("per_seq"), all chromosomes ("total") or not (NULL). 
+#'  (Default "per_seq")
 #' @return A matrices list.
+#' @importFrom rlang .data
+#' @import ggplot2
 #' @examples
 #' # Note: run HicAggR::BalanceHiC before OverExpectedHiC calculation.
 #' data(HiC_Ctrl.cmx_lst)
 #' OverExpectedHiC(HiC_Ctrl.cmx_lst)
 #'
 OverExpectedHiC <- function(
-    hicLst, verbose = FALSE, cores = 1
+    hicLst, verbose = FALSE, cores = 1, plot_contact_vs_dist="per_seq"
 ) {
     resolution.num <- attributes(hicLst)$resolution
     matricesNames.chr <- names(hicLst)
@@ -68,9 +73,42 @@ OverExpectedHiC <- function(
     attributes(hicLst)$mtx <- "o/e"
     expected.dtf <- expected.lst[cisNames.chr] |>
         do.call(what = rbind)
+    expected.lst <- expected.lst[cisNames.chr]
+    
+    if(plot_contact_vs_dist=="per_seq" && length(expected.lst)>0){
+        data <- do.call(rbind,
+            lapply(
+                seq_along(expected.lst),
+                function(i){return(expected.lst[[i]] |>
+                dplyr::filter(.data$distance>1) |>
+                dplyr::filter(
+                !duplicated(.data$distance)|!duplicated(.data$expected)) |>
+                        dplyr::mutate(seqnames=names(expected.lst)[i]))
+            })
+        )
+        p <- ggplot2::ggplot(data,
+            ggplot2::aes(x=log10(.data$distance),
+                y=log10(.data$expected),col=.data$seqnames))+
+            ggplot2::geom_line()+
+            ggplot2::ggtitle(label = "Contact vs distance (per chromosome)")+
+            ggplot2::theme_bw()
+            plot(p)
+        }
     attributes(hicLst)$expected <- dplyr::group_by(
         expected.dtf,
         distance = expected.dtf$distance) |>
         dplyr::summarise_at(.vars = "expected", .funs = list(expected = mean))
+        if(plot_contact_vs_dist=="total" && length(expected.lst)>0){
+        data <- attributes(hicLst)$expected |>
+            dplyr::filter(.data$distance>1)
+
+        p <- ggplot2::ggplot(data,
+            ggplot2::aes(x=log10(.data$distance),
+                y=log10(.data$expected),col="#619CFF"))+
+            ggplot2::geom_line(show.legend = FALSE)+
+            ggplot2::ggtitle(label = "Contact vs distance")+
+            ggplot2::theme_bw()
+        plot(p)
+        }
     return(hicLst)
 }

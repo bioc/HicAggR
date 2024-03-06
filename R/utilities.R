@@ -82,22 +82,22 @@ BoxBlur <- function(
         mtx = mtx, padSize = pad.num,
         val = NULL, side = c("top", "bot", "right", "left")
     )
-    matVsmth.mtx2 <- sapply(
-        ((1 + pad.num):(dim(mtx)[2] - pad.num)),
+    matVsmth.mtx2 <- vapply(
+        ((1 + pad.num):(dim(mtx)[2] - pad.num)), FUN = 
         function(j) {
             (t(mtx[, (j - pad.num):(j + pad.num)]) *
                 boxKernel) |>
                 apply(2, Plus)
-        }
+        }, FUN.VALUE = array(1,dim = dim(mtx)[2])
     )
-    matHsmth.mtx2 <- t(sapply(
-        ((1 + pad.num):(dim(matVsmth.mtx2)[1] - pad.num)),
+    matHsmth.mtx2 <- t(vapply(
+        ((1 + pad.num):(dim(matVsmth.mtx2)[1] - pad.num)), FUN = 
         function(i) {
             (matVsmth.mtx2[(i - pad.num):(i + pad.num), ] *
                 boxKernel) |>
                 apply(2, Plus) |>
                 t()
-        }
+        }, FUN.VALUE = array(1,dim = dim(matVsmth.mtx2)[2])
 ))
     indices <- which(matHsmth.mtx2 == 0)
     if (length(indices)) {

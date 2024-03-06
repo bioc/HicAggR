@@ -45,6 +45,7 @@
 #' different compartments.
 #' \item "NULL": If `NULL`, `random_anchors` are set by default.
 #' }
+#' @param verbose <logical> details on progress? (Default: FALSE)
 #' @param ... arguments to pass to [PrepareMtxList], inorder to treat 
 #' background matrices.
 #' @return returns a <list> object with the z.test output for each 
@@ -54,34 +55,30 @@
 #' @export
 #' @importFrom GenomeInfoDb seqlevels
 #' @importFrom IRanges subsetByOverlaps
-#' @importFrom BSDA z.test
-#' @importFrom stats p.adjust sd
-#' @importFrom broom tidy
+#' @importFrom stats p.adjust sd pnorm
+#' @importFrom rlang .data
 #' @examples
-#' temp.dir <- file.path(tempdir(), "HIC_DATA")
-#' dir.create(temp.dir)
-#' Hic.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
-#'     "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
-#'     "4DNFIOTPSS3L.hic")
-#' HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-#' download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
-#' binSize=1000
+#' h5_path <- system.file("extdata",
+#'     "Control_HIC_10k_2L.h5",
+#'     package = "HicAggR", mustWork = TRUE
+#' )
+#' binSize=10000
 #' data(Beaf32_Peaks.gnr)
 #' data(TADs_Domains.gnr)
 #' hicLst <- ImportHiC(
-#'   file      = HicOutput.pth,
+#'   file      = h5_path,
 #'   hicResolution       = binSize,
-#'   chromSizes = data.frame(seqnames = c("2L", "2R"), 
-#'   seqlengths = c(23513712, 25286936)),
-#'   chrom_1   = c("2L", "2R")
+#'   chromSizes = data.frame(seqnames = c("2L"), 
+#'   seqlengths = c(23513712)),
+#'   chrom_1   = c("2L")
 #' )
 #' hicLst <- BalanceHiC(hicLst)
 #' hicLst <- OverExpectedHiC(hicLst)
 #' # Index Beaf32
 #' Beaf32_Index.gnr <- IndexFeatures(
 #'   gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-#'   chromSizes = data.frame(seqnames = c("2L", "2R"), 
-#'    seqlengths = c(23513712, 25286936)),
+#'   chromSizes = data.frame(seqnames = c("2L"), 
+#'    seqlengths = c(23513712)),
 #'   genomicConstraint = TADs_Domains.gnr,
 #'   binSize = binSize
 #' )
@@ -100,8 +97,8 @@
 #'  indexAnchor = Beaf32_Index.gnr,
 #'  indexBait = Beaf32_Index.gnr,
 #'  genomicConstraint = TADs_Domains.gnr,
-#'  chromSizes = data.frame(seqnames = c("2L", "2R"), 
-#'    seqlengths = c(23513712, 25286936)),
+#'  chromSizes = data.frame(seqnames = c("2L"), 
+#'    seqlengths = c(23513712)),
 #'  bg_type="inter_TAD"
 #' )
 #' 
@@ -117,6 +114,7 @@ compare_to_background <- function(hicList = NULL,
                     operationFun="mean",
                     bg_type = NULL,
                     cores = 1,
+                    verbose = FALSE,
                     ...){
 
     targetCouples <- attributes(matrices)$interactions
@@ -130,7 +128,10 @@ compare_to_background <- function(hicList = NULL,
         resolution,
         N=n_background,
         cores=cores){
-        message("random bins")
+        
+        if(verbose){
+            message("random bins")
+        }
         if(!is.null(genomicConstraint)){
         dist_const <- c(min(targetCouples$distance),
             max(GenomicRanges::width(genomicConstraint)))
@@ -179,8 +180,10 @@ compare_to_background <- function(hicList = NULL,
         background_pairs <- background_pairs[
             sample(seq(1,length(background_pairs)),size = N)]
         }
-        message("Number of background pairs: ",
+        if(verbose){
+            message("Number of background pairs: ",
             length(background_pairs))
+        }
         return(background_pairs)
     }
     
@@ -202,7 +205,9 @@ compare_to_background <- function(hicList = NULL,
                             N=n_background,
                             secondaryConst.var = NULL,
                             cores=cores){
-        message("inter-TADs")
+        if(verbose){
+            message("inter-TADs")
+        }
         if(!is.null(genomicConstraint) && 
         !all(unique(indexAnchor$constraint)%in%
             GenomeInfoDb::seqlevels(indexAnchor)) && 
@@ -216,14 +221,14 @@ compare_to_background <- function(hicList = NULL,
         }
         indexAnchor.tmp <- indexAnchor |>
         as.data.frame() |>
-        dplyr::mutate(tad_name = "constraint") |>
-        dplyr::mutate(constraint = "seqnames")|>
+        dplyr::mutate(tad_name = .data$constraint) |>
+        dplyr::mutate(constraint = .data$seqnames)|>
         GenomicRanges::GRanges()
         
         indexBait.tmp <- indexBait |>
         as.data.frame() |>
-        dplyr::mutate(tad_name = "constraint") |>
-        dplyr::mutate(constraint = "seqnames")|>
+        dplyr::mutate(tad_name = .data$constraint) |>
+        dplyr::mutate(constraint = .data$seqnames)|>
         GenomicRanges::GRanges()
         
         bg_couples <- SearchPairs(
@@ -235,12 +240,14 @@ compare_to_background <- function(hicList = NULL,
         cores = cores)
         
         diff.tad.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
-        dplyr::filter("anchor.tad_name"!="bait.tad_name") |>
+        dplyr::filter(.data$anchor.tad_name!=.data$bait.tad_name) |>
         rownames()
         bg_couples <- bg_couples[
         which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
         ]
-        message("Number of inter-TAD couples ",length(bg_couples))
+        if(verbose){
+            message("Number of inter-TAD couples ",length(bg_couples))
+        }
         if(!is.null(secondaryConst.var)){
         # discard couples in the same compartment
         # names of compartment info in couples
@@ -306,12 +313,14 @@ compare_to_background <- function(hicList = NULL,
                                     resolution,
                                     n_background)
         bg_couples <- .cleanCouples(bg_couples,matrices)
-        message(length(bg_couples))
+        if(verbose){
+            message(length(bg_couples))
+        }
     }
     
     GenomeInfoDb::seqinfo(bg_couples) <- 
-        GenomeInfoDb::Seqinfo(seqnames = chromSizes$seqnames,
-                                    seqlengths = chromSizes$seqlengths)
+        GenomeInfoDb::Seqinfo(seqnames = chromSizes[[1]],
+                                    seqlengths = chromSizes[[2]])
     bg_counts <- ExtractSubmatrix(genomicFeature = bg_couples,
                     hicLst = hicList,
                     hicResolution = resolution,
@@ -322,24 +331,30 @@ compare_to_background <- function(hicList = NULL,
         matrices = bg_counts,
         areaFun = areaFun,
         operationFun = operationFun
-    ) |> as.numeric()
-    sigma.bg <- stats::sd(bg_quantifs)
-    
+    ) |> as.numeric() |> 
+        `names<-`(attr(bg_counts,"names"))
+    # sigma.bg <- stats::sd(bg_quantifs)
+
     target_quantifs <- GetQuantif(
         matrices = matrices,
         areaFun = areaFun,
         operationFun = operationFun
     ) |> as.numeric() |> 
         `names<-`(attr(matrices,"names"))
-    z.output <- lapply(target_quantifs, 
-            function(i){broom::tidy(BSDA::z.test(x=bg_quantifs,
-                                            sigma.x = sigma.bg,
-                                            mu=i,
-                                            alternative = "less"))}
-            ) |> dplyr::bind_rows() |> 
-        dplyr::mutate(names = names(target_quantifs)) |>
-        dplyr::mutate(adj.p = stats::p.adjust(p = "p.value",
-            method="bonferroni",n=length(target_quantifs)))
-    return(list(z.test = z.output,target_quantifs=target_quantifs,
-        bg_quantifs=bg_quantifs))
+    z_scores <- (target_quantifs - mean(bg_quantifs))- stats::sd(bg_quantifs)
+    pval_vector <- stats::pnorm(q = z_scores, lower.tail = FALSE)
+    z_output <- data.frame(names = names(target_quantifs),
+                    z.score = z_scores,
+                    p.value = pval_vector)
+    # z.output <- lapply(target_quantifs, 
+    #         function(i){broom::tidy(BSDA::z.test(x=bg_quantifs,
+    #                                         sigma.x = sigma.bg,
+    #                                         mu=i,
+    #                                         alternative = "less"))}
+    #         ) |> dplyr::bind_rows() |> 
+    #     dplyr::mutate(names = names(target_quantifs)) |>
+        # dplyr::mutate(adj.p = stats::p.adjust(p = .data$p.value,
+        #     method="bonferroni",n=length(target_quantifs)))
+    return(list(z.test = z_output, target_quantifs = target_quantifs,
+        bg_quantifs = bg_quantifs))
 }

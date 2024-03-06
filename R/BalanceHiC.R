@@ -114,9 +114,11 @@ BalanceHiC <- function(
                 dplyr::pull("name")
             mess.chr <- paste0(
                 paste(transMatricesNames.chr, collapse = ", "),
-                " remove from output."
+                " removed from output."
             )
-            message(mess.chr)
+            if(verbose){
+                message(mess.chr)
+            }
             if (length(transMatricesNames.chr)) {
                 attr.lst <- attributes(hicLst)
                 attr.lst$matricesKind <- dplyr::filter(
@@ -141,7 +143,9 @@ BalanceHiC <- function(
                 "No cis matrix, Normalisation ",
                 "won't be applied on cis matrices"
             )
-            message(mess.chr)
+            if(verbose){
+                message(mess.chr)
+            }
         }
     } else if (!is.null(interactionType) &&
         "trans" %in% interactionType && NotIn("cis", interactionType)
@@ -197,9 +201,11 @@ BalanceHiC <- function(
                 dplyr::pull("name")
             mess.chr <- paste0(
                 paste(cisMatricesNames.chr, collapse = ", "),
-                " remove from output."
+                " removed from output."
             )
-            message(mess.chr)
+            if(verbose){
+                message(mess.chr)
+            }
             if (length(cisMatricesNames.chr)) {
                 attr.lst <- attributes(hicLst)
                 attr.lst$matricesKind <- dplyr::filter(
@@ -224,7 +230,9 @@ BalanceHiC <- function(
                 "No trans matrix, Normalisation ",
                 "won't be applied on trans matrices"
             )
-            message(mess.chr)
+            if(verbose){
+                message(mess.chr)
+            }
         }
     } else {
         matricesKind.tbl <- attributes(hicLst)$matricesKind
@@ -276,7 +284,9 @@ BalanceHiC <- function(
                     "No cis matrix, Normalisation ",
                     "won't be applied on cis matrices"
                 )
-                message(mess.chr)
+                if(verbose){
+                    message(mess.chr)
+                }
             }
         }
         if (is.null(interactionType) ||
@@ -331,7 +341,9 @@ BalanceHiC <- function(
                     "No trans matrix, Normalisation ",
                     "won't be applied on trans matrices"
                 )
-                message(mess.chr)
+                if(verbose){
+                    message(mess.chr)
+                }
             }
         }
     }
