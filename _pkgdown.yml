@@ -1,5 +1,6 @@
 template:
   bootstrap: 5
+  bootswatch: darkly
 
 reference:
 - title: Data
@@ -14,6 +15,7 @@ reference:
 - title: HiC
   desc: "Functions for HiC data preprocessing."
   contents:
+  - getInfos
   - BalanceHiC
   - CutHiC
   - ImportHiC
@@ -52,6 +54,14 @@ reference:
   - viridis
   - YlGnBu
   - YlOrRd
+  - PlotAPA
+  - PlotAPA_byDistance
+
+- title: Additional Helpful Functions
+  desc: "Function to import loops in bedpe format and to compare your couples values with background less plausible couples"
+  contents:
+  - import_loops
+  - compare_to_background
 
 articles:
 - title: Tutorials
