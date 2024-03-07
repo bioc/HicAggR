@@ -103,7 +103,13 @@ Hic.url <- paste0(
     "7386f953-8da9-47b0-acb2-931cba810544/4DNFIOTPSS3L.hic"
 )
 HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-download.file(Hic.url, HicOutput.pth, method = "auto", extra = "-k")
+HicOutput.pth <- normalizePath(HicOutput.pth)
+if(.Platform$OS.type == "windows"){
+    download.file(Hic.url, HicOutput.pth, method = "auto",
+    extra = "-k",mode="wb")
+}else{
+    download.file(Hic.url, HicOutput.pth, method = "auto", extra = "-k")
+}
 
 # Import .hic file
 HiC_Ctrl.cmx_lst <- ImportHiC(
@@ -120,7 +126,14 @@ Mcool.url <- paste0(
     "4f1479a2-4226-4163-ba99-837f2c8f4ac0/4DNFI8DRD739.mcool"
 )
 McoolOutput.pth <- file.path(temp.dir, "HeatShock_HIC.mcool")
-download.file(Mcool.url, McoolOutput.pth, method = "auto", extra = "-k")
+HicOutput.pth <- normalizePath(McoolOutput.pth)
+if(.Platform$OS.type == "windows"){
+    download.file(Mcool.url, McoolOutput.pth, method = "auto",
+    extra = "-k",mode="wb")
+}else{
+    download.file(Mcool.url, McoolOutput.pth, method = "auto",
+    extra = "-k")
+}
 
 # Import .mcool file
 HiC_HS.cmx_lst <- ImportHiC(
