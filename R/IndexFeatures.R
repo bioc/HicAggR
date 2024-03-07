@@ -1,15 +1,27 @@
 #' Indexes GRanges on genome.
 #'
 #' IndexFeatures
-#' @description Function that indexes a GRanges object on binned genome and constraints. Needed prior HicAggR::SearchPairs() function.
-#' @param gRangeList <GRanges or GRangesList or list[GRanges]>: GRanges object, list of GRanges or GRangesList containing coordinates to index.
-#' @param genomicConstraint <GRanges>: GRanges object of constraint regions. Note that bins in the same constraint region only will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as constraints (Default NULL)
-#' @param chromSizes <data.frame>: A data.frame containing chromosomes names and lengths in base pairs (see example).
-#' @param binSize <integer>: Bin size in bp - corresponds to HiC matrix resolution.
-#' @param metadataColName <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method if multiple ranges are indexed in the same bin.
-#' @param method <character>: A string defining which summary method is used on metadata columns defined in metadataColName if multiple ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'. (Default 'mean'')
+#' @description Function that indexes a GRanges object on binned genome and
+#'  constraints. Needed prior HicAggR::SearchPairs() function.
+#' @param gRangeList <GRanges or GRangesList or list[GRanges]>: GRanges object,
+#'  list of GRanges or GRangesList containing coordinates to index.
+#' @param genomicConstraint <GRanges>: GRanges object of constraint regions.
+#'  Note that bins in the same constraint region only will be paired in
+#'  HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as
+#'  constraints (Default NULL)
+#' @param chromSizes <data.frame>: A data.frame containing chromosomes names
+#'  and lengths in base pairs (see example).
+#' @param binSize <integer>: Bin size in bp - corresponds to matrix resolution.
+#' @param metadataColName <character> : A character vector that specify the
+#'  metadata columns of GRanges on which apply the summary method if multiple
+#'  ranges are indexed in the same bin.
+#' @param method <character>: A string defining which summary method is used on
+#'  metadata columns defined in metadataColName if multiple ranges are indexed
+#'  in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'.
+#'  (Default 'mean'')
 #' @param cores <integer> : Number of cores used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A GRanges object.
 #' @examples
 #' data(Beaf32_Peaks.gnr)
@@ -38,7 +50,7 @@ IndexFeatures <- function(
             strand = "*", name = chromSizes[, 1]
         )
     } else {
-        if (is.null(genomicConstraint$name) |
+        if (is.null(genomicConstraint$name) ||
             length(which(!is.na(genomicConstraint$name))) == 0) {
             genomicConstraint$name <- paste0(
                 "Constraint_",
@@ -77,15 +89,27 @@ IndexFeatures <- function(
     gRangeList <- gRangeList[gRangeOrder.ndx]
     feature.chr_vec <- names(gRangeList)
     # GRanges Binning
-    binnedFeature.lst <- BiocParallel::bplapply(
-        BPPARAM = BiocParallel::SerialParam(progressbar = verbose),
-        seq_along(gRangeList),
-        function(feature.ndx) {
+    # DD 230310 correct how parallezation was done...
+    multicoreParam <- MakeParallelParam(cores = cores, verbose = FALSE) 
+    binnedFeature.lst <- BiocParallel::bplapply(BPPARAM = multicoreParam,
+        seq_along(gRangeList),function(feature.ndx) {
             feature.chr <- feature.chr_vec[[feature.ndx]]
             feature.gnr <- IRanges::subsetByOverlaps(
                 gRangeList[[feature.chr]],
                 genomicConstraint
             )
+            # adding name metadata if the GRanges do not have name
+            if(is.null(feature.gnr$name)){
+                if(!is.null(names(gRangeList)[feature.ndx])){
+                    feature.gnr$name <- paste0(
+                        names(gRangeList)[feature.ndx], "_", seq(
+                            1,length(feature.gnr)))
+                }else{
+                    feature.gnr$name <- paste0(
+                        "peak_feature",feature.ndx, "_", seq(
+                            1,length(feature.gnr)))
+                }
+            }
             GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
                 gRange = feature.gnr, chromSizes = chromSizes,
@@ -134,12 +158,8 @@ IndexFeatures <- function(
             featConstOvlp.tbl <- tidyr::nest(featConstOvlp.tbl) |>
                 stats::setNames(c("Constraint.name", "BinnedFeature.ndx")) |>
                 dplyr::left_join(binnedConstraint.tbl, by = "Constraint.name")
-            multicoreParam <- MakeParallelParam(
-                cores = cores,
-                verbose = FALSE
-            )
-            binnedFeature.gnr_lst <- BiocParallel::bplapply(
-                BPPARAM = multicoreParam, seq_len(nrow(featConstOvlp.tbl)),
+
+            binnedFeature.gnr_lst <- lapply(seq_len(nrow(featConstOvlp.tbl)),
                 function(row.ndx) {
                     ranges.ndx <-
                         featConstOvlp.tbl$BinnedFeature.ndx[row.ndx] |>
@@ -273,6 +293,11 @@ IndexFeatures <- function(
     S4Vectors::mcols(binnedIndex.gnr) <- as.data.frame(
             S4Vectors::mcols(binnedIndex.gnr)
         ) |>
-        dplyr::select(columOrder.chr)
+        # should avoid warning tidyselect
+        dplyr::select(dplyr::all_of(columOrder.chr))
+    # When indexing a GRangeList seqinfo gets lost somehow
+    chromSizes <- chromSizes[which(chromSizes[,1]!="All"),]
+    GenomeInfoDb::seqinfo(binnedIndex.gnr) <- GenomeInfoDb::Seqinfo(
+        seqnames = chromSizes[,1], seqlengths = chromSizes[,2])
     return(sort(binnedIndex.gnr))
 }

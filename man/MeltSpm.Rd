@@ -7,13 +7,14 @@
 MeltSpm(spMtx = NULL)
 }
 \arguments{
-\item{spMtx}{<dgCMatrix or dgCMatrix coercible>: A matrix.}
+\item{spMtx}{\if{html}{\out{<dgCMatrix or dgCMatrix coercible>}}: A matrix.}
 }
 \value{
 A tibble.
 }
 \description{
-Coerce a sparse matrix M in tibble where columns: i is row index, j is column index and x the value M[i,j].
+Coerce a sparse matrix M in tibble where columns:
+i is row index, j is column index and x the value M\code{[}i,j\verb{]}.
 }
 \details{
 MeltSpm

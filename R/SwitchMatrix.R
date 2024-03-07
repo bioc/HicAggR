@@ -1,10 +1,12 @@
 #' Change values of HiC map.
 #'
 #' SwitchMatrix
-#' @description Change values in matrix with observed, balanced, observed/expected or expected values according to what are be done in hic.
-#' @param hicLst <List[contactMatrix]>: The HiC maps list.
+#' @description Change values in matrix with observed, balanced,
+#'  observed/expected or expected values according to what are be done in hic.
+#' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
+#'  The HiC maps list.
 #' @param matrixKind <character>: The kind of matrix you want.
-#' @return A contactMatrix list.
+#' @return A ContactMatrix list.
 #' @examples
 #' # Data
 #' data(HiC_Ctrl.cmx_lst)
@@ -35,24 +37,29 @@ SwitchMatrix <- function(
         stop(err.chr)
     }
     if (attributes(hicLst)$mtx != matrixKind) {
-        lapply(names(hicLst), function(hicName.chr) {
-            hicLst[[hicName.chr]]@matrix@x <<- dplyr::case_when(
-                matrixKind == "obs" ~
-                    (hicLst[[hicName.chr]]@metadata$observed),
-                matrixKind == "norm" ~
-                    (hicLst[[hicName.chr]]@metadata$observed *
-                    hicLst[[hicName.chr]]@metadata$normalizer),
-                matrixKind == "o/e" ~
-                    (hicLst[[hicName.chr]]@metadata$observed *
-                    hicLst[[hicName.chr]]@metadata$normalizer /
-                    hicLst[[hicName.chr]]@metadata$expected),
-                matrixKind == "exp" ~
-                    (hicLst[[hicName.chr]]@metadata$expected)
-            )
-        })
+        # https://stackoverflow.com/questions/26228625/
+        # updating-columns-using-lapply
+        # this is to avoid the use <<-
+        list2env(lapply(hicLst, function(hicName.chr) {
+        hicName.chr@matrix@x <- dplyr::case_when(
+            matrixKind == "obs" ~
+            (hicName.chr@metadata$observed),
+            matrixKind == "norm" ~
+            (hicName.chr@metadata$observed *
+                hicName.chr@metadata$normalizer),
+            matrixKind == "o/e" ~
+            (hicName.chr@metadata$observed *
+                hicName.chr@metadata$normalizer /
+                hicName.chr@metadata$expected),
+            matrixKind == "exp" ~
+            (hicName.chr@metadata$expected)
+        )
+        }),envir = .GlobalEnv)
         attributes(hicLst)$mtx <- matrixKind
         return(hicLst)
     } else {
         message("\nhicLst is already ", matrixKind, ".\n")
+        # Should return the hicLst as is!!
+        return(hicLst)
     }
 }

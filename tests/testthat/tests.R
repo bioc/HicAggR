@@ -176,20 +176,37 @@ GetQuantif(
 # Test OrientateMatrix
 OrientateMatrix(submatrixPF_Ctrl.mtx_lst)
 
+submatrixRF_Ctrl.mtx_lst = PrepareMtxList(
+    matrices = submatrixRF_Ctrl.mtx_lst,
+    transFun    = "qtl", 
+    rm0      = FALSE
+)
+
 # Test Aggregation
 Aggregation(
     matrices = submatrixRF_Ctrl.mtx_lst, 
-    aggFun      = "sum",
-    transFun    = "qtl", 
-    rm0      = FALSE
+    aggFun      = "sum"
     )
+submatrixPF_Ctrl.mtx_lst = PrepareMtxList(
+    matrices = submatrixPF_Ctrl.mtx_lst,
+    transFun    = "qtl", 
+    minDist             = 1,
+    maxDist             = "5Mb",
+    rm0      = FALSE
+)
+
+submatrixPF_HS.mtx_lst = PrepareMtxList(
+    matrices = submatrixPF_HS.mtx_lst,
+    transFun    = "qtl", 
+    minDist             = 1,
+    maxDist             = "5Mb",
+    rm0      = FALSE
+)
+
 diffAggreg.mtx <- Aggregation(
     ctrlMatrices    = submatrixPF_Ctrl.mtx_lst,
     matrices        = submatrixPF_HS.mtx_lst,
-    minDist             = 1,
-    maxDist             = "5Mb",
     aggFun             = "mean",
-    rm0             = FALSE,
     diffFun            = "substraction",
     scaleCorrection = TRUE,
         correctionArea  =  list(

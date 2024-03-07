@@ -7,48 +7,29 @@
 Aggregation(
   ctrlMatrices = NULL,
   matrices = NULL,
-  minDist = NULL,
-  maxDist = NULL,
-  transFun = NULL,
   aggFun = "mean",
-  rm0 = FALSE,
   diffFun = "substraction",
   scaleCorrection = FALSE,
   correctionArea = NULL,
-  statCompare = FALSE,
-  orientate = TRUE
+  statCompare = FALSE
 )
 }
 \arguments{
-\item{ctrlMatrices}{<list[matrix]>: The matrices list to aggregate as control.}
+\item{ctrlMatrices}{<list\link{matrix}>: The matrices list to aggregate as
+control.}
 
-\item{matrices}{<list[matrix]>: The matrices list to aggregate.}
+\item{matrices}{<list\link{matrix}>: The matrices list to aggregate.}
 
-\item{minDist}{<numeric>: The minimal distance between anchor and bait.}
-
-\item{maxDist}{<numeric>: The maximal distance between anchor and bait.}
-
-\item{transFun}{<function or chracter>: The function use to transforme or scale values in each submatrix before aggregation. If the parameter is character so:
+\item{aggFun}{\if{html}{\out{<function or chracter>}}: The function use to aggregate
+each pixel in matrix. If the parameter is a character so:
 \itemize{
-\item "quantile" or "qtl" apply function dplyr::ntile(x,500)
-\item "percentile" or "prct" apply percentile.
-\item "rank" apply a ranking.
-\item "zscore" apply a scaling.
-\item "minmax" apply a HicAggR::MinMaxScale.
-\item "mu" apply a HicAggR::MeanScale.
-\item other or NULL don't apply transformation (Default).
-}}
-
-\item{aggFun}{<function or chracter>: The function use to aggregate each pixel in matrix. If the parameter is a character so:
-\itemize{
-\item "50%" or "median" apply the median
+\item "50\%" or "median" apply the median
 \item "+" or "sum" apply the sum
 \item other (Default) apply the mean
 }}
 
-\item{rm0}{<logical>: Whether 0 are replace with NA. (Default FALSE)}
-
-\item{diffFun}{<function or chracter>: The function use to compute differential. If the parameter is character so:
+\item{diffFun}{\if{html}{\out{<function or chracter>}}: The function use to compute
+differential. If the parameter is character so:
 \itemize{
 \item "-", "substract" or "substraction" apply a substraction
 \item "/" or "ratio" apply a ratio
@@ -56,19 +37,26 @@ Aggregation(
 \item other (Default) apply a log2 on 1+ratio
 }}
 
-\item{scaleCorrection}{<logical>: Whether a correction should be done on the median value take in ane noising area. (Default TRUE)}
+\item{scaleCorrection}{\if{html}{\out{<logical>}}: Whether a correction should be done
+on the median value take in ane noising area. (Default TRUE)}
 
-\item{correctionArea}{<list>: Nested list of indice that define a noising area fore correction. List muste contain in first an element "i" (row indices) then an element called "j" (columns indices). If NULL automatically take in upper left part of aggregated matrices. (Default NULL)}
+\item{correctionArea}{\if{html}{\out{<list>}}: Nested list of indice that define a noising
+area fore correction. List muste contain in first an element "i"
+(row indices) then an element called "j" (columns indices).
+If NULL automatically take in upper left part of aggregated matrices.
+(Default NULL)}
 
-\item{statCompare}{<logical>: Whether a t.test must be apply to each pxl of the differential aggregated matrix.}
-
-\item{orientate}{<logical>: Whether matrices must be orientate before the aggregation.}
+\item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply to each
+pixel of the differential aggregated matrix.}
 }
 \value{
 A matrix
 }
 \description{
-Aggregates all the matrices of a list (or two lists in case of differential aggregation) into a single matrix. This function allows to apply different aggregation (average, sum, ...), transformation (rank, percentage, ...) and differential (subtraction, ratio, ...) functions.
+Aggregates all the matrices of a list (or two lists in case
+of differential aggregation) into a single matrix. This function allows
+to apply different aggregation (average, sum, ...), and
+differential (subtraction, ratio, ...) functions.
 }
 \details{
 Aggregation
@@ -82,13 +70,15 @@ data(HiC_HS.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes = data.frame(seqnames = c("2L", "2R"), 
+        seqlengths = c(23513712, 25286936)),
     binSize = 100000
 )
 
 # Beaf32 <-> Beaf32 Pairing
 Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+# subset 2000 first for exemple
+Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)]
 
 # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 interactions_Ctrl.mtx_lst <- ExtractSubmatrix(
@@ -101,9 +91,17 @@ interactions_HS.mtx_lst <- ExtractSubmatrix(
     hicLst = HiC_HS.cmx_lst,
     referencePoint = "pf"
 )
+interactions_Ctrl.mtx_lst <- PrepareMtxList(
+    matrices = interactions_Ctrl.mtx_lst
+)
 
 # Aggregate matrices in one matrix
 aggreg.mtx <- Aggregation(interactions_Ctrl.mtx_lst)
+
+
+interactions_HS.mtx_lst <- PrepareMtxList(
+    matrices = interactions_HS.mtx_lst
+)
 
 # Differential Aggregation
 aggregDiff.mtx <- Aggregation(

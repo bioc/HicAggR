@@ -1,30 +1,30 @@
 Type: Package
 Package: HicAggR
 Title: Set of 3D genomic interaction analysis tools
-Version: 0.99.0
+Version: 0.99.2
 Authors@R: c(
     person("Nicolas", "Chanard", email = "nico.chanard@gmail.com", role = "aut"),
     person("David", "Depierre", email = "dav.depierre@gmail.com", role = "aut"),
     person("Pascal", "Martin", email = "pascal.martin@inra.fr", role = "ctb"),
-    person("Stephane", "Schaak", email = "stephane.schaak@inserm.fr", role = "ctb"),
+    person("Stephane", "Schaak", email = "stephane.schaak@inserm.fr", role = c("aut","ctb")),
     person("Refka", "Askri", email = "refka.askri@univ-tlse3.fr", role = "ctb"),
-    person("Robel", "tesfaye", email = "robel.tesfaye@univ-tlse3.fr", role = "ctb"),
-    person("Olivier", "Cuvier", email = "olivier.cuvier@univ-tlse3.fr", role = c("cre","ctb"))
+    person("Robel", "tesfaye", email = "robel.tesfaye@univ-tlse3.fr", role = c("aut","ctb")),
+    person("Olivier", "Cuvier", email = "olivier.cuvier@univ-tlse3.fr", role = c("cre","ctb"), comment = c(ORCID="0000-0003-0644-2734"))
     )
 Description:
     This package provides a set of functions useful in the analysis
     of 3D genomic interactions. It includes the import of
     standard HiC data formats into R and HiC normalisation procedures.
     The main objective of this package is to improve the visualization and
-    quantification of the analysis of HiC contacts through aggreagtion.
+    quantification of the analysis of HiC contacts through aggregation.
 biocViews: Software, HiC, DataImport, DataRepresentation, Normalization, Visualization
 License: MIT + file LICENSE
 URL: https://cuvierlab.github.io/HicAggR/,
     https://github.com/CuvierLab/HicAggR
 Depends:
-    R (>= 4.1),
-    InteractionSet
+    R (>= 4.2.0)
 Imports:
+    InteractionSet,
     BiocGenerics,
     BiocParallel,
     dplyr,
@@ -40,18 +40,23 @@ Imports:
     rtracklayer,
     S4Vectors,
     stats,
+    utils,
     strawr,
     tibble,
-    tidyr
+    stringr,
+    tidyr,
+    gridExtra,
+    data.table
 Suggests:
     covr,
-    kableExtra,
-    knitr,
+    kableExtra (>= 1.3.4),
+    knitr (>= 1.45),
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
-LazyDataCompression: xz
+LazyData: false
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

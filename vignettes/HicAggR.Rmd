@@ -7,8 +7,8 @@ description: >
     Quick tutorial about HicAggR functions.
 vignette: >
     %\VignetteIndexEntry{HicAggR - Quick start}
-    %\VignetteEngine{knitr::rmarkdown}
     %\usepackage[UTF-8]{inputenc}
+    %\VignetteEngine{knitr::rmarkdown}
 ---
 <style>
 body {
@@ -72,7 +72,13 @@ dir.create(temp.dir)
 
 Hic.url <- "https://4dn-open-data-public.s3.amazonaws.com/fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/4DNFIOTPSS3L.hic"
 HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-download.file(Hic.url, HicOutput.pth, method = 'curl', extra = '-k')
+HicOutput.pth <- normalizePath(HicOutput.pth)
+if(.Platform$OS.type == "windows"){
+    download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k',mode="wb")
+}else{
+    download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
+}
+
 ```
 
 ## Genomic location and annotation data
@@ -169,12 +175,19 @@ Beaf.mtx_lst <- ExtractSubmatrix(
 # 4 Plot and visualization
 Submatrices are aggregated as sum, average or median. Then, aggregated matrix is plotted as a heatmap of contact frequencies (in the example, contacts surounding Beaf-32 sites).
 
+## Prepare matrices list
+```{r, eval = TRUE, message = FALSE}
+Beaf.mtx_lst <- PrepareMtxList(
+     matrices = Beaf.mtx_lst
+)
+```
+
 ## Aggregation
 ```{r, eval = TRUE, message = FALSE}
 aggreg.mtx <- Aggregation(Beaf.mtx_lst)
 ```
 
-## Visulatisation
+## Visualisation
 ```{r, eval = TRUE, fig.dim = c(7,7), warning=FALSE}
 ggAPA(
     aggregatedMtx = aggreg.mtx,

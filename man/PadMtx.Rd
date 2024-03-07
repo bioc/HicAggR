@@ -12,13 +12,15 @@ PadMtx(
 )
 }
 \arguments{
-\item{mtx}{<matrix>: Numerical matrix.}
+\item{mtx}{\if{html}{\out{<matrix>}}: Numerical matrix.}
 
-\item{padSize}{<numeric>: Number of columns or rows to add. (Default 1)}
+\item{padSize}{\if{html}{\out{<numeric>}}: Number of columns or rows to add. (Default 1)}
 
-\item{val}{<numeric>: Value to add. If Null create mirror of choosen sides. (Default 0)}
+\item{val}{\if{html}{\out{<numeric>}}: Value to add. If Null create mirror of choosen sides.
+(Default 0)}
 
-\item{side}{<character>: Side to pad, must be one or some of 'top','bot','right' or 'left'. (Default c('top','bot','right','left') )}
+\item{side}{\if{html}{\out{<character>}}: Side to pad, must be one or some of 'top','bot',
+'right' or 'left'. (Default c('top','bot','right','left') )}
 }
 \value{
 A matrix.

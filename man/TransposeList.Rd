@@ -7,7 +7,7 @@
 TransposeList(nestedList)
 }
 \arguments{
-\item{nestedList}{<list[list]>: A nested list to transpose.}
+\item{nestedList}{<list\link{list}>: A nested list to transpose.}
 }
 \value{
 The tranposed nested list.

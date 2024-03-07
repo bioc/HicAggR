@@ -7,9 +7,9 @@
 ResizeMatrix(mtx, newDim = dim(mtx))
 }
 \arguments{
-\item{mtx}{<matrix>: A numerical matrix to resize.}
+\item{mtx}{\if{html}{\out{<matrix>}}: A numerical matrix to resize.}
 
-\item{newDim}{<integer>: The number of rows and cols in resized matrix.}
+\item{newDim}{\if{html}{\out{<integer>}}: The number of rows and cols in resized matrix.}
 }
 \value{
 Resized matrix.
@@ -22,7 +22,8 @@ ResizeMatrix
 }
 \examples{
 mtx <- matrix(0, 11, 11)
-mtx[which(as.logical(seq_len(11 * 11) \%\% 2))] <- seq_len(ceiling((11 * 11) / 2))
+mtx[which(as.logical(seq_len(11 * 11) \%\% 2))] <- seq_len(
+    ceiling((11 * 11) / 2))
 mtx[2, ] <- 100
 mtx[, 7] <- 200
 mtx

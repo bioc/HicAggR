@@ -17,29 +17,38 @@ BinGRanges(
 )
 }
 \arguments{
-\item{gRange}{<GRanges>: A GRanges to bin.}
+\item{gRange}{\if{html}{\out{<GRanges>}}: A GRanges to bin.}
 
-\item{chromSizes}{<data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame where first colum corresponds to
+the chromosomes names, and the second column corresponds to the chromosomes
+lengths in base pairs.}
 
-\item{binSize}{<numerical>: Width of the bins.}
+\item{binSize}{\if{html}{\out{<numerical>}}: Width of the bins.}
 
-\item{method}{<character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')}
+\item{method}{\if{html}{\out{<character>}}: Name of a summary method as 'mean', 'median',
+'sum', 'max, 'min'. (Default 'mean')}
 
-\item{metadataColName}{<character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.}
+\item{metadataColName}{\if{html}{\out{<character>}} : A character vector that specify the
+metadata columns of GRanges on which apply the summary method.}
 
-\item{na.rm}{<logical> : A logical value indicating whether 'NA' values should be stripped before the computation proceeds. (Default TRUE)}
+\item{na.rm}{\if{html}{\out{<logical>}} : A logical value indicating whether 'NA' values
+should be stripped before the computation proceeds. (Default TRUE)}
 
-\item{cores}{<numerical> : The number of cores. (Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : The number of cores. (Default 1)}
 
-\item{reduceRanges}{<logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)}
+\item{reduceRanges}{\if{html}{\out{<logical>}} : Whether duplicated Bin must been reduced
+with de summary method. (Default TRUE)}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 }
 \value{
 A binned GRanges.
 }
 \description{
-Bin a GRanges and allow to apply a summary method (e.g: 'mean', 'median', 'sum', 'max, 'min' ...) to a chossen numericals variables of ranges in a same bin.
+Bin a GRanges and apply a summary method (e.g: 'mean',
+'median', 'sum', 'max, 'min' ...) to a chosen numerical variable of ranges
+in the same bin.
 }
 \details{
 BinGRanges

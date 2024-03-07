@@ -4,20 +4,32 @@
 \alias{OverExpectedHiC}
 \title{Genomic distance bias correction.}
 \usage{
-OverExpectedHiC(hicLst, verbose = FALSE, cores = 1)
+OverExpectedHiC(
+  hicLst,
+  verbose = FALSE,
+  cores = 1,
+  plot_contact_vs_dist = "per_seq"
+)
 }
 \arguments{
-\item{hicLst}{<List[contactMatrix]>: The HiC maps list.}
+\item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
+The HiC maps list.}
 
-\item{verbose}{<logical>: If TRUE show the progression in console. (Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+(Default FALSE)}
 
-\item{cores}{<numerical> : Number of cores to be used. (Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
+
+\item{plot_contact_vs_dist}{Whether to plot contact vs distance curve
+per chromosome ("per_seq"), all chromosomes ("total") or not (NULL).
+(Default "per_seq")}
 }
 \value{
 A matrices list.
 }
 \description{
-Function that normalises HiC matrices by expected values computing by genomic distance.
+Function that normalises HiC matrices by expected values
+computed per genomic distance.
 }
 \details{
 OverExpectedHiC

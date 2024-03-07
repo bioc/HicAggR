@@ -14,19 +14,26 @@ FilterInteractions(
 )
 }
 \arguments{
-\item{matrices}{<List[matrix]>: The matrices list to filter. If is not NULL, the function will return the filtred matrices list, else return a list of index.}
+\item{matrices}{<List\link{matrix}>: The matrices list to filter. If is not NULL,
+the function will return the filtred matrices list, else
+return a list of index.}
 
-\item{genomicInteractions}{<GInteractions>: The GInteraction object on which compute the filter.}
+\item{genomicInteractions}{\if{html}{\out{<GInteractions>}}: The GInteraction object on which
+compute the filter.}
 
-\item{targets}{<List>: A nammed list that describe the target.}
+\item{targets}{\if{html}{\out{<List>}}: A nammed list that describe the target.}
 
-\item{selectionFun}{<function>: A function that described how the target must be cross. (Defaul intersection of all targets)}
+\item{selectionFun}{\if{html}{\out{<function>}}: A function that described how the target
+must be cross. (Default intersection of all targets)}
 }
 \value{
-A list of elements index or a filtred matrices list with attributes updates.
+A list of elements index or a filtred matrices list with attributes
+updates.
 }
 \description{
-Search in a GInteraction object which interactions correspond ti a target list and return a list of index or filter a matrices list according to target and a selectionFunction.
+Search in a GInteraction object which interactions correspond
+to a target list and return a list of index or filter a matrices list
+according to target and a selectionFunction.
 }
 \details{
 FilterInteractions
@@ -39,7 +46,8 @@ data(HiC_Ctrl.cmx_lst)
 # Index Beaf32
 Beaf32_Index.gnr <- IndexFeatures(
     gRangeList = list(Beaf = Beaf32_Peaks.gnr),
-    chromSizes  = data.frame(seqnames = c("2L", "2R"), seqlengths = c(23513712, 25286936)),
+    chromSizes  = data.frame(seqnames = c("2L", "2R"),
+        seqlengths = c(23513712, 25286936)),
     binSize    = 100000
 )
 
@@ -117,7 +125,8 @@ FilterInteractions(
 
 
 # Filtration with GRanges as filtration criteria
-targets <- list(first = InteractionSet::anchors(Beaf_Beaf.gni)[["first"]][seq_len(2)])
+targets <- list(first =
+    InteractionSet::anchors(Beaf_Beaf.gni)[["first"]][seq_len(2)])
 FilterInteractions(
     genomicInteractions = Beaf_Beaf.gni,
     targets = targets,

@@ -1,17 +1,27 @@
 #' Bin a GRanges.
 #'
 #' BinGRanges
-#' @description Bin a GRanges and allow to apply a summary method (e.g: 'mean', 'median', 'sum', 'max, 'min' ...) to a chossen numericals variables of ranges in a same bin.
+#' @description Bin a GRanges and apply a summary method (e.g: 'mean',
+#'  'median', 'sum', 'max, 'min' ...) to a chosen numerical variable of ranges
+#'  in the same bin.
 #' @param gRange <GRanges>: A GRanges to bin.
-#' @param chromSizes <data.frame>: A data.frame where first colum correspond to the chromosomes names, and the second column correspond to the chromosomes lengths in base pairs.
+#' @param chromSizes <data.frame>: A data.frame where first colum corresponds to
+#'  the chromosomes names, and the second column corresponds to the chromosomes
+#'  lengths in base pairs.
 #' @param binSize <numerical>: Width of the bins.
-#' @param method <character>: Name of a summary method as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')
-#' @param metadataColName <character> : A character vector that specify the metadata columns of GRanges on which apply the summary method.
-#' @param na.rm <logical> : A logical value indicating whether 'NA' values should be stripped before the computation proceeds. (Default TRUE)
+#' @param method <character>: Name of a summary method as 'mean', 'median',
+#'  'sum', 'max, 'min'. (Default 'mean')
+#' @param metadataColName <character> : A character vector that specify the
+#'  metadata columns of GRanges on which apply the summary method.
+#' @param na.rm <logical> : A logical value indicating whether 'NA' values
+#'  should be stripped before the computation proceeds. (Default TRUE)
 #' @param cores <numerical> : The number of cores. (Default 1)
-#' @param reduceRanges <logical> : Whether duplicated Bin must been reduced with de summary method. (Default TRUE)
-#' @param verbose <logical>: If TRUE show the progression in console. (Default FALSE)
+#' @param reduceRanges <logical> : Whether duplicated Bin must been reduced
+#'  with de summary method. (Default TRUE)
+#' @param verbose <logical>: If TRUE show the progression in console.
+#'  (Default FALSE)
 #' @return A binned GRanges.
+#' @importFrom stats na.omit
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2"), c(3, 1)),
@@ -43,10 +53,10 @@ BinGRanges <- function(
     } else {
         seqlengths.lst <- dplyr::pull(chromSizes, 2) |>
             stats::setNames(dplyr::pull(chromSizes, 1))
-        seqlengths.lst <- seqlengths.lst[intersect(
-            names(seqlengths.lst),
-            levels(GenomeInfoDb::seqnames(gRange)@values)
-        )]
+        seqlengths.lst <- seqlengths.lst[stats::na.omit(match(
+            levels(GenomeInfoDb::seqnames(gRange)@values),
+            names(seqlengths.lst)
+        ))]
         gRange <- GenomeInfoDb::keepSeqlevels(
             gRange, value = names(seqlengths.lst),
             "coarse"
@@ -139,7 +149,7 @@ BinGRanges <- function(
     }
     binnedGRanges.gnr <- sort(binnedGRanges.gnr)
     GenomeInfoDb::seqinfo(binnedGRanges.gnr) <- GenomeInfoDb::seqinfo(
-        gRange
+        sort(GenomeInfoDb::sortSeqlevels(gRange))
     )
     return(binnedGRanges.gnr)
 }

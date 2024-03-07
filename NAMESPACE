@@ -1,3 +1,8 @@
 exportPattern("^[[:alpha:]]+")
 import(InteractionSet)
+import(data.table)
 importFrom("rlang", ".data")
+importFrom(gridExtra,grid.arrange)
+importFrom(gridExtra,grid.table)
+importFrom("stats", "na.omit")
+importFrom("utils", "head", "tail")

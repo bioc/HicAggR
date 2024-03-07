@@ -1,10 +1,13 @@
 #' Compute Vanilla Count Correction.
 #'
 #' VCnorm
-#' @description Compute Vanilla Count or Vanilla Count square root correction normalization on hic maps.
+#' @description Compute Vanilla Count or Vanilla Count square root correction
+#'  normalization on hic maps.
 #' @param hic <contactMatrix>: The HiC maps chunk to normalize.
-#' @param qtlTh <numerical>: The threshold quantile below which the bins will be ignored. (Default 0.15)
-#' @param vcsqrt <logical>: Whether the square root must be apply. (Default TRUE)
+#' @param qtlTh <numerical>: The threshold quantile below which the bins will
+#'  be ignored. (Default 0.15)
+#' @param vcsqrt <logical>: Whether the square root must be apply.
+#'  (Default TRUE)
 #' @return A matrices list.
 #' @examples
 #' # Data
