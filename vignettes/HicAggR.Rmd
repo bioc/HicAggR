@@ -72,7 +72,13 @@ dir.create(temp.dir)
 
 Hic.url <- "https://4dn-open-data-public.s3.amazonaws.com/fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/4DNFIOTPSS3L.hic"
 HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
-download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
+HicOutput.pth <- normalizePath(HicOutput.pth)
+if(.Platform$OS.type == "windows"){
+    download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k',mode="wb")
+}else{
+    download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
+}
+
 ```
 
 ## Genomic location and annotation data

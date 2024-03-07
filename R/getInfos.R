@@ -30,10 +30,10 @@ getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
     }else{
         stop("File is not found!")
     }
-    file_name <- stringr::str_split(file, "/", simplify = TRUE)[
-        length(stringr::str_split(file, "/", simplify = TRUE))]
+    file_name <- paste0(GetFileName(file), ".", GetFileExtension(file))
     file_path <- stringr::str_remove(file, paste0(file_name,"$"))
-    if (! stringr::str_detect(file_path, "^[\\.]{0,1}/")) {
+    if (! stringr::str_detect(file_path, "^[\\.]{0,1}/") && 
+    .Platform$OS.type != "windows") {
         file_path <- paste0("./",file_path)
     }
     if(GetFileExtension(file) == "hic"){
