@@ -699,6 +699,43 @@ MeanScale <- function(
     (max(x, na.rm = TRUE) - min(x,na.rm = TRUE))
 }
 
+#' Coerce matrix in tibble.
+#'
+#' MeltSpm
+#' @keywords internal
+#' @description Coerce a sparse matrix M in tibble where columns:
+#'  i is row index, j is column index and x the value M`[`i,j`]`.
+#' @param spMtx <dgCMatrix or dgCMatrix coercible>: A matrix.
+#' @return A tibble.
+#' @noRd
+MeltSpm <- function(
+    spMtx = NULL
+) {
+    if (NotIn("dgCMatrix", class(spMtx))) {
+        spMtx <- methods::as(spMtx, "dgCMatrix")
+    }
+    dp.num <- diff(spMtx@p)
+    mat.tbl <- tibble::tibble(
+        i = as.integer(spMtx@i + 1),
+        j = seq_len(spMtx@Dim[2]) |>
+            lapply(function(j.ndx) {
+                    rep.num <- dp.num[j.ndx]
+                    return(rep(j.ndx, rep.num))
+            }) |>
+            unlist(),
+        x = spMtx@x
+    ) |>
+        AddAttr(attrs = list(
+            matrice.attr = attributes(spMtx)[which(
+                NotIn(
+                    names(attributes(spMtx)),
+                    c("i", "p", "Dimnames", "x", "factors", "class")
+                )
+            )]
+        ))
+    return(mat.tbl)
+}
+
 #' Scales values on min-max range.
 #'
 #' MinMaxScale
