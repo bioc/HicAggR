@@ -21,6 +21,7 @@
 #' values? (Default FALSE)
 #' @param ... additional arguments to [ggAPA()]
 #' @return None
+#' @export
 #' @importFrom gridExtra grid.table
 #' @examples
 #' # Data
@@ -482,6 +483,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #' @param plot.opts list of arguments to pass to [ggAPA()].
 #' @return A plot with separate APAs per distance and a list of aggregated
 #'  matrices as invisible output.
+#' @export
 #' @importFrom gridExtra grid.arrange
 #' @examples
 #' #' # Data

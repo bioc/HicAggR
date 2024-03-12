@@ -9,6 +9,7 @@
 #' @param vcsqrt <logical>: Whether the square root must be apply.
 #'  (Default TRUE)
 #' @return A matrices list.
+#' @export
 #' @examples
 #' # Data
 #' data(HiC_Ctrl.cmx_lst)

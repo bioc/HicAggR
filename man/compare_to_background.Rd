@@ -18,6 +18,7 @@ compare_to_background(
   bg_type = NULL,
   cores = 1,
   verbose = FALSE,
+  z_score_per_dist_group = TRUE,
   ...
 )
 }
@@ -55,6 +56,30 @@ specifying the operation applied to the selected area (Default "mean").
 Look at \link{GetQuantif} for more info.}
 
 \item{bg_type}{\if{html}{\out{<character>}}: Type of background couples to generate.
+Possible choices: "random_anchors", "inter_TAD","inter_compartment",
+NULL (Defaults to "random_anchors"). More information in details...}
+
+\item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
+
+\item{verbose}{\if{html}{\out{<logical>}} details on progress? (Default: FALSE)}
+
+\item{z_score_per_dist_group}{\if{html}{\out{<logical>}} Should z-scores and p.values
+for target couples be calculated in separate groups
+based on distances? Look at details for more. (Default: TRUE)}
+
+\item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat
+background matrices.}
+}
+\value{
+returns a \if{html}{\out{<list>}} object with the z.test output for each
+target couple, values for the target couples and values for the
+background couples.
+}
+\description{
+Computes z.test for each target couple over background couples.
+}
+\details{
+Types of background couples possible:
 \itemize{
 \item "random_anchors": picks random bins as anchors and forms couples
 with bait bins.
@@ -74,22 +99,18 @@ indexAnchor and indexBait objects contain the provided variable name,
 then background couples are formed between anchors and baits located in
 different compartments.
 \item "NULL": If \code{NULL}, \code{random_anchors} are set by default.
-}}
-
-\item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
-
-\item{verbose}{\if{html}{\out{<logical>}} details on progress? (Default: FALSE)}
-
-\item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat
-background matrices.}
 }
-\value{
-returns a \if{html}{\out{<list>}} object with the z.test output for each
-target couple, values for the target couples and values for the
-background couples.
-}
-\description{
-Computes z.test for each target couple over background couples.
+
+On the matter of \code{z_score_per_dist_group}:
+This option was included because we noticed that o/e values tend to be
+skewed towards very long distance interactions. As a result, long
+distance background couples tend to influence to mean and sd, resulting
+in only long distance target couples being significant.
+This option would allow the user to perform z-score computation on
+couples grouped into chunks of couples with comparative distances
+choosen as such: \code{c(0,50000 * 2^seq(1,15))}.
+This option is recommended when the target couples have a wide range
+of distance values.
 }
 \examples{
 h5_path <- system.file("extdata",

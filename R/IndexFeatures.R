@@ -23,6 +23,7 @@
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
 #' @return A GRanges object.
+#' @export
 #' @examples
 #' data(Beaf32_Peaks.gnr)
 #' Beaf32_Index.gnr <- IndexFeatures(

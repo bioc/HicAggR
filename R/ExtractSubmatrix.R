@@ -27,6 +27,7 @@
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
 #' @return A matrices list.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

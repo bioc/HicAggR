@@ -23,6 +23,7 @@
 #' @param orientate <logical>: Whether matrices must be orientate
 #'  before the aggregation.
 #' @return A matrix list ready for aggregation of values extraction.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

@@ -9,6 +9,7 @@
 #' @param reduceRanges <logical>: Whether the result should be reduce.
 #'  See GenomicRanges::reduce for more details. (Default FALSE)
 #' @return a GRange object.
+#' @export
 #' @examples
 #' GRange_1.grn <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2", "chr1"), c(1, 3, 1)),

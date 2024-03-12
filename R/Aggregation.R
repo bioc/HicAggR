@@ -33,6 +33,7 @@
 #' @param statCompare <logical>: Whether a t.test must be apply to each
 #'  pixel of the differential aggregated matrix.
 #' @return A matrix
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

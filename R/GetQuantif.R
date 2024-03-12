@@ -34,6 +34,7 @@
 #'  of matrices used as named in the output vector (Default NULL). By default,
 #'  sub-matrices IDs are used.
 #' @return A GRange object.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

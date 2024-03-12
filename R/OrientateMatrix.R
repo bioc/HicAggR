@@ -8,6 +8,7 @@
 #' @param verbose <logical>: Report the number of matrices corrected.
 #'  (Default: TRUE)
 #' @return Oriented matrix or matricies list
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

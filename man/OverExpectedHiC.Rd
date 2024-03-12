@@ -6,6 +6,7 @@
 \usage{
 OverExpectedHiC(
   hicLst,
+  method = "mean_non_zero",
   verbose = FALSE,
   cores = 1,
   plot_contact_vs_dist = "per_seq"
@@ -14,6 +15,9 @@ OverExpectedHiC(
 \arguments{
 \item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
 The HiC maps list.}
+
+\item{method}{\if{html}{\out{<character>}} Options are "mean_non_zero", "mean_total",
+or "lieberman". Look at details for more (Default: "mean_non_zero")}
 
 \item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
 (Default FALSE)}
@@ -33,6 +37,16 @@ computed per genomic distance.
 }
 \details{
 OverExpectedHiC
+
+Methods to calculate expected values per distance:
+\itemize{
+\item "mean_non_zero": for each distance, average contact value is
+calculated using only non-zero values.
+\item "mean_total": for each distance, average contact value is
+calculated using all values at this distance.
+\item "lieberman": for each distance, contact values are summed and
+divided by chromsome length minus distance. Only for cis contacts.
+}
 }
 \examples{
 # Note: run HicAggR::BalanceHiC before OverExpectedHiC calculation.

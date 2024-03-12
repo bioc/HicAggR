@@ -49,6 +49,7 @@
 #' then extracts matrices per chromosome for the time being, it's easier ;).
 #' 
 #' @return A matrices list.
+#' @export
 #' @examples
 #' \donttest{
 #'

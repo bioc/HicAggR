@@ -36,6 +36,7 @@
 #' @param paletteLength <numeric> : The number of color in the palette.
 #'  (Default 51)
 #' @return A ggplot object.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

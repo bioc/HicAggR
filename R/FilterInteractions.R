@@ -14,6 +14,7 @@
 #'  must be cross. (Default intersection of all targets)
 #' @return A list of elements index or a filtred matrices list with attributes
 #'  updates.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

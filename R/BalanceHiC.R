@@ -19,6 +19,7 @@
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
 #' @return A matrices list.
+#' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #'

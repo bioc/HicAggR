@@ -7,6 +7,7 @@
 #'  will be ignored. (Default 0.15)
 #' @param maxIter <numerical>: The maximum iteration number.
 #' @return A normalized contactMatrix
+#' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #' HiC_Ctrl_ICE.cmx <- ICEnorm(HiC_Ctrl.cmx_lst[['2L_2L']])

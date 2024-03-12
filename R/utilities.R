@@ -1,3 +1,54 @@
+#' Add list as attributes.
+#'
+#' AddAttr
+#' @keywords internal
+#' @description Add list as attributes to any object with or without overwrite.
+#' @param x <any>: An object to which attributes are to be added.
+#' @param attrs <list>: A named list of new attributes.
+#' @param overwrite <logical>: Whether an overwrite is required on attributes
+#'  with the same name.(Default FALSE)
+#' @return The object with new attributes.
+#' @examples
+#' x <- seq_len(10)
+#' x <- AddAttr(x, list(dim = c(2, 5)))
+#' x
+#' x <- AddAttr(x, list(dim = c(5, 2)))
+#' x
+#' x <- AddAttr(x, list(dim = c(5, 2)), overwrite = TRUE)
+#' x
+#'
+AddAttr <- function(
+    x = NULL, attrs = NULL,
+    overwrite = FALSE
+) {
+    intersectAttr <- intersect(
+        names(attributes(x)),
+        names(attrs)
+    )
+    if (overwrite && length(intersectAttr)) {
+        attrs <- c(
+            attributes(x)[
+                which(names(attributes(x)) != intersectAttr)
+            ],
+            attrs
+        )
+    } else if (length(intersectAttr)) {
+        attrs <- c(
+            attributes(x),
+            attrs[
+                which(names(attrs) != intersectAttr)
+            ]
+        )
+    } else {
+        attrs <- c(
+            attributes(x),
+            attrs
+        )
+    }
+    attributes(x) <- attrs
+    return(x)
+}
+
 #' D.melanogaster Beaf-32 ChIP-seq.
 #'
 #' @description Drosophila Melanogaster Beaf32 peaks on 2L and 2R chromosomes.
@@ -263,6 +314,7 @@ GaussBox <- function(
 #' @param digits <integer>: The number of significant digits to be used.
 #'  See [signif()] for more informations. (Default 3)
 #' @return The converted number or string.
+#' @export
 #' @examples
 #' GenomicSystem(1540, 3)
 #' GenomicSystem(1540, 2)
@@ -508,6 +560,7 @@ Hsl2Rgb <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return A vector of color.
+#' @export
 #' @examples
 #' Hue(paletteLength = 9)
 #'
@@ -756,6 +809,92 @@ MinMaxScale <- function(
     return(match(lhs, rhs, nomatch = 0L) == 0L)
 }
 
+#' Add a value around a matrix.
+#'
+#' PadMtx
+#' @keywords internal
+#' @description Add a value around a matrix.
+#' @param mtx <matrix>: Numerical matrix.
+#' @param padSize <numeric>: Number of columns or rows to add. (Default 1)
+#' @param val <numeric>: Value to add. If Null create mirror of choosen sides.
+#'  (Default 0)
+#' @param side <character>: Side to pad, must be one or some of 'top','bot',
+#' 'right' or 'left'. (Default c('top','bot','right','left') )
+#' @return A matrix.
+#' @examples
+#' mtx <- matrix(seq_len(25), 5, 5)
+#' PadMtx(
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("top", "bot", "right", "left")
+#' )
+#' PadMtx(
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = NULL,
+#'     side = c("top", "bot", "right", "left")
+#' )
+#' PadMtx(
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("right", "left")
+#' )
+#' PadMtx(
+#'     mtx = mtx,
+#'     padSize = 1,
+#'     val = 0,
+#'     side = c("top")
+#' )
+#'
+PadMtx <- function(
+    mtx = NULL, padSize = 1, val = 0,
+    side = c("top", "bot", "right", "left")
+) {
+    if ("top" %in% side) {
+        if (!is.null(val)) {
+            row.lst <- rep(list(rep(val, dim(mtx)[2])), padSize)
+            row.pad <- do.call(rbind, row.lst)
+        } else {
+            row.pad <- mtx[padSize:1, ]
+        }
+        mtx <- rbind(row.pad, mtx)
+    }
+    if ("bot" %in% side) {
+        if (!is.null(val)) {
+            row.lst <- rep(list(rep(val, dim(mtx)[2])), padSize)
+            row.pad <- do.call(rbind, row.lst)
+        } else {
+            row.pad <- mtx[
+                (nrow(mtx) - padSize + 1):nrow(mtx),
+            ]
+        }
+        mtx <- rbind(mtx, row.pad)
+    }
+    if ("left" %in% side) {
+        if (!is.null(val)) {
+            col.lst <- rep(list(rep(val, dim(mtx)[1])), padSize)
+            col.pad <- do.call(cbind, col.lst)
+        } else {
+            col.pad <- mtx[, padSize:1]
+        }
+        mtx <- cbind(col.pad, mtx)
+    }
+    if ("right" %in% side) {
+        if (!is.null(val)) {
+            col.lst <- rep(list(rep(val, dim(mtx)[1])), padSize)
+            col.pad <- do.call(cbind, col.lst)
+        } else {
+            col.pad <- mtx[,
+                (ncol(mtx) - padSize + 1):ncol(mtx)
+            ]
+        }
+        mtx <- cbind(mtx, col.pad)
+    }
+    return(mtx)
+}
+
 #' Sum by removing NA.
 #'
 #' Plus
@@ -814,6 +953,144 @@ QtlThreshold <- function(
     )
     return(stats::quantile(x, na.rm = TRUE, probs.num))
 }
+
+#' Apply a function over two RLE
+#'
+#' ReduceRun
+#' @keywords internal
+#' @description Apply a function on the values over two RLE and return one RLE.
+#' @param firstRle <rle or Rle>: First rle.
+#' @param secondRle <rle or Rle>>: Second rle.
+#' @param reduceMethod <character>: Name of a function to apply
+#'  e.g paste, sum, mean.
+#' @param ... <...>: Other parameter for the reduce function.
+#' @return Reduced Rle
+#' @examples
+#' firstRle <- rle(c("A", "A", "B"))
+#' secondRle <- rle(c("A", "B", "B"))
+#' ReduceRun(firstRle = firstRle, secondRle = secondRle,
+#'  reduceMethod = "paste", sep = "_")
+#' firstRle <- S4Vectors::Rle(c(1, 2, 3))
+#' secondRle <- S4Vectors::Rle(c(5, 5, 5))
+#' ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")
+#'
+ReduceRun <- function(
+    firstRle, secondRle, reduceMethod = "paste", ...
+) {
+    if (methods::is(firstRle, "rle")) {
+        firstRle <- S4Vectors::Rle(
+        values = firstRle$values,
+        lengths = firstRle$lengths)
+    }
+    if(is.numeric(S4Vectors::runValue(firstRle))) {
+        firstValues <- as.numeric(firstRle)
+    } else if (is.character(S4Vectors::runValue(firstRle))) {
+        firstValues <- as.character(firstRle)
+    } else if (is.factor(S4Vectors::runValue(firstRle))) {
+        if(is.numeric(levels(S4Vectors::runValue(firstRle)))) {
+            firstValues <- as.numeric(firstRle)
+        } else if (is.character(levels(S4Vectors::runValue(firstRle)))) {
+            firstValues <- as.character(firstRle)
+        }
+    }
+    if (methods::is(secondRle, "rle")) {
+        secondRle <- S4Vectors::Rle(
+        values = secondRle$values,
+        lengths = secondRle$lengths)
+    }
+    if (is.numeric(S4Vectors::runValue(secondRle))) {
+        secondValues <- as.numeric(secondRle)
+    }else if (is.character(S4Vectors::runValue(secondRle))) {
+        secondValues <- as.character(secondRle)
+    } else if (is.factor(S4Vectors::runValue(secondRle))) {
+        if(is.numeric(levels(S4Vectors::runValue(secondRle)))) {
+            secondValues <- as.numeric(secondRle)
+        } else if (is.character(levels(S4Vectors::runValue(secondRle)))) {
+            secondValues <- as.character(secondRle)
+        }
+    }
+    vals.lst <- list(
+        firstVal.vec = firstValues,
+        secondVal.vec = secondValues
+    )
+
+    # These changes were made to simplify the code and remove super-assignment
+    # Trials with list2env were consistent failures...
+
+    if(is.character(firstValues)){
+        # walking across the first values vector is risky,
+        # but in both uses of this function (in ExtractSubmatrix),
+        # first and second values should have the same length
+        newVal.vec <- vapply(seq_along(firstValues), 
+            FUN = function(x){eval(parse(text = reduceMethod))(
+                vals.lst[[1]][x],
+                vals.lst[[2]][x],
+        ...
+        )}, FUN.VALUE = character(1))
+    } else if(is.numeric(firstValues)){
+        newVal.vec <- vapply(seq_along(firstValues), 
+            FUN = function(x){eval(parse(text = reduceMethod))(
+                vals.lst[[1]][x],
+                vals.lst[[2]][x],
+        ...
+        )}, FUN.VALUE = numeric(1))
+    }
+    return(S4Vectors::Rle(newVal.vec))
+}
+
+#' Resize a matrix
+#'
+#' ResizeMatrix
+#' @keywords internal
+#' @description Resize a numericam matrix in new dimension.
+#' @param mtx <matrix>: A numerical matrix to resize.
+#' @param newDim <integer>: The number of rows and cols in resized matrix.
+#' @return Resized matrix.
+#' @examples
+#' mtx <- matrix(0, 11, 11)
+#' mtx[which(as.logical(seq_len(11 * 11) %% 2))] <- seq_len(
+#'     ceiling((11 * 11) / 2))
+#' mtx[2, ] <- 100
+#' mtx[, 7] <- 200
+#' mtx
+#' ResizeMatrix(mtx = mtx, newDim = c(7, 7))
+#' ResizeMatrix(mtx = mtx, newDim = c(13, 13))
+ResizeMatrix <- function(
+    mtx, newDim = dim(mtx)
+) {
+    # Rescaling
+    newCoord.mtx <- as.matrix(
+        expand.grid(seq_len(newDim[1]),
+        seq_len(newDim[2]))
+    )
+    rescaleCol.ndx <- MinMaxScale(newCoord.mtx[, 1], 1, dim(mtx)[1])
+    rescaleRow.ndx <- MinMaxScale(newCoord.mtx[, 2], 1, dim(mtx)[2])
+    # Interpolation
+    col.ndx <- floor(rescaleCol.ndx)
+    row.ndx <- floor(rescaleRow.ndx)
+    xGap.num <- rescaleCol.ndx - col.ndx
+    yGap.num <- rescaleRow.ndx - row.ndx
+    xGap.num[col.ndx == dim(mtx)[1]] <- 1
+    yGap.num[row.ndx == dim(mtx)[2]] <- 1
+    col.ndx[col.ndx == dim(mtx)[1]] <- dim(mtx)[1] - 1
+    row.ndx[row.ndx == dim(mtx)[2]] <- dim(mtx)[2] - 1
+    # Output
+    resizedMatrice.mtx <- matrix(
+        NA,
+        nrow = newDim[1],
+        ncol = newDim[2])
+    resizedMatrice.mtx[newCoord.mtx] <- mtx[cbind(col.ndx, row.ndx)] *
+        (1 - xGap.num) *
+        (1 - yGap.num) + mtx[cbind(col.ndx + 1, row.ndx)] *
+        xGap.num *
+        (1 - yGap.num) + mtx[cbind(col.ndx, row.ndx + 1)] *
+        (1 - xGap.num) *
+        yGap.num + mtx[cbind(col.ndx + 1, row.ndx + 1)] *
+        xGap.num *
+        yGap.num
+    return(resizedMatrice.mtx)
+}
+
 
 #' Convert RGB to Hex.
 #'
@@ -954,6 +1231,7 @@ SdThreshold <- function(
 #' @description Get all sequences lengths for each ranges of a GRanges object.
 #' @param gRanges <GRanges>: A GRanges object.
 #' @return An integer vector.
+#' @export
 #' @examples
 #' GRange.grn <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2", "chr1"), c(1, 3, 1)),
@@ -981,6 +1259,7 @@ SeqEnds <- function(
 #' (i.e seqname:start-end:strand) in GRanges object.
 #' @param stringRanges <character>: Strings to convert on GRanges.
 #' @return A GRanges object.
+#' @export
 #' @examples
 #' StrToGRanges("chr1:1-100:+")
 #' StrToGRanges(c("chr1:1-100:+", "chr2:400-500:-", "chr1:10-50:*"))
@@ -1047,6 +1326,81 @@ StrToGRanges <- function(
 #'
 "TSS_Peaks.gnr"
 
+#' Turns a nested list "inside-out".
+#'
+#' TransposeList
+#' @keywords internal
+#' @description Turns a nested list "inside-out".
+#' @param nestedList <list[list]>: A nested list to transpose.
+#' @return The tranposed nested list.
+#' @examples
+#' my_lst <- list(
+#'     first = list("A1", "B1", "C1"),
+#'     second = list("A2", "B2"),
+#'     third = list(NULL, "B3")
+#' )
+#' TransposeList(my_lst)
+#'
+TransposeList <- function(
+    nestedList
+) {
+    nestedList |>
+        lapply(length) |>
+        unlist() |>
+        max() |>
+        seq_len() |>
+        lapply(function(newLst.ndx) {
+            new.lst <- nestedList |>
+                lapply(function(ele.lst) {
+                    if (length(ele.lst) >= newLst.ndx) {
+                        return(ele.lst[[newLst.ndx]])
+                    } else {
+                        return(NA)
+                    }
+                }) |>
+                unlist()
+            return(new.lst[!is.na(new.lst)])
+        })
+}
+
+#' Remove outliers.
+#'
+#' TrimOutliers
+#' @keywords internal
+#' @description Replace values of a numerical vector that are below a minimal
+#'  thresholds and/or above maximal thresholds.
+#' @param x <numeric>: Numeric vector.
+#' @param thr <numeric>: Numeric vector of length 2. first value is minimal
+#'  threshold, second value maximal threshold (Default find threshold based
+#'  on standarrd deviation. see `SdThreshold` function)
+#' @param clip <logical>: If TRUE the value out of bounds are replace with
+#'  threshodls values. If FALSE the Values out of bound are replace with NA
+#'  (Default FALSE).
+#' @return Trimed Numerical vector.
+#' @examples
+#' set.seed(1111)
+#' x <- rnorm(1000)
+#' x <- sort(x)
+#' x[990:1000]
+#' SdThreshold(x)
+#' TrimOutliers(x)[990:1000]
+#' TrimOutliers(x, clip = TRUE)[990:1000]
+#'
+TrimOutliers <- function(
+    x,
+    thr = SdThreshold(x),
+    clip = FALSE
+) {
+    if (clip) {
+        x[which(x > thr[2])] <- thr[2]
+        x[which(x < thr[1])] <- thr[1]
+    } else {
+        x[which(x > thr[2] | thr[1] > x)] <- NA
+    }
+    return(x)
+}
+
+
 #' viridis palette.
 #'
 #' viridis
@@ -1061,6 +1415,7 @@ StrToGRanges <- function(
 #'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
 #'  (Default 1)
 #' @return A vector of color.
+#' @export
 #' @examples
 #' viridis(9)
 #'
@@ -1157,6 +1512,7 @@ WrapFunction <- function(
 #'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
 #'  (Default 1)
 #' @return A vector of color.
+#' @export
 #' @examples
 #' YlGnBu(9)
 #'
@@ -1189,6 +1545,7 @@ YlGnBu <- function(
 #'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
 #'  (Default 1)
 #' @return A vector of color.
+#' @export
 #' @examples
 #' YlOrRd(9)
 #'

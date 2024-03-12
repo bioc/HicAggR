@@ -1,3 +1,11 @@
+# HicAggR 0.99.3
+
+* NAMESPACE was generated with roxygen2 to define exportable functions.
+* compare_to_background: added option to correct for o/e values skewedness towards very long distance couples.
+* SearchPairs: added option to remove self interacting bins.
+* all internal functions are now in utilities.R.
+* Docs were reviewed.
+
 # HicAggR 0.99.2
 
 * Implemented import of corrected matrices for data in .hic and cool/mcool format.

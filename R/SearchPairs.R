@@ -12,10 +12,13 @@
 #'  (Default NULL)
 #' @param maxDist <numeric>: Maximal distance between anchors and baits.
 #'  (Default NULL)
+#' @param exclude_self_interactions <logical> Should pairs between
+#' the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)
 #' @param cores <integer> : Number of cores to use. (Default 1)
 #' @param verbose <logical>: If TRUE show the progression in console.
 #'  (Default FALSE)
 #' @return A GInteractions object.
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)
@@ -33,7 +36,8 @@
 #'
 SearchPairs <- function(
     indexAnchor = NULL, indexBait = NULL, minDist = NULL,
-    maxDist = NULL, verbose = FALSE, cores = 1
+    maxDist = NULL, exclude_self_interactions = TRUE,
+    verbose = FALSE, cores = 1
 ) {
     if (is.character(minDist)) {
         minDist <- GenomicSystem(minDist)
@@ -79,6 +83,11 @@ SearchPairs <- function(
             if (!is.null(minDist)) {
                 subPairs.gni <- subPairs.gni[which(
                     subPairs.gni@elementMetadata$distance >= minDist
+                )]
+            }
+            if(exclude_self_interactions){
+                subPairs.gni <- subPairs.gni[which(
+                    subPairs.gni@elementMetadata$distance > 0
                 )]
             }
             if (!is.null(maxDist)) {

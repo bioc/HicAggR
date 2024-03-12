@@ -22,6 +22,7 @@
 #'  (Default FALSE)
 #' @return A binned GRanges.
 #' @importFrom stats na.omit
+#' @export
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(
 #'     seqnames = S4Vectors::Rle(c("chr1", "chr2"), c(3, 1)),

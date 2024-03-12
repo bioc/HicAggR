@@ -9,6 +9,7 @@ SearchPairs(
   indexBait = NULL,
   minDist = NULL,
   maxDist = NULL,
+  exclude_self_interactions = TRUE,
   verbose = FALSE,
   cores = 1
 )
@@ -26,6 +27,9 @@ instead (Default NULL)}
 
 \item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits.
 (Default NULL)}
+
+\item{exclude_self_interactions}{\if{html}{\out{<logical>}} Should pairs between
+the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)}
 
 \item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
 (Default FALSE)}

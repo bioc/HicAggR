@@ -7,6 +7,7 @@
 #'  The HiC maps list.
 #' @param matrixKind <character>: The kind of matrix you want.
 #' @return A ContactMatrix list.
+#' @export
 #' @examples
 #' # Data
 #' data(HiC_Ctrl.cmx_lst)

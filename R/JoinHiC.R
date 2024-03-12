@@ -6,6 +6,7 @@
 #' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
 #'  The HiC maps list.
 #' @return A ContactMatrix.
+#' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #' Mega_Ctrl.cmx <- JoinHiC(HiC_Ctrl.cmx_lst)
