@@ -25,14 +25,4 @@ Apply a function on the values over two RLE and return one RLE.
 \details{
 ReduceRun
 }
-\examples{
-firstRle <- rle(c("A", "A", "B"))
-secondRle <- rle(c("A", "B", "B"))
-ReduceRun(firstRle = firstRle, secondRle = secondRle,
- reduceMethod = "paste", sep = "_")
-firstRle <- S4Vectors::Rle(c(1, 2, 3))
-secondRle <- S4Vectors::Rle(c(5, 5, 5))
-ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")
-
-}
 \keyword{internal}

@@ -65,7 +65,7 @@ AddAttr <- function(
 #' @param ... <data.frames or list[data.frame]>: Data frames to bind or list of
 #'  data.frames.
 #' @return The binded data frame
-#' @noRD
+#' @noRd
 BindFillRows <- function(
     df_Lst, ...
 ) {
@@ -99,7 +99,7 @@ BindFillRows <- function(
 #' @param stdev <numeric>: If boxKernel is NULL, standard deviation
 #'  parameter for 'GaussBox' function. (Default NULL)
 #' @return Blurred matrix.
-#' @noRD
+#' @noRd
 BoxBlur <- function(
     mtx, boxKernel = NULL, kernSize = NULL,
     stdev = 1
@@ -219,7 +219,7 @@ BreakVector <- function(
 #'  (Default 1)
 #' @param mu <numeric>: Mean deviation parameter of the gaussian. (Default 0)
 #' @return Result of Gaussian formula
-#' @noRD
+#' @noRd
 Gauss <- function(
     x = NULL, y = NULL, stdev = 1, mu = 0
 ) {
@@ -245,7 +245,7 @@ Gauss <- function(
 #'  equals 1. If "int" Minimal value of kernel is 1 and all entry are integer.
 #'  If "none", kernel is not scale. (Default "1")
 #' @return numerical vector.
-#' @noRD
+#' @noRd
 GaussBox <- function(
     stdev = 1, kernSize = NULL, kernScale = "1"
 ) {
@@ -337,7 +337,7 @@ GenomicSystem <- function(x, digits = 3) {
 #' @description Give the extension of a file from the path.
 #' @param file <character>: The path to the file.
 #' @return A character string
-#' @noRD
+#' @noRd
 
 GetFileExtension <- function(
     file = NULL
@@ -358,7 +358,7 @@ GetFileExtension <- function(
 #' @param extension <logical>: Whether the file extension should be returned
 #'  with the file name. (Default FALSE)
 #' @return A character string.
-#' @noRD
+#' @noRd
 GetFileName <- function(
     file = NULL, extension = FALSE
 ) {
@@ -416,7 +416,7 @@ GetFileName <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
-#' @noRD
+#' @noRd
 #'
 Hsl2Hex <- function(
     hslColor = NULL, alpha = FALSE
@@ -435,7 +435,7 @@ Hsl2Hex <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return An integer vector of the color's RGB code.
-#' @noRD
+#' @noRd
 #'
 Hsl2Rgb <- function(
     hslColor = NULL, alpha = FALSE
@@ -608,7 +608,7 @@ Hue <- function(
 #' @description Check if a color is in HSL color format.
 #' @param colour <character or numeric>: A color.
 #' @return A logical.
-#' @noRD
+#' @noRd
 IsHsl <- function(
     colour = NULL
 ) {
@@ -634,7 +634,7 @@ IsHsl <- function(
 #' @description Check if a color is in RGB color format.
 #' @param colour <character or numeric>: A color.
 #' @return A logical.
-#' @noRD
+#' @noRd
 #'
 IsRgb <- function(
     colour = NULL
@@ -664,7 +664,7 @@ IsRgb <- function(
 #'  console. (Default TRUE)
 #' @return Parrallel parameter according number of cores and OS to use with
 #'  BiocParallel package.
-#' @noRD
+#' @noRd
 #'
 MakeParallelParam <- function(
     cores = 1, verbose = FALSE
@@ -691,7 +691,7 @@ MakeParallelParam <- function(
 #' @description Scale values with mean.
 #' @param x <numeric>: Numerical vector.
 #' @return Scaled numeric vector.
-#' @noRD
+#' @noRd
 MeanScale <- function(
     x
 ) {
@@ -708,7 +708,7 @@ MeanScale <- function(
 #' @param x_min <numeric>: Minimal value after scaling.
 #' @param x_max <numeric>: Maximal value after scaling.
 #' @return Scaled numeric vector.
-#' @noRD
+#' @noRd
 MinMaxScale <- function(
     x, x_min = (0), x_max = 1
 ) {
@@ -727,7 +727,7 @@ MinMaxScale <- function(
 #' @param lhs <vector or NULL>: Values to be compared against rhs
 #' @param rhs <vector or NULL>: Values to be compared against lhs
 #' @return A boolean.
-#' @noRD
+#' @noRd
 "NotIn" <- function(
     lhs, rhs
 ) {
@@ -746,7 +746,7 @@ MinMaxScale <- function(
 #' @param side <character>: Side to pad, must be one or some of 'top','bot',
 #' 'right' or 'left'. (Default c('top','bot','right','left') )
 #' @return A matrix.
-#' @noRD
+#' @noRd
 PadMtx <- function(
     mtx = NULL, padSize = 1, val = 0,
     side = c("top", "bot", "right", "left")
@@ -802,7 +802,7 @@ PadMtx <- function(
 #'  instead 0.
 #' @param x <numerical>: A numerical vector
 #' @return  The sum of numbers.
-#' @noRD
+#' @noRd
 Plus <- function(
     x
 ) {
@@ -823,7 +823,7 @@ Plus <- function(
 #' @param tails <character>: Bounds to return, "lower", "upper" or "both".
 #'  (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
-#' @noRD
+#' @noRd
 QtlThreshold <- function(
     x = NULL, prctThr = 5, tails = "both"
 ) {
@@ -965,7 +965,7 @@ ResizeMatrix <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
-#' @noRD
+#' @noRd
 Rgb2Hex <- function(
     rbgColor = NULL, alpha = FALSE
 ) {
@@ -1020,7 +1020,7 @@ Rgb2Hex <- function(
 #'  Row index in fisrt column, columns index in second columns. If NULL the
 #'  indices parameter is used (Default NULL)
 #' @return Sparse matrix with some explicit zeros.
-#' @noRD
+#' @noRd
 Rise0 <- function(
     spMtx = NULL, indices = NULL, coords = NULL
 ) {
@@ -1181,7 +1181,7 @@ StrToGRanges <- function(
 #' @description Turns a nested list "inside-out".
 #' @param nestedList <list[list]>: A nested list to transpose.
 #' @return The tranposed nested list.
-#' @noRD
+#' @noRd
 TransposeList <- function(
     nestedList
 ) {

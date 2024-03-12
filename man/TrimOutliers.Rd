@@ -27,14 +27,4 @@ thresholds and/or above maximal thresholds.
 \details{
 TrimOutliers
 }
-\examples{
-set.seed(1111)
-x <- rnorm(1000)
-x <- sort(x)
-x[990:1000]
-SdThreshold(x)
-TrimOutliers(x)[990:1000]
-TrimOutliers(x, clip = TRUE)[990:1000]
-
-}
 \keyword{internal}

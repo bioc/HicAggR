@@ -20,14 +20,4 @@ Resize a numericam matrix in new dimension.
 \details{
 ResizeMatrix
 }
-\examples{
-mtx <- matrix(0, 11, 11)
-mtx[which(as.logical(seq_len(11 * 11) \%\% 2))] <- seq_len(
-    ceiling((11 * 11) / 2))
-mtx[2, ] <- 100
-mtx[, 7] <- 200
-mtx
-ResizeMatrix(mtx = mtx, newDim = c(7, 7))
-ResizeMatrix(mtx = mtx, newDim = c(13, 13))
-}
 \keyword{internal}

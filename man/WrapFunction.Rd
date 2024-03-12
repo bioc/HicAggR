@@ -18,15 +18,4 @@ Wrap a string into a function.
 \details{
 WrapFunction
 }
-\examples{
-X <- c(2, 4, NA)
-myString <- "mean(X, na.rm=TRUE)"
-WrapFunction(myString)
-myResult <- WrapFunction(myString)
-myString_2 <- "function(X){mean(X, na.rm=TRUE)}"
-WrapFunction(myString_2)
-myFunction <- WrapFunction(myString_2)
-myFunction(c(1, 2, 3))
-
-}
 \keyword{internal}
