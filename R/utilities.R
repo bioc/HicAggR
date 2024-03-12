@@ -8,15 +8,7 @@
 #' @param overwrite <logical>: Whether an overwrite is required on attributes
 #'  with the same name.(Default FALSE)
 #' @return The object with new attributes.
-#' @examples
-#' x <- seq_len(10)
-#' x <- AddAttr(x, list(dim = c(2, 5)))
-#' x
-#' x <- AddAttr(x, list(dim = c(5, 2)))
-#' x
-#' x <- AddAttr(x, list(dim = c(5, 2)), overwrite = TRUE)
-#' x
-#'
+#' @noRd
 AddAttr <- function(
     x = NULL, attrs = NULL,
     overwrite = FALSE
@@ -73,12 +65,7 @@ AddAttr <- function(
 #' @param ... <data.frames or list[data.frame]>: Data frames to bind or list of
 #'  data.frames.
 #' @return The binded data frame
-#' @examples
-#' df1 <- data.frame(a = seq_len(5), b = c(6:10))
-#' df2 <- data.frame(a = c(11:15), b = c(16:20), c = LETTERS[seq_len(5)])
-#' BindFillRows(df1, df2)
-#' BindFillRows(list(df1, df2))
-#'
+#' @noRD
 BindFillRows <- function(
     df_Lst, ...
 ) {
@@ -112,12 +99,7 @@ BindFillRows <- function(
 #' @param stdev <numeric>: If boxKernel is NULL, standard deviation
 #'  parameter for 'GaussBox' function. (Default NULL)
 #' @return Blurred matrix.
-#' @examples
-#' set.seed(981643)
-#' mtx <- rnorm(10000, 50, 10)**3 |> matrix(100, 100)
-#' heatmap(mtx, Rowv = NA, Colv = NA)
-#' heatmap(BoxBlur(mtx), Rowv = NA, Colv = NA)
-#'
+#' @noRD
 BoxBlur <- function(
     mtx, boxKernel = NULL, kernSize = NULL,
     stdev = 1
@@ -171,10 +153,7 @@ BoxBlur <- function(
 #' @param method <character>: Kind of breaking. "linear" or "density".
 #'  (Default "linear")
 #' @return Numerical vector of breaks.
-#' @examples
-#' set.seed(31415)
-#' BreakVector(x = rnorm(100, 50, 200), n = 9)
-#'
+#' @noRd
 BreakVector <- function(
     x = NULL, x_min = NULL,
     center = NULL, x_max = NULL,
@@ -240,10 +219,7 @@ BreakVector <- function(
 #'  (Default 1)
 #' @param mu <numeric>: Mean deviation parameter of the gaussian. (Default 0)
 #' @return Result of Gaussian formula
-#' @examples
-#' Gauss(x = 1)
-#' Gauss(x = 1, y = 2)
-#'
+#' @noRD
 Gauss <- function(
     x = NULL, y = NULL, stdev = 1, mu = 0
 ) {
@@ -269,11 +245,7 @@ Gauss <- function(
 #'  equals 1. If "int" Minimal value of kernel is 1 and all entry are integer.
 #'  If "none", kernel is not scale. (Default "1")
 #' @return numerical vector.
-#' @examples
-#' GaussBox(stdev = 5, kernScale = "none")
-#' GaussBox(kernScale = "1")
-#' GaussBox(kernScale = "int")
-#'
+#' @noRD
 GaussBox <- function(
     stdev = 1, kernSize = NULL, kernScale = "1"
 ) {
@@ -365,9 +337,7 @@ GenomicSystem <- function(x, digits = 3) {
 #' @description Give the extension of a file from the path.
 #' @param file <character>: The path to the file.
 #' @return A character string
-#' @examples
-#' filePath.pth ="my/path/to/my/file.txt"
-#' GetFileExtension(file=filePath.pth)
+#' @noRD
 
 GetFileExtension <- function(
     file = NULL
@@ -388,11 +358,7 @@ GetFileExtension <- function(
 #' @param extension <logical>: Whether the file extension should be returned
 #'  with the file name. (Default FALSE)
 #' @return A character string.
-#' @examples
-#' filePath.pth ="my/path/to/my/file.txt"
-#' GetFileName(file=filePath.pth, extension=FALSE)
-#' GetFileName(file=filePath.pth, extension=TRUE)
-
+#' @noRD
 GetFileName <- function(
     file = NULL, extension = FALSE
 ) {
@@ -450,8 +416,7 @@ GetFileName <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
-#' @examples
-#' Hsl2Hex(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
+#' @noRD
 #'
 Hsl2Hex <- function(
     hslColor = NULL, alpha = FALSE
@@ -470,8 +435,7 @@ Hsl2Hex <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return An integer vector of the color's RGB code.
-#' @examples
-#' Hsl2Rgb(c(43.8, 0.873, 0.492, 0.498), alpha = TRUE)
+#' @noRD
 #'
 Hsl2Rgb <- function(
     hslColor = NULL, alpha = FALSE
@@ -644,12 +608,7 @@ Hue <- function(
 #' @description Check if a color is in HSL color format.
 #' @param colour <character or numeric>: A color.
 #' @return A logical.
-#' @examples
-#' IsHsl("red")
-#' IsHsl("#FFFFFF")
-#' IsHsl(c(125, 125, 125))
-#' IsHsl(c(43.8, 0.873, 0.492))
-#'
+#' @noRD
 IsHsl <- function(
     colour = NULL
 ) {
@@ -675,11 +634,7 @@ IsHsl <- function(
 #' @description Check if a color is in RGB color format.
 #' @param colour <character or numeric>: A color.
 #' @return A logical.
-#' @examples
-#' IsRgb("red")
-#' IsRgb("#FFFFFF")
-#' IsRgb(c(125, 125, 125))
-#' IsRgb(c(43.8, 0.873, 0.492))
+#' @noRD
 #'
 IsRgb <- function(
     colour = NULL
@@ -709,9 +664,7 @@ IsRgb <- function(
 #'  console. (Default TRUE)
 #' @return Parrallel parameter according number of cores and OS to use with
 #'  BiocParallel package.
-#' @examples
-#' multicoreParam <- MakeParallelParam(2)
-#' BiocParallel::bplapply(BPPARAM = multicoreParam, seq_len(3), sqrt)
+#' @noRD
 #'
 MakeParallelParam <- function(
     cores = 1, verbose = FALSE
@@ -738,17 +691,7 @@ MakeParallelParam <- function(
 #' @description Scale values with mean.
 #' @param x <numeric>: Numerical vector.
 #' @return Scaled numeric vector.
-#' @examples
-#' set.seed(655213)
-#' x <- rnorm(500, 500)
-#' set.seed(522613)
-#' y.num <- rnorm(500, 100)
-#' plot(density(x), col = "red", xlim = c(min(y.num), max(x)))
-#' lines(density(y.num), col = "green")
-#' plot(density(MeanScale(x)), col = "red",
-#'     xlim = c(min(MeanScale(y.num)), max(MeanScale(x))))
-#' lines(density(MeanScale(y.num)), col = "green")
-#'
+#' @noRD
 MeanScale <- function(
     x
 ) {
@@ -765,20 +708,7 @@ MeanScale <- function(
 #' @param x_min <numeric>: Minimal value after scaling.
 #' @param x_max <numeric>: Maximal value after scaling.
 #' @return Scaled numeric vector.
-#' @examples
-#' set.seed(655213)
-#' x <- rnorm(500, 500)
-#' set.seed(522613)
-#' y.num <- rnorm(500, 100)
-#' plot(density(x), col = "red", xlim = c(min(y.num), max(x)))
-#' lines(density(y.num), col = "green")
-#' plot(
-#'     density(MinMaxScale(x)),
-#'     col = "red",
-#'     xlim = c(min(MinMaxScale(y.num)), max(MinMaxScale(x)))
-#' )
-#' lines(density(MinMaxScale(y.num)), col = "green")
-#'
+#' @noRD
 MinMaxScale <- function(
     x, x_min = (0), x_max = 1
 ) {
@@ -797,12 +727,7 @@ MinMaxScale <- function(
 #' @param lhs <vector or NULL>: Values to be compared against rhs
 #' @param rhs <vector or NULL>: Values to be compared against lhs
 #' @return A boolean.
-#' @examples
-#' "A" |> NotIn(c("A", "B", "C"))
-#' "A" |> NotIn(c("B", "C", "D"))
-#' NotIn("A", c("A", "B", "C"))
-#' NotIn("A", c("B", "C", "D"))
-#'
+#' @noRD
 "NotIn" <- function(
     lhs, rhs
 ) {
@@ -821,33 +746,7 @@ MinMaxScale <- function(
 #' @param side <character>: Side to pad, must be one or some of 'top','bot',
 #' 'right' or 'left'. (Default c('top','bot','right','left') )
 #' @return A matrix.
-#' @examples
-#' mtx <- matrix(seq_len(25), 5, 5)
-#' PadMtx(
-#'     mtx = mtx,
-#'     padSize = 1,
-#'     val = 0,
-#'     side = c("top", "bot", "right", "left")
-#' )
-#' PadMtx(
-#'     mtx = mtx,
-#'     padSize = 1,
-#'     val = NULL,
-#'     side = c("top", "bot", "right", "left")
-#' )
-#' PadMtx(
-#'     mtx = mtx,
-#'     padSize = 1,
-#'     val = 0,
-#'     side = c("right", "left")
-#' )
-#' PadMtx(
-#'     mtx = mtx,
-#'     padSize = 1,
-#'     val = 0,
-#'     side = c("top")
-#' )
-#'
+#' @noRD
 PadMtx <- function(
     mtx = NULL, padSize = 1, val = 0,
     side = c("top", "bot", "right", "left")
@@ -903,17 +802,7 @@ PadMtx <- function(
 #'  instead 0.
 #' @param x <numerical>: A numerical vector
 #' @return  The sum of numbers.
-#' @examples
-#' Plus(c(1, 2, 3))
-#' sum(c(1, 2, 3), na.rm = TRUE)
-#' sum(c(1, 2, 3))
-#' Plus(c(1, 2, NA))
-#' sum(c(1, 2, NA), na.rm = TRUE)
-#' sum(c(1, 2, NA))
-#' Plus(c(NA, NA, NA))
-#' sum(c(NA, NA, NA), na.rm = TRUE)
-#' sum(c(NA, NA, NA))
-#'
+#' @noRD
 Plus <- function(
     x
 ) {
@@ -934,15 +823,7 @@ Plus <- function(
 #' @param tails <character>: Bounds to return, "lower", "upper" or "both".
 #'  (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
-#' @examples
-#' set.seed(1111)
-#' x <- 0:100
-#' x <- sort(x)
-#' x
-#' QtlThreshold(x, prctThr = 5, tails = "lower")
-#' QtlThreshold(x, prctThr = 5, tails = "both")
-#' QtlThreshold(x, prctThr = 5, tails = "upper")
-#'
+#' @noRD
 QtlThreshold <- function(
     x = NULL, prctThr = 5, tails = "both"
 ) {
@@ -966,15 +847,6 @@ QtlThreshold <- function(
 #' @param ... <...>: Other parameter for the reduce function.
 #' @return Reduced Rle
 #' @importFrom S4Vectors Rle runValue
-#' @examples
-#' firstRle <- rle(c("A", "A", "B"))
-#' secondRle <- rle(c("A", "B", "B"))
-#' ReduceRun(firstRle = firstRle, secondRle = secondRle,
-#'  reduceMethod = "paste", sep = "_")
-#' firstRle <- S4Vectors::Rle(c(1, 2, 3))
-#' secondRle <- S4Vectors::Rle(c(5, 5, 5))
-#' ReduceRun(firstRle = firstRle, secondRle = secondRle, reduceMethod = "sum")
-#'
 ReduceRun <- function(
     firstRle, secondRle, reduceMethod = "paste", ...
 ) {
@@ -1047,15 +919,6 @@ ReduceRun <- function(
 #' @param mtx <matrix>: A numerical matrix to resize.
 #' @param newDim <integer>: The number of rows and cols in resized matrix.
 #' @return Resized matrix.
-#' @examples
-#' mtx <- matrix(0, 11, 11)
-#' mtx[which(as.logical(seq_len(11 * 11) %% 2))] <- seq_len(
-#'     ceiling((11 * 11) / 2))
-#' mtx[2, ] <- 100
-#' mtx[, 7] <- 200
-#' mtx
-#' ResizeMatrix(mtx = mtx, newDim = c(7, 7))
-#' ResizeMatrix(mtx = mtx, newDim = c(13, 13))
 ResizeMatrix <- function(
     mtx, newDim = dim(mtx)
 ) {
@@ -1102,9 +965,7 @@ ResizeMatrix <- function(
 #' @param alpha <logical>: Whether the alpha layer should be returned.
 #'  (Default FALSE)
 #' @return A character of the color's hexadecimal code.
-#' @examples
-#' Rgb2Hex(c(235, 176, 16, 127), alpha = TRUE)
-#'
+#' @noRD
 Rgb2Hex <- function(
     rbgColor = NULL, alpha = FALSE
 ) {
@@ -1159,14 +1020,7 @@ Rgb2Hex <- function(
 #'  Row index in fisrt column, columns index in second columns. If NULL the
 #'  indices parameter is used (Default NULL)
 #' @return Sparse matrix with some explicit zeros.
-#' @examples
-#' set.seed(123)
-#' spMtx <- as(matrix(floor(runif(7 * 13, 0, 2)), 7, 13), "dgCMatrix")
-#' spMtx
-#' Rise0(spMtx = spMtx, indices = c(1, 3, 6, 10, 12))
-#' Rise0(spMtx = spMtx, coords = data.frame(i = c(1, 5, 3), j = c(1, 2, 3)))
-#' Rise0(spMtx = spMtx)
-#'
+#' @noRD
 Rise0 <- function(
     spMtx = NULL, indices = NULL, coords = NULL
 ) {
@@ -1202,15 +1056,7 @@ Rise0 <- function(
 #' @param tails <character>: bounds to return, "lower", "upper" or "both".
 #'  (Default "both")
 #' @return numerical vector of thresholds values for outliers triming
-#' @examples
-#' set.seed(1111)
-#' x <- rnorm(1000)
-#' x <- sort(x)
-#' x
-#' SdThreshold(x, sdThr = 2, tails = "lower")
-#' SdThreshold(x, sdThr = 2, tails = "both")
-#' SdThreshold(x, sdThr = 2, tails = "upper")
-#'
+#' @noRd 
 SdThreshold <- function(
     x = NULL, sdThr = 3, tails = "both"
 ) {
@@ -1335,14 +1181,7 @@ StrToGRanges <- function(
 #' @description Turns a nested list "inside-out".
 #' @param nestedList <list[list]>: A nested list to transpose.
 #' @return The tranposed nested list.
-#' @examples
-#' my_lst <- list(
-#'     first = list("A1", "B1", "C1"),
-#'     second = list("A2", "B2"),
-#'     third = list(NULL, "B3")
-#' )
-#' TransposeList(my_lst)
-#'
+#' @noRD
 TransposeList <- function(
     nestedList
 ) {
@@ -1379,15 +1218,6 @@ TransposeList <- function(
 #'  threshodls values. If FALSE the Values out of bound are replace with NA
 #'  (Default FALSE).
 #' @return Trimed Numerical vector.
-#' @examples
-#' set.seed(1111)
-#' x <- rnorm(1000)
-#' x <- sort(x)
-#' x[990:1000]
-#' SdThreshold(x)
-#' TrimOutliers(x)[990:1000]
-#' TrimOutliers(x, clip = TRUE)[990:1000]
-#'
 TrimOutliers <- function(
     x,
     thr = SdThreshold(x),
@@ -1484,16 +1314,6 @@ viridis <- function(
 #' @description Wrap a string into a function.
 #' @param ... <character>: A string that could be parse and eval as a function.
 #' @return The result of the function or a function.
-#' @examples
-#' X <- c(2, 4, NA)
-#' myString <- "mean(X, na.rm=TRUE)"
-#' WrapFunction(myString)
-#' myResult <- WrapFunction(myString)
-#' myString_2 <- "function(X){mean(X, na.rm=TRUE)}"
-#' WrapFunction(myString_2)
-#' myFunction <- WrapFunction(myString_2)
-#' myFunction(c(1, 2, 3))
-#'
 WrapFunction <- function(
     ...
 ) {
