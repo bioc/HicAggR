@@ -47,7 +47,8 @@ Imports:
     stringr,
     tidyr,
     gridExtra,
-    data.table
+    data.table,
+    reshape
 Suggests:
     covr,
     kableExtra (>= 1.3.4),
