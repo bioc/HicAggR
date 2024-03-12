@@ -35,6 +35,7 @@
 #'  sub-matrices IDs are used.
 #' @return A GRange object.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

@@ -21,10 +21,10 @@
 #' @param cores <integer>: Number of cores to use. (Default 1)
 #'
 #' @return A GInteractions object.
-#' @import data.table
-#' @import S4Vectors
+#' @importFrom S4Vectors first second mcols
 #' @import InteractionSet
 #' @importFrom GenomeInfoDb seqinfo
+#' @importFrom data.table as.data.table setkey foverlaps
 #' @export
 #'
 #' @examples

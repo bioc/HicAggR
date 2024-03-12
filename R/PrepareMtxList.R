@@ -24,6 +24,7 @@
 #'  before the aggregation.
 #' @return A matrix list ready for aggregation of values extraction.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

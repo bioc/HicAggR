@@ -28,6 +28,7 @@
 #'  (Default FALSE)
 #' @return A matrices list.
 #' @export
+#' @importFrom S4Vectors mcols runValue runLength metadata
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

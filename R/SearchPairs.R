@@ -19,6 +19,7 @@
 #'  (Default FALSE)
 #' @return A GInteractions object.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

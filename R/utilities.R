@@ -965,6 +965,7 @@ QtlThreshold <- function(
 #'  e.g paste, sum, mean.
 #' @param ... <...>: Other parameter for the reduce function.
 #' @return Reduced Rle
+#' @importFrom S4Vectors Rle runValue
 #' @examples
 #' firstRle <- rle(c("A", "A", "B"))
 #' secondRle <- rle(c("A", "B", "B"))
@@ -1260,6 +1261,7 @@ SeqEnds <- function(
 #' @param stringRanges <character>: Strings to convert on GRanges.
 #' @return A GRanges object.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' StrToGRanges("chr1:1-100:+")
 #' StrToGRanges(c("chr1:1-100:+", "chr2:400-500:-", "chr1:10-50:*"))

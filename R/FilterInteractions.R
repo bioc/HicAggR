@@ -15,6 +15,7 @@
 #' @return A list of elements index or a filtred matrices list with attributes
 #'  updates.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)

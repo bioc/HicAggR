@@ -43,6 +43,7 @@
 #' @importFrom stats p.adjust sd pnorm
 #' @importFrom rlang .data
 #' @importFrom dplyr group_by mutate summarise left_join
+#' @importFrom S4Vectors mcols
 #' @details
 #' Types of background couples possible:
 #' \itemize{

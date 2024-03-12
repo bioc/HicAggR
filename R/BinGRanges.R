@@ -22,6 +22,7 @@
 #'  (Default FALSE)
 #' @return A binned GRanges.
 #' @importFrom stats na.omit
+#' @importFrom S4Vectors mcols Rle
 #' @export
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(

@@ -24,6 +24,7 @@
 #'  (Default FALSE)
 #' @return A GRanges object.
 #' @export
+#' @importFrom S4Vectors mcols
 #' @examples
 #' data(Beaf32_Peaks.gnr)
 #' Beaf32_Index.gnr <- IndexFeatures(
