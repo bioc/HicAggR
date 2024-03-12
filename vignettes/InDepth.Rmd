@@ -317,7 +317,8 @@ baits_Index.gnr |>
 By using features names and bin IDs, it is possible to filter a subset of features.
 Example: Subset TSS that are not in the same bin than a Beaf32 peak.
 ```{r, eval = TRUE}
-non_Overlaps.ndx <- NotIn(baits_Index.gnr$bin,anchors_Index.gnr$bin)
+non_Overlaps.ndx <- match(baits_Index.gnr$bin, 
+    anchors_Index.gnr$bin, nomatch=0L)==0L
 baits_Index.gnr <- baits_Index.gnr[non_Overlaps.ndx,]
 ```
 <details>  
