@@ -169,7 +169,8 @@ ggAPA <- function(
     colors = NULL,
     na.value = "#F2F2F2",
     colorScale = "linear",
-    bias = 1, paletteLength = 51
+    bias = 1, paletteLength = 51,
+    annotate = TRUE
 ) {
     # Trimming
     if (!is.null(colBreaks)) {
@@ -295,26 +296,72 @@ ggAPA <- function(
             colMax
         )
     ) +
-    ggplot2::scale_y_reverse(
-        breaks = seq_along(colnames(aggregatedMtx)),
-        labels = colnames(aggregatedMtx)
-    ) +
-    ggplot2::scale_x_continuous(
-        breaks = seq_along(rownames(aggregatedMtx)),
-        labels = rownames(aggregatedMtx)
-    ) +
     ggplot2::labs(
         title = title,
         y = dimnames(aggregatedMtx)[[2]],
         x = dimnames(aggregatedMtx)[[2]]
     ) +
-    ggplot2::theme_classic() +
-    ggplot2::theme(
-        axis.line.y  = ggplot2::element_blank(),
-        axis.ticks.y = ggplot2::element_blank(),
-        axis.line.x  = ggplot2::element_blank(),
-        axis.ticks.x = ggplot2::element_blank(),
-        legend.title = ggplot2::element_blank()
-    )
+    ggplot2::theme_classic()
+    if(annotate){
+        if(is.null(colnames(aggregatedMtx))){
+            extent = (floor(
+                nrow(aggregatedMtx)/2) * attributes(
+                    aggregatedMtx)$resolution)/1000
+            breaks_y = c(1,ceiling(nrow(aggregatedMtx)/2),
+                nrow(aggregatedMtx))
+            breaks_x = c(1,ceiling(ncol(aggregatedMtx)/2),
+                ncol(aggregatedMtx))
+            labels_y = c(paste0("-",
+                extent, "KB"),"Anchor",paste0("+",
+                extent, "KB"))
+            labels_x = c(paste0("-",
+                extent, "KB"),"Bait",paste0("+",
+                extent, "KB"))
+        }else{
+            breaks_y = seq_along(rownames(aggregatedMtx))
+            labels_y = rownames(aggregatedMtx)
+            breaks_x = seq_along(colnames(aggregatedMtx))
+            labels_x = colnames(aggregatedMtx)
+        }
+        plot.ggp <- plot.ggp+
+            ggplot2::scale_y_continuous(
+                breaks = breaks_y,
+                labels = labels_y
+            ) +
+            ggplot2::scale_x_continuous(
+                breaks = breaks_x,
+                labels = labels_x
+            ) +
+            ggplot2::theme(
+                axis.line.y  = ggplot2::element_blank(),
+                axis.ticks.y = ggplot2::element_line(colour="black"),
+                axis.line.x  = ggplot2::element_blank(),
+                axis.text.x = ggplot2::element_text(angle=45,hjust=1),
+                axis.ticks.x = ggplot2::element_line(colour="black"),
+                legend.title = ggplot2::element_blank()
+            )
+    
+    }else{
+        breaks_y = seq_along(rownames(aggregatedMtx))
+        labels_y = rownames(aggregatedMtx)
+        breaks_x = seq_along(colnames(aggregatedMtx))
+        labels_x = colnames(aggregatedMtx)
+        plot.ggp <- plot.ggp+
+            ggplot2::scale_y_continuous(
+                breaks = breaks_y,
+                labels = labels_y
+            ) +
+            ggplot2::scale_x_continuous(
+                breaks = breaks_x,
+                labels = labels_x
+            ) +
+            ggplot2::theme(
+                axis.line.y  = ggplot2::element_blank(),
+                axis.ticks.y = ggplot2::element_blank(),
+                axis.line.x  = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank(),
+                legend.title = ggplot2::element_blank()
+            )
+    }
     return(plot.ggp)
 }

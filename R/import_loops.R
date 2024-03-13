@@ -35,10 +35,8 @@
 #' )
 #' loops <- import_loops(
 #'     file_bedpe = bedpe_path,
-#'     chromSizes = data.frame(
-#'         c("2L", "2R", "3L", "3R", "4", "X", "Y"),
-#'         c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
-#'     ),
+#'     chromSizes = data.frame(c("1","2"),
+#'         c(249250621,243199373)),
 #'     binSize = 5000, minDist = 105000
 #' )
 #'

@@ -22,7 +22,8 @@ ggAPA(
   na.value = "#F2F2F2",
   colorScale = "linear",
   bias = 1,
-  paletteLength = 51
+  paletteLength = 51,
+  annotate = TRUE
 )
 }
 \arguments{
