@@ -77,6 +77,8 @@ spaced colors at the high end. See ?grDevices::colorRamp for more details.
 
 \item{paletteLength}{\if{html}{\out{<numeric>}} : The number of color in the palette.
 (Default 51)}
+
+\item{annotate}{\if{html}{\out{<logical>}} : Should there be axis ticks? (Default: TRUE)}
 }
 \value{
 A ggplot object.

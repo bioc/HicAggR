@@ -35,6 +35,7 @@
 #'  (Default 1)
 #' @param paletteLength <numeric> : The number of color in the palette.
 #'  (Default 51)
+#' @param annotate <logical> : Should there be axis ticks? (Default: TRUE)
 #' @return A ggplot object.
 #' @export
 #' @examples
