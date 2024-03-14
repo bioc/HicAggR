@@ -7,17 +7,18 @@
 #'  The HiC maps list.
 #' @param method <character> : The kind of normalization method.
 #'  One of "ICE", "VC" or "VC_SQRT" (Default "ICE")
-#' @param interactionType <character> : "cis", "trans", c("cis", "trans"),
-#'  "all".
+#' @param interactionType <character> : "cis", "trans",
+#' c("cis", "trans"), "all".
 #'  If NULL normalization is apply on cis contactMatrix then trans
 #'  contactMatrix (equivalent to c("cis", "trans")). If is "all", normalization
 #'  is apply on all contactMatrix at once. (Default NULL)
 #' @param maxIter <numerical>: The maximum iteration number.
-#' @param qtlTh <numerical>: The threshold quantile below which the bins will
-#'  be ignored. (Default 0.15)
-#' @param cores <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
-#'  (Default FALSE)
+#' @param qtlTh <numerical>: The quantile threshold below which
+#' the bins will be ignored. (Default 0.15)
+#' @param cores <numerical> : Number of cores to be used.
+#' (Default 1)
+#' @param verbose <logical>: If TRUE show the progression
+#' in console. (Default FALSE)
 #' @return A matrices list.
 #' @export
 #' @examples

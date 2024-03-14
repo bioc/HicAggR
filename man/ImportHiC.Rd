@@ -28,22 +28,25 @@ assuming .h5 and .hdf5 are only for cool (not mcool).}
 
 \item{hicResolution}{\if{html}{\out{<numeric>}}: The HiC resolution.}
 
-\item{chromSizes}{<data.frame>: A data.frame where first colum correspond
-to the chromosomes names, and the second column correspond to the
-chromosomes lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame where first
+colum correspond to the chromosomes names, and the second column correspond
+to the chromosomes lengths in base pairs.}
 
-\item{chrom_1}{\if{html}{\out{<numeric>}}: The seqnames of firsts chromosmes (rows in matrix).}
+\item{chrom_1}{\if{html}{\out{<numeric>}}: The seqnames of first chromosmes
+(rows in matrix).}
 
-\item{chrom_2}{\if{html}{\out{<numeric>}}: The seqnames of second chromosmes (col in matrix).
-If is NULL is equal to chrom_1 (Defalt NULL)}
+\item{chrom_2}{\if{html}{\out{<numeric>}}: The seqnames of second chromosmes
+(col in matrix).
+If \code{NULL} variable will be assigned value of chrom_1 (Defalt NULL).}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+\item{verbose}{\if{html}{\out{<logical>}}: Show the progression in console?
 (Default FALSE)}
 
-\item{cores}{\if{html}{\out{<numerical>}} : An integer to specify the number of cores.
-(Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : An integer to specify the number
+of cores. (Default 1)}
 
-\item{hic_norm}{\if{html}{\out{<character>}}: "norm" argument to supply to \code{\link[strawr:straw]{strawr::straw()}}.
+\item{hic_norm}{\if{html}{\out{<character>}}: "norm" argument to supply to
+\code{\link[strawr:straw]{strawr::straw()}}.
 This argument is for .hic format data only. Available norms can be obtained
 through \code{\link[strawr:readHicNormTypes]{strawr::readHicNormTypes()}}.
 (Default "NONE").}
@@ -56,15 +59,16 @@ Other options can be: "oe", "expected". (Default "observed").}
 \item{cool_balanced}{\if{html}{\out{<logical>}} Import already balanced matrix?
 (Default: FALSE)}
 
-\item{cool_weight_name}{\if{html}{\out{<character>}} Name of the correcter in the cool file.
-(Default: weight). \code{\link[rhdf5:h5ls]{rhdf5::h5ls()}} to see the available correcters.}
+\item{cool_weight_name}{\if{html}{\out{<character>}} Name of the correcter in
+the cool file. (Default: weight). \code{\link[rhdf5:h5ls]{rhdf5::h5ls()}} to see the available
+correctors.}
 
-\item{cool_divisive_weights}{\if{html}{\out{<logical>}} Does the correcter vector contain
-divisive biases as in hicExplorer or multiplicative as in cooltools?
-(Default: FALSE)}
+\item{cool_divisive_weights}{\if{html}{\out{<logical>}} Does the correcter
+vector contain divisive biases as in hicExplorer or multiplicative as in
+cooltools? (Default: FALSE)}
 
-\item{h5_fill_upper}{\if{html}{\out{<logical>}} Do the matrix in h5 format need to be
-transposed? (Default: TRUE)}
+\item{h5_fill_upper}{\if{html}{\out{<logical>}} Do the matrix in h5 format
+need to be transposed? (Default: TRUE)}
 }
 \value{
 A matrices list.

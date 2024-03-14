@@ -23,32 +23,35 @@ The genomic coordinates on which compute the extraction of HiC submatrix.}
 \item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
 The HiC maps list.}
 
-\item{referencePoint}{\if{html}{\out{<character>}}: Type of extracted submatrices.
-"rf" for "region feature" to extract triangle-shaped matrices around
-regions or "pf" for "point feature" to extract square-shaped matrices
-around points. (Default "rf")}
+\item{referencePoint}{\if{html}{\out{<character>}}: Type of
+extracted submatrices. "rf" for "region feature" to extract triangle-shaped
+matrices around regions or "pf" for "point feature" to extract
+square-shaped matrices around points. (Default "rf")}
 
-\item{hicResolution}{\if{html}{\out{<numeric>}}: The resolution in used in hicLst.
-If NULL automatically find in resolution attributes of hicLst.
-(Default NULL)}
+\item{hicResolution}{\if{html}{\out{<numeric>}}: The resolution
+used in hicLst. If \code{NULL}, automatically find in resolution attributes
+of hicLst. (Default NULL)}
 
-\item{matriceDim}{\if{html}{\out{<numeric>}}: The size of matrices in output. (Default 21).}
+\item{matriceDim}{\if{html}{\out{<numeric>}}: The size of matrices in output.
+(Default 21).}
 
-\item{shift}{\if{html}{\out{<numeric>}}: Only when "referencePoint" is "rf". Factor defining
-how much of the distance between anchor and bait is extracted before and
-after the region (Default 1). Ex: for shift=2, extracted matrices will
-be 2\emph{regionSize+regionSize+2}regionSize.}
+\item{shift}{\if{html}{\out{<numeric>}}: Only when "referencePoint" is "rf".
+Factor defining how much of the distance between anchor and bait is
+extracted before and after the region (Default 1).
+Ex: for shift=2, extracted matrices will be:
+\code{2*regionSize+regionSize+2*regionSize}.}
 
-\item{remove_duplicates}{\if{html}{\out{<Logical>}}: remove duplicated submatrices.
+\item{remove_duplicates}{\if{html}{\out{<Logical>}}:
+remove duplicated submatrices ?
 This avoids duplicated submatrices when both anchor and bait bins are from
 the same feature. ex. BEAF32-BEAF32, same submatrix twice with opposite
 orientations(Default TRUE)}
 
-\item{cores}{\if{html}{\out{<integer>}} : An integer to specify the number of cores.
-(Default 1)}
+\item{cores}{\if{html}{\out{<integer>}} : An integer
+to specify the number of cores. (Default 1)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
-(Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE,
+show the progression in console. (Default FALSE)}
 }
 \value{
 A matrices list.

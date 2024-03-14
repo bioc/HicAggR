@@ -16,17 +16,19 @@ OverExpectedHiC(
 \item{hicLst}{<List\link[InteractionSet:ContactMatrix-class]{ContactMatrix}>:
 The HiC maps list.}
 
-\item{method}{\if{html}{\out{<character>}} Options are "mean_non_zero", "mean_total",
-or "lieberman". Look at details for more (Default: "mean_non_zero")}
+\item{method}{\if{html}{\out{<character>}} Options are "mean_non_zero",
+"mean_total", or "lieberman". Look at details for more.
+(Default: "mean_non_zero")}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+\item{verbose}{\if{html}{\out{<logical>}}: Show the progression in console?
 (Default FALSE)}
 
-\item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used. (Default 1)}
+\item{cores}{\if{html}{\out{<numerical>}} : Number of cores to be used.
+(Default 1)}
 
-\item{plot_contact_vs_dist}{Whether to plot contact vs distance curve
-per chromosome ("per_seq"), all chromosomes ("total") or not (NULL).
-(Default "per_seq")}
+\item{plot_contact_vs_dist}{Whether to plot
+contact vs distance curve per chromosome ("per_seq"),
+all chromosomes ("total") or not (NULL). (Default "per_seq")}
 }
 \value{
 A matrices list.

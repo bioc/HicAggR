@@ -9,8 +9,8 @@ CutHiC(megaHic, verbose = FALSE)
 \arguments{
 \item{megaHic}{\if{html}{\out{<contactMatrix>}}: The HiC megamap.}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
-(Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE,
+show the progression in console. (Default FALSE)}
 }
 \value{
 A matrices list.

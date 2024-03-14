@@ -5,12 +5,15 @@
 #'  (eg. Aggregation or GetQuantif). Orientation can be corrected,
 #'  and per matrix transformation can be performed.
 #' @param matrices <list[matrix]>: The matrices list to prepare.
-#' @param minDist <numeric>: The minimal distance between anchor and bait.
-#' @param maxDist <numeric>: The maximal distance between anchor and bait.
-#' @param rm0 <logical>: Whether 0 should be replaced with NA. (Default FALSE)
-#' @param transFun <function or chracter>: The function used to transform
-#'  or scale values in each submatrix before aggregation. The following
-#'  characters can be submitted:
+#' @param minDist <numeric>: The minimal distance between anchor
+#' and bait.
+#' @param maxDist <numeric>: The maximal distance between anchor
+#' and bait.
+#' @param rm0 <logical>: Whether 0 should be replaced with NA.
+#' (Default FALSE)
+#' @param transFun <function or chracter>: The function used to
+#' transform or scale values in each submatrix before aggregation.
+#' The following characters can be submitted:
 #' \itemize{
 #' \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 #' \item "percentile" or "prct" apply percentile.
@@ -20,8 +23,8 @@
 #' \item "mu" apply a HicAggR::MeanScale.
 #' \item other or NULL don't apply transformation (Default).
 #' }
-#' @param orientate <logical>: Whether matrices must be orientate
-#'  before the aggregation.
+#' @param orientate <logical>: Whether matrices must be
+#' corrected for orientatation before the aggregation.
 #' @return A matrix list ready for aggregation of values extraction.
 #' @export
 #' @importFrom S4Vectors mcols

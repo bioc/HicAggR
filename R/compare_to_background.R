@@ -4,32 +4,36 @@
 #' @param hicList <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
 #' The HiC maps list.
 #' @param matrices <list[matrix]>: The matrices list.
-#' @param genomicConstraint <GRanges>: GRanges object of constraint regions.
-#'  If NULL chromosomes in chromSizes are used as constraints (Default NULL)
-#' @param secondaryConst.var <character>: A string defining column name
-#' containing compartment information in the metadata of anchor and
-#' bait <GRanges> objects. (Default NULL)
+#' @param genomicConstraint <GRanges>: GRanges object of
+#' constraint regions. If `NULL`, chromosomes in chromSizes are used as
+#' constraints (Default NULL)
+#' @param secondaryConst.var <character>: A string defining
+#' column name containing compartment information in the
+#' metadata of anchor and bait <GRanges> objects. (Default NULL)
 #' @param chromSizes <data.frame>: A data.frame containing chromosomes
 #' names and lengths in base pairs.
-#' @param n_background <integer> : Number of background couples to keep.
-#' (Default NULL)
-#' @param indexAnchor <GRanges>: A first indexed GRanges object used as
-#' pairs anchor (must be indexed using `IndexFeatures()`).
-#' @param indexBait <GRanges>: A second indexed GRanges object used as
-#' pairs bait (must be indexed using `IndexFeatures()`).
+#' @param n_background <integer> : Number of background
+#' couples to keep. (Default NULL)
+#' @param indexAnchor <GRanges>: A first indexed GRanges object
+#' used as pairs anchor (must be indexed using `IndexFeatures()`).
+#' @param indexBait <GRanges>: A second indexed GRanges object
+#' used as pairs bait (must be indexed using `IndexFeatures()`).
 #' @param cores <integer> : Number of cores used. (Default 1)
-#' @param areaFun <character or function>: A character or function that allows
-#'  to extract an area from each matrix that composes the matrices list
-#' (Default "center"). Look at [GetQuantif] for more info.
-#' @param operationFun <character or function>: A character or function
-#' specifying the operation applied to the selected area (Default "mean").
+#' @param areaFun <character or function>: A character
+#' or function that allows to extract an area from each matrix that
+#' composes the matrices list (Default "center").
 #' Look at [GetQuantif] for more info.
-#' @param bg_type <character>: Type of background couples to generate.
-#' Possible choices: "random_anchors", "inter_TAD","inter_compartment",
-#' NULL (Defaults to "random_anchors"). More information in details...
+#' @param operationFun <character or function>: A character
+#' or function specifying the operation applied to the selected area.
+#' (Default "mean").
+#' Look at [GetQuantif] for more info.
+#' @param bg_type <character>: Type of background couples
+#' to generate. Possible choices: "random_anchors", "inter_TAD",
+#' "inter_compartment", NULL (Defaults to "random_anchors").
+#' More information in details...
 #' @param verbose <logical> details on progress? (Default: FALSE)
-#' @param z_score_per_dist_group <logical> Should z-scores and p.values
-#' for target couples be calculated in separate groups 
+#' @param z_score_per_dist_group <logical> Should z-scores
+#' and p.values for target couples be calculated in separate groups
 #' based on distances? Look at details for more. (Default: TRUE)
 #' @param ... arguments to pass to [PrepareMtxList], inorder to treat
 #' background matrices.

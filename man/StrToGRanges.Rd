@@ -7,7 +7,8 @@
 StrToGRanges(stringRanges)
 }
 \arguments{
-\item{stringRanges}{\if{html}{\out{<character>}}: Strings to convert on GRanges.}
+\item{stringRanges}{\if{html}{\out{<character>}}: Strings to convert on
+GRanges.}
 }
 \value{
 A GRanges object.

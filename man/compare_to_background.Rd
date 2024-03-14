@@ -28,43 +28,47 @@ The HiC maps list.}
 
 \item{matrices}{<list\link{matrix}>: The matrices list.}
 
-\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as
-pairs anchor (must be indexed using \code{IndexFeatures()}).}
+\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object
+used as pairs anchor (must be indexed using \code{IndexFeatures()}).}
 
-\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as
-pairs bait (must be indexed using \code{IndexFeatures()}).}
+\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object
+used as pairs bait (must be indexed using \code{IndexFeatures()}).}
 
-\item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of constraint regions.
-If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
+\item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of
+constraint regions. If \code{NULL}, chromosomes in chromSizes are used as
+constraints (Default NULL)}
 
-\item{secondaryConst.var}{\if{html}{\out{<character>}}: A string defining column name
-containing compartment information in the metadata of anchor and
-bait \if{html}{\out{<GRanges>}} objects. (Default NULL)}
+\item{secondaryConst.var}{\if{html}{\out{<character>}}: A string defining
+column name containing compartment information in the
+metadata of anchor and bait \if{html}{\out{<GRanges>}} objects. (Default NULL)}
 
 \item{chromSizes}{<data.frame>: A data.frame containing chromosomes
 names and lengths in base pairs.}
 
-\item{n_background}{\if{html}{\out{<integer>}} : Number of background couples to keep.
-(Default NULL)}
+\item{n_background}{\if{html}{\out{<integer>}} : Number of background
+couples to keep. (Default NULL)}
 
-\item{areaFun}{\if{html}{\out{<character or function>}}: A character or function that allows
-to extract an area from each matrix that composes the matrices list
-(Default "center"). Look at \link{GetQuantif} for more info.}
-
-\item{operationFun}{\if{html}{\out{<character or function>}}: A character or function
-specifying the operation applied to the selected area (Default "mean").
+\item{areaFun}{\if{html}{\out{<character or function>}}: A character
+or function that allows to extract an area from each matrix that
+composes the matrices list (Default "center").
 Look at \link{GetQuantif} for more info.}
 
-\item{bg_type}{\if{html}{\out{<character>}}: Type of background couples to generate.
-Possible choices: "random_anchors", "inter_TAD","inter_compartment",
-NULL (Defaults to "random_anchors"). More information in details...}
+\item{operationFun}{\if{html}{\out{<character or function>}}: A character
+or function specifying the operation applied to the selected area.
+(Default "mean").
+Look at \link{GetQuantif} for more info.}
+
+\item{bg_type}{\if{html}{\out{<character>}}: Type of background couples
+to generate. Possible choices: "random_anchors", "inter_TAD",
+"inter_compartment", NULL (Defaults to "random_anchors").
+More information in details...}
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores used. (Default 1)}
 
 \item{verbose}{\if{html}{\out{<logical>}} details on progress? (Default: FALSE)}
 
-\item{z_score_per_dist_group}{\if{html}{\out{<logical>}} Should z-scores and p.values
-for target couples be calculated in separate groups
+\item{z_score_per_dist_group}{\if{html}{\out{<logical>}} Should z-scores
+and p.values for target couples be calculated in separate groups
 based on distances? Look at details for more. (Default: TRUE)}
 
 \item{...}{arguments to pass to \link{PrepareMtxList}, inorder to treat

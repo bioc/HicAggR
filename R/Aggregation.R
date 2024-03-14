@@ -8,28 +8,30 @@
 #' @param ctrlMatrices <list[matrix]>: The matrices list to aggregate as
 #'  control.
 #' @param matrices <list[matrix]>: The matrices list to aggregate.
-#' @param aggFun <function or chracter>: The function use to aggregate
-#'  each pixel in matrix. If the parameter is a character so:
+#' @param aggFun <function or chracter>: The function used
+#' to aggregate each pixel in matrix.
+#' If the parameter is a character so:
 #' \itemize{
 #' \item "50%" or "median" apply the median
 #' \item "+" or "sum" apply the sum
 #' \item other (Default) apply the mean
 #' }
-#' @param diffFun <function or chracter>: The function use to compute
-#'  differential. If the parameter is character so:
+#' @param diffFun <function or chracter>: The function used
+#' to compute differential. If the parameter is character so:
 #' \itemize{
 #' \item "-", "substract" or "substraction" apply a substraction
 #' \item "/" or "ratio" apply a ratio
 #' \item "log2","log2-","log2/" or "log2ratio" apply a log2 on ratio
 #' \item other (Default) apply a log2 on 1+ratio
 #' }
-#' @param scaleCorrection <logical>: Whether a correction should be done
-#'  on the median value take in ane noising area. (Default TRUE)
-#' @param correctionArea <list>: Nested list of indice that define a noising
-#'  area fore correction. List muste contain in first an element "i"
-#'  (row indices) then an element called "j" (columns indices). 
-#' If NULL automatically take in upper left part of aggregated matrices.
-#'  (Default NULL)
+#' @param scaleCorrection <logical>: Whether a correction
+#' should be done on the median value take in ane noising area.
+#' (Default TRUE)
+#' @param correctionArea <list>: Nested list of indice
+#' that define a noising area fore correction. List must
+#' contain in first an element "i" (row indices) then an
+#' element called "j" (columns indices). If NULL automatically
+#' take in upper left part of aggregated matrices. (Default NULL)
 #' @param statCompare <logical>: Whether a t.test must be apply to each
 #'  pixel of the differential aggregated matrix.
 #' @return A matrix

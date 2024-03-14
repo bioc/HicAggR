@@ -4,14 +4,15 @@
 #' @description Search in a GInteraction object which interactions correspond
 #'  to a target list and return a list of index or filter a matrices list
 #'  according to target and a selectionFunction.
-#' @param matrices <List[matrix]>: The matrices list to filter. If is not NULL,
-#'  the function will return the filtred matrices list, else
-#'  return a list of index.
-#' @param genomicInteractions <GInteractions>: The GInteraction object on which
-#'  compute the filter.
-#' @param targets <List>: A nammed list that describe the target.
-#' @param selectionFun <function>: A function that described how the target
-#'  must be cross. (Default intersection of all targets)
+#' @param matrices <List[matrix]>: The matrices list
+#' to filter. If is not `NULL`, the function will return the filtred
+#' matrices list, else it will return a list of index.
+#' @param genomicInteractions <GInteractions>: The GInteraction
+#' object on which to compute the filter.
+#' @param targets <List>: A named list that describe the target.
+#' @param selectionFun <function>: A function
+#' that defines how the target variables must be crossed.
+#' (Default intersection of all targets)
 #' @return A list of elements index or a filtred matrices list with attributes
 #'  updates.
 #' @export

@@ -12,15 +12,15 @@ PlotAPA_byDistance(
 )
 }
 \arguments{
-\item{submatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to separate using
-interaction distances and aggregate.
+\item{submatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to
+separate using interaction distances and aggregate.
 Chunks of distances are created with:
 \code{c(0,50000*2 ^ seq(0,5,by=1))}.
 Other matrices with distances over 1.6 Mb are aggregated in the same
 final chunk.}
 
-\item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use as control
-condition for differential aggregation.}
+\item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use
+as control condition for differential aggregation.}
 
 \item{...}{: Additional arguments to pass to \code{\link[=Aggregation]{Aggregation()}}
 For differential aggregation plot, \code{submatrices} will take the matrices

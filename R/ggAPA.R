@@ -2,40 +2,44 @@
 #'
 #' ggAPA
 #' @description Create a ggplot object used for plot aggregation.
-#' @param aggregatedMtx <matrix> : The matrix to plot. (Default NULL)
-#' @param title <character> : The title of plot. (Default NULL)
-#' @param trim <numeric> : A number between 0 and 100 that give the percentage
-#'  of trimming. (Default 0)
-#' @param tails <character> : Which boundary must be trim, if it's both, trim
-#'  half of the percentage in inferior and superior see QtlThreshold.
-#'  (Default "both")
-#' @param colMin <numeric> : Minimal value of Heatmap, force color range.
-#'  If Null automaticaly find. (Default NULL)
-#' @param colMid <numeric> : Center value of Heatmap, force color range.
-#'  If Null automaticaly find. (Default NULL)
-#' @param colMax <numeric> : Maximal value of Heatmap, force color range.
-#'  If Null automaticaly find. (Default NULL)
+#' @param aggregatedMtx <matrix> : The matrix to plot.
+#' (Default NULL)
+#' @param title <character> : The title of plot.
+#' (Default NULL)
+#' @param trim <numeric> : A number between 0 and 100
+#' that gives the percentage of trimming. (Default 0)
+#' @param tails <character> : Which boundary must be trimmed?
+#' If it's both, trim half of the percentage in inferior and superior.
+#' see `QtlThreshold`. (Default "both")
+#' @param colMin <numeric> : Minimal value of Heatmap,
+#' force color range. If `NULL` automatically find. (Default NULL)
+#' @param colMid <numeric> : Center value of Heatmap,
+#' force color range. If `NULL` automatically find. (Default NULL)
+#' @param colMax <numeric> : Maximal value of Heatmap,
+#' force color range. If `NULL` automatically find. (Default NULL)
 #' @param colBreaks <numeric> : Repartition of colors.
-#'  If Null automaticaly find. (Default NULL)
+#'  If `NULL` automatically find. (Default NULL)
 #' @param blurPass <numeric> : Number of blur pass. (Default 0)
-#' @param boxKernel <numeric> : If NULL automaticaly compute for 3 Sd.
-#'  (Default NULL)
-#' @param kernSize <numeric> : Size of box applied to blurr if null automaticaly
-#'  compute for 3 Sd. (Default NULL)
+#' @param boxKernel <numeric> : If `NULL` automatically compute
+#' for 3 Sd. (Default NULL)
+#' @param kernSize <numeric> : Size of box applied to blurr.
+#' If `NULL` automatically compute for 3 Sd. (Default NULL)
 #' @param stdev <numeric> : SD of gaussian smooth. (Default 0.5)
-#' @param loTri <numeric> : The value that replace all value in the lower
-#'  triangle of matrice (Usefull when blur is apply). (Default NULL)
-#' @param colors <character> : Heatmap color list. If NULL automaticaly compute.
-#'  (Default NULL)
-#' @param na.value <character> : Color of NA values. (Default "#F2F2F2")
-#' @param colorScale <character> : Shape of color scale on of "linear" or
-#'  "density" based. (Default "linear")
-#' @param bias <numeric> : A positive number. Higher values give more widely
-#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
-#'  (Default 1)
-#' @param paletteLength <numeric> : The number of color in the palette.
-#'  (Default 51)
-#' @param annotate <logical> : Should there be axis ticks? (Default: TRUE)
+#' @param loTri <numeric> : The value that replace all value in
+#' the lower triangle of matrice (Usefull when blur is apply).(Default NULL)
+#' @param colors <character> : Heatmap color list.
+#' If `NULL`, automatically compute. (Default NULL)
+#' @param na.value <character> : Color of NA values.
+#' (Default "#F2F2F2")
+#' @param colorScale <character> : Shape of color scale on of
+#' "linear" or "density" based. (Default "linear")
+#' @param bias <numeric> : A positive number. Higher values give
+#' more widely spaced colors at the high end. See `?grDevices::colorRamp`
+#' for more details. (Default 1)
+#' @param paletteLength <numeric> : The number of color in the
+#' palette. (Default 51)
+#' @param annotate <logical> : Should there be axis ticks?
+#' (Default: TRUE)
 #' @return A ggplot object.
 #' @export
 #' @examples
@@ -305,24 +309,24 @@ ggAPA <- function(
     ggplot2::theme_classic()
     if(annotate){
         if(is.null(colnames(aggregatedMtx))){
-            extent = (floor(
+            extent <- (floor(
                 nrow(aggregatedMtx)/2) * attributes(
                     aggregatedMtx)$resolution)/1000
-            breaks_y = c(1,ceiling(nrow(aggregatedMtx)/2),
+            breaks_y <- c(1,ceiling(nrow(aggregatedMtx)/2),
                 nrow(aggregatedMtx))
-            breaks_x = c(1,ceiling(ncol(aggregatedMtx)/2),
+            breaks_x <- c(1,ceiling(ncol(aggregatedMtx)/2),
                 ncol(aggregatedMtx))
-            labels_y = c(paste0("-",
+            labels_y <- c(paste0("-",
                 extent, "KB"),"Anchor",paste0("+",
                 extent, "KB"))
-            labels_x = c(paste0("-",
+            labels_x <- c(paste0("-",
                 extent, "KB"),"Bait",paste0("+",
                 extent, "KB"))
         }else{
-            breaks_y = seq_along(rownames(aggregatedMtx))
-            labels_y = rownames(aggregatedMtx)
-            breaks_x = seq_along(colnames(aggregatedMtx))
-            labels_x = colnames(aggregatedMtx)
+            breaks_y <- seq_along(rownames(aggregatedMtx))
+            labels_y <- rownames(aggregatedMtx)
+            breaks_x <- seq_along(colnames(aggregatedMtx))
+            labels_x <- colnames(aggregatedMtx)
         }
         plot.ggp <- plot.ggp+
             ggplot2::scale_y_continuous(
@@ -343,10 +347,10 @@ ggAPA <- function(
             )
     
     }else{
-        breaks_y = seq_along(rownames(aggregatedMtx))
-        labels_y = rownames(aggregatedMtx)
-        breaks_x = seq_along(colnames(aggregatedMtx))
-        labels_x = colnames(aggregatedMtx)
+        breaks_y <- seq_along(rownames(aggregatedMtx))
+        labels_y <- rownames(aggregatedMtx)
+        breaks_x <- seq_along(colnames(aggregatedMtx))
+        labels_x <- colnames(aggregatedMtx)
         plot.ggp <- plot.ggp+
             ggplot2::scale_y_continuous(
                 breaks = breaks_y,

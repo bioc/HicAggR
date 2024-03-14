@@ -3,19 +3,19 @@
 #' SearchPairs
 #' @description Creates pairs of coordinates from indexed anchor and bait
 #'  genomic coordinates according to distance constraints.
-#' @param indexAnchor <GRanges>: A first indexed GRanges object used as pairs
-#'  anchor (must be indexed using IndexFeatures()).
-#' @param indexBait <GRanges>: A second indexed GRanges object used as pairs
-#'  bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used
-#'  instead (Default NULL)
-#' @param minDist <numeric>: Minimal distance between anchors and baits.
-#'  (Default NULL)
-#' @param maxDist <numeric>: Maximal distance between anchors and baits.
-#'  (Default NULL)
-#' @param exclude_self_interactions <logical> Should pairs between
-#' the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)
+#' @param indexAnchor <GRanges>: A first indexed GRanges object
+#' used as pairs anchor (must be indexed using IndexFeatures()).
+#' @param indexBait <GRanges>: A second indexed GRanges object
+#' used as pairs bait (must be indexed using IndexFeatures()).
+#' If NULL, indexAnchor is used instead (Default NULL)
+#' @param minDist <numeric>: Minimal distance between anchors
+#' and baits. (Default NULL)
+#' @param maxDist <numeric>: Maximal distance between anchors
+#' and baits. (Default NULL)
+#' @param exclude_self_interactions <logical> Should pairs
+#' between the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)
 #' @param cores <integer> : Number of cores to use. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
+#' @param verbose <logical>: Show the progression in console?
 #'  (Default FALSE)
 #' @return A GInteractions object.
 #' @export

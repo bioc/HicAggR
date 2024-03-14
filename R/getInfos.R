@@ -3,7 +3,8 @@
 #' getInfos
 #'
 #' @param file <character> path to your file.
-#' @param printInfos <logical> print info on console? (Default: TRUE)
+#' @param printInfos <logical> print info on console?
+#' (Default: TRUE)
 #' @param returnInfos <logical> return info? (Default: FALSE)
 #'
 #' @return list of characters if `returnInfos` is TRUE.

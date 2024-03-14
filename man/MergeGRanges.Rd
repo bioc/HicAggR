@@ -7,14 +7,14 @@
 MergeGRanges(..., sortRanges = FALSE, reduceRanges = FALSE)
 }
 \arguments{
-\item{...}{<GRanges or GRangesList or list\link{GRanges}>: Some GRanges or a list
-of GRanges or a GRangesList.}
+\item{...}{<GRanges or GRangesList or list\link{GRanges}>:
+Some GRanges or a list of GRanges or a GRangesList.}
 
-\item{sortRanges}{\if{html}{\out{<logical>}}: Whether the result should be sorted.
-(Default FALSE)}
+\item{sortRanges}{\if{html}{\out{<logical>}}: Whether the result should be
+sorted. (Default FALSE)}
 
-\item{reduceRanges}{\if{html}{\out{<logical>}}: Whether the result should be reduce.
-See GenomicRanges::reduce for more details. (Default FALSE)}
+\item{reduceRanges}{\if{html}{\out{<logical>}}: Whether the result should be
+reduced. See GenomicRanges::reduce for more details. (Default FALSE)}
 }
 \value{
 a GRange object.

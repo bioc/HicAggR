@@ -17,21 +17,24 @@ Hue(
 \arguments{
 \item{paletteLength}{\if{html}{\out{<numeric>}}: Color number.}
 
-\item{rotation}{\if{html}{\out{<numeric>}}: If positive, rotates clockwise in the color
-space, reversing if the number is negative. If is NULL compute rotation
-according to hueRange parameter. (Default NULL)}
+\item{rotation}{\if{html}{\out{<numeric>}}: If positive, rotates clockwise
+in the color space, reversing if the number is negative. If is NULL,
+compute rotation according to hueRange parameter. (Default NULL)}
 
-\item{hueRange}{\if{html}{\out{<numeric>}}: Degree range in color space between 0 and 360.
-(Default c(0,360))}
+\item{hueRange}{\if{html}{\out{<numeric>}}: Degree range in color space
+between 0 and 360. (Default c(0,360))}
 
-\item{saturation}{\if{html}{\out{<numeric>}}: Saturation value between 0 and 1. (Default 0.65)}
+\item{saturation}{\if{html}{\out{<numeric>}}: Saturation value between 0 and 1.
+(Default 0.65)}
 
-\item{lightness}{\if{html}{\out{<numeric>}}: Lightness value between 0 and 1. (Default 0.65)}
+\item{lightness}{\if{html}{\out{<numeric>}}: Lightness value between 0 and 1.
+(Default 0.65)}
 
-\item{alphaValue}{\if{html}{\out{<numeric>}}: Opacity value between 0 and 1. (Default 1)}
+\item{alphaValue}{\if{html}{\out{<numeric>}}: Opacity value between 0 and 1.
+(Default 1)}
 
-\item{alpha}{\if{html}{\out{<logical>}}: Whether the alpha layer should be returned.
-(Default FALSE)}
+\item{alpha}{\if{html}{\out{<logical>}}: Whether the alpha layer should be
+returned. (Default FALSE)}
 }
 \value{
 A vector of color.

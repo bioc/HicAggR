@@ -6,26 +6,29 @@
 #'  The genomic coordinates on which compute the extraction of HiC submatrix.
 #' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
 #'  The HiC maps list.
-#' @param referencePoint <character>: Type of extracted submatrices.
-#'  "rf" for "region feature" to extract triangle-shaped matrices around
-#'  regions or "pf" for "point feature" to extract square-shaped matrices
-#'  around points. (Default "rf")
-#' @param hicResolution <numeric>: The resolution in used in hicLst.
-#'  If NULL automatically find in resolution attributes of hicLst.
-#'  (Default NULL)
-#' @param matriceDim <numeric>: The size of matrices in output. (Default 21).
-#' @param shift <numeric>: Only when "referencePoint" is "rf". Factor defining
-#'  how much of the distance between anchor and bait is extracted before and
-#'  after the region (Default 1). Ex: for shift=2, extracted matrices will
-#'  be 2*regionSize+regionSize+2*regionSize.
-#' @param remove_duplicates <Logical>: remove duplicated submatrices.
-#'  This avoids duplicated submatrices when both anchor and bait bins are from
+#' @param referencePoint <character>: Type of
+#' extracted submatrices. "rf" for "region feature" to extract triangle-shaped
+#' matrices around regions or "pf" for "point feature" to extract
+#' square-shaped matrices around points. (Default "rf")
+#' @param hicResolution <numeric>: The resolution
+#' used in hicLst. If `NULL`, automatically find in resolution attributes
+#' of hicLst. (Default NULL)
+#' @param matriceDim <numeric>: The size of matrices in output.
+#' (Default 21).
+#' @param shift <numeric>: Only when "referencePoint" is "rf".
+#' Factor defining how much of the distance between anchor and bait is
+#' extracted before and after the region (Default 1).
+#' Ex: for shift=2, extracted matrices will be: 
+#' `2*regionSize+regionSize+2*regionSize`.
+#' @param remove_duplicates <Logical>: 
+#' remove duplicated submatrices ?
+#' This avoids duplicated submatrices when both anchor and bait bins are from
 #'  the same feature. ex. BEAF32-BEAF32, same submatrix twice with opposite
 #'  orientations(Default TRUE)
-#' @param cores <integer> : An integer to specify the number of cores.
-#'  (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
-#'  (Default FALSE)
+#' @param cores <integer> : An integer
+#' to specify the number of cores. (Default 1)
+#' @param verbose <logical>: If TRUE, 
+#' show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @export
 #' @importFrom S4Vectors mcols runValue runLength metadata

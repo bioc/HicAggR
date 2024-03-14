@@ -4,9 +4,9 @@
 #' @description Function that computes quantification of contact frequencies
 #'  in a given area and returns it in a named vector.
 #' @param matrices <List[matrix]>: A matrices list.
-#' @param areaFun <character or function>: A character or function that allows
-#'  to extract an area from each matrix that composes the matrices list
-#'  (Default "center").
+#' @param areaFun <character or function>: A character or
+#' function that allows to extract an area from each matrix that composes
+#' the matrices list (Default "center").
 #' \itemize{
 #' \item "C" or "CENTER": 3x3 pixels at the intersection between anchor and
 #'  bait.
@@ -20,8 +20,9 @@
 #' \item "R" or "RIGHT": pixels in the right of the center area
 #' \item "D" or "DONUT": pixels that surrounds the center area
 #' }
-#' @param operationFun <character or function>: A character or function
-#'  specifying the operation applied to the selected area (Default "mean_rm0").
+#' @param operationFun <character or function>: A character or
+#' function specifying the operation applied to the selected area.
+#' (Default "mean_rm0")
 #' \itemize{
 #' \item "mean_rm0": apply a mean after replacing 0 with NA
 #' \item "median_rm0": apply a median after replacing 0 with NA
@@ -30,9 +31,9 @@
 #' \item "sum": apply a sum
 #' \item "mean" or other character: apply a mean
 #' }
-#' @param varName <character>: The name of a column in GInteraction attributes
-#'  of matrices used as named in the output vector (Default NULL). By default,
-#'  sub-matrices IDs are used.
+#' @param varName <character>: The name of a column in
+#' GInteraction attributes of matrices used as named in the output vector
+#' (Default NULL). By default, sub-matrices IDs are used.
 #' @return A GRange object.
 #' @export
 #' @importFrom S4Vectors mcols

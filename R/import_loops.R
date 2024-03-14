@@ -4,19 +4,22 @@
 #' @description Imports bedpe file formats as GInteractions object usable
 #' to perform submatrix extraction with `ExtractSubmatrix()`
 #' @param file_bedpe bedpe file path (Default NULL)
-#' @param genomicConstraint <GRanges>: GRanges object of constraint regions.
-#'  If NULL chromosomes in chromSizes are used as constraints (Default NULL)
-#' @param discard_trans <logical>: If TRUE discard loops where anchor and bait
-#'  are in different genomic constraint elements, either different TADs or
-#'  chromosomes, if `genomicConstraint = NULL`. (Default FALSE)
-#' @param chromSizes <data.frame>: A data.frame containing chromosomes names
-#'  and lengths in base pairs (see example). (Default NULL)
-#' @param binSize <integer>: Bin size in bp - corresponds to matrix resolution.
-#' @param minDist <numeric>: Minimal distance between anchors and baits.
-#'  (Default NULL)
-#' @param maxDist <numeric>: Maximal distance between anchors and baits.
-#'  (Default NULL)
-#' @param verbose <logical>: If TRUE show the progression in console.
+#' @param genomicConstraint <GRanges>: GRanges object of
+#' constraint regions. If NULL chromosomes in chromSizes are used as
+#' constraints (Default NULL).
+#' @param discard_trans <logical>: If TRUE discard loops where
+#' anchor and bait are in different genomic constraint elements,
+#' either different TADs or chromosomes, if `genomicConstraint = NULL`.
+#' (Default FALSE)
+#' @param chromSizes <data.frame>: A data.frame containing
+#' chromosomes names and lengths in base pairs (see example). (Default NULL)
+#' @param binSize <integer>: Bin size in bp - corresponds to
+#' matrix resolution.
+#' @param minDist <numeric>: Minimal distance between anchors
+#' and baits. (Default NULL)
+#' @param maxDist <numeric>: Maximal distance between anchors
+#' and baits. (Default NULL)
+#' @param verbose <logical>: Show the progression in console?
 #'  (Default FALSE)
 #' @param cores <integer>: Number of cores to use. (Default 1)
 #'

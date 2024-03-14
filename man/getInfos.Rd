@@ -9,7 +9,8 @@ getInfos(file = NULL, printInfos = TRUE, returnInfos = FALSE)
 \arguments{
 \item{file}{\if{html}{\out{<character>}} path to your file.}
 
-\item{printInfos}{\if{html}{\out{<logical>}} print info on console? (Default: TRUE)}
+\item{printInfos}{\if{html}{\out{<logical>}} print info on console?
+(Default: TRUE)}
 
 \item{returnInfos}{\if{html}{\out{<logical>}} return info? (Default: FALSE)}
 }

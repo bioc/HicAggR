@@ -15,23 +15,23 @@ SearchPairs(
 )
 }
 \arguments{
-\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object used as pairs
-anchor (must be indexed using IndexFeatures()).}
+\item{indexAnchor}{\if{html}{\out{<GRanges>}}: A first indexed GRanges object
+used as pairs anchor (must be indexed using IndexFeatures()).}
 
-\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object used as pairs
-bait (must be indexed using IndexFeatures()). If NULL, indexAnchor is used
-instead (Default NULL)}
+\item{indexBait}{\if{html}{\out{<GRanges>}}: A second indexed GRanges object
+used as pairs bait (must be indexed using IndexFeatures()).
+If NULL, indexAnchor is used instead (Default NULL)}
 
-\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors and baits.
-(Default NULL)}
+\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors
+and baits. (Default NULL)}
 
-\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits.
-(Default NULL)}
+\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors
+and baits. (Default NULL)}
 
-\item{exclude_self_interactions}{\if{html}{\out{<logical>}} Should pairs between
-the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)}
+\item{exclude_self_interactions}{\if{html}{\out{<logical>}} Should pairs
+between the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+\item{verbose}{\if{html}{\out{<logical>}}: Show the progression in console?
 (Default FALSE)}
 
 \item{cores}{\if{html}{\out{<integer>}} : Number of cores to use. (Default 1)}

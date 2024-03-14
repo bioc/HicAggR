@@ -3,24 +3,26 @@
 #' IndexFeatures
 #' @description Function that indexes a GRanges object on binned genome and
 #'  constraints. Needed prior HicAggR::SearchPairs() function.
-#' @param gRangeList <GRanges or GRangesList or list[GRanges]>: GRanges object,
-#'  list of GRanges or GRangesList containing coordinates to index.
-#' @param genomicConstraint <GRanges>: GRanges object of constraint regions.
-#'  Note that bins in the same constraint region only will be paired in
-#'  HicAggR::SearchPairs(). If NULL chromosomes in chromSizes are used as
-#'  constraints (Default NULL)
-#' @param chromSizes <data.frame>: A data.frame containing chromosomes names
-#'  and lengths in base pairs (see example).
-#' @param binSize <integer>: Bin size in bp - corresponds to matrix resolution.
-#' @param metadataColName <character> : A character vector that specify the
-#'  metadata columns of GRanges on which apply the summary method if multiple
-#'  ranges are indexed in the same bin.
-#' @param method <character>: A string defining which summary method is used on
-#'  metadata columns defined in metadataColName if multiple ranges are indexed
-#'  in the same bin. Use 'mean', 'median', 'sum', 'max' or 'min'.
-#'  (Default 'mean'')
+#' @param gRangeList <GRanges or GRangesList or list[GRanges]>:
+#' GRanges object, list of GRanges or GRangesList containing coordinates
+#' to index.
+#' @param genomicConstraint <GRanges>: GRanges object of
+#' constraint regions. Note that bins in the same constraint region only
+#' will be paired in HicAggR::SearchPairs(). If NULL chromosomes in chromSizes
+#' are used as constraints (Default NULL)
+#' @param chromSizes <data.frame>: A data.frame containing
+#' chromosomes names and lengths in base pairs (see example).
+#' @param binSize <integer>: Bin size in bp - corresponds to
+#' matrix resolution.
+#' @param metadataColName <character> : A character vector that
+#' specify the metadata columns of GRanges on which to apply the summary
+#' method if multiple ranges are indexed in the same bin.
+#' @param method <character>: A string defining which summary
+#' method is used on metadata columns defined in metadataColName if multiple
+#' ranges are indexed in the same bin. Use 'mean', 'median', 'sum', 'max' or
+#' 'min'. (Default 'mean'')
 #' @param cores <integer> : Number of cores used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
+#' @param verbose <logical>: Show the progression in console?
 #'  (Default FALSE)
 #' @return A GRanges object.
 #' @export

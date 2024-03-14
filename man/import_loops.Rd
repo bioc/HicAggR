@@ -19,25 +19,28 @@ import_loops(
 \arguments{
 \item{file_bedpe}{bedpe file path (Default NULL)}
 
-\item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of constraint regions.
-If NULL chromosomes in chromSizes are used as constraints (Default NULL)}
+\item{genomicConstraint}{\if{html}{\out{<GRanges>}}: GRanges object of
+constraint regions. If NULL chromosomes in chromSizes are used as
+constraints (Default NULL).}
 
-\item{discard_trans}{\if{html}{\out{<logical>}}: If TRUE discard loops where anchor and bait
-are in different genomic constraint elements, either different TADs or
-chromosomes, if \code{genomicConstraint = NULL}. (Default FALSE)}
+\item{discard_trans}{\if{html}{\out{<logical>}}: If TRUE discard loops where
+anchor and bait are in different genomic constraint elements,
+either different TADs or chromosomes, if \code{genomicConstraint = NULL}.
+(Default FALSE)}
 
-\item{chromSizes}{<data.frame>: A data.frame containing chromosomes names
-and lengths in base pairs (see example). (Default NULL)}
+\item{chromSizes}{<data.frame>: A data.frame containing
+chromosomes names and lengths in base pairs (see example). (Default NULL)}
 
-\item{binSize}{\if{html}{\out{<integer>}}: Bin size in bp - corresponds to matrix resolution.}
+\item{binSize}{\if{html}{\out{<integer>}}: Bin size in bp - corresponds to
+matrix resolution.}
 
-\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors and baits.
-(Default NULL)}
+\item{minDist}{\if{html}{\out{<numeric>}}: Minimal distance between anchors
+and baits. (Default NULL)}
 
-\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors and baits.
-(Default NULL)}
+\item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors
+and baits. (Default NULL)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
+\item{verbose}{\if{html}{\out{<logical>}}: Show the progression in console?
 (Default FALSE)}
 
 \item{cores}{\if{html}{\out{<integer>}}: Number of cores to use. (Default 1)}

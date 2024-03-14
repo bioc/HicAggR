@@ -3,22 +3,22 @@
 #' PlotAPA
 #' @description Draw aggregation plot from aggregation matrices.
 #' @param aggregatedMtx <matrix>: The aggregated matrix.
-#' @param trim <numeric>: A number between 0 and 100 thaht give the percentage
-#'  of triming in matrices.
+#' @param trim <numeric>: A number between 0 and 100 that gives
+#' the percentage of triming in matrices.
 #' @param colMin <matrix>: The minimal value in color scale.
 #'  If Null automaticaly find.
 #' @param colMid <matrix>: The middle value in color scale.
 #'  If Null automaticaly find.
 #' @param colMax <matrix>: The mximal value in color scale.
 #'  If Null automaticaly find.
-#' @param colMinCond <matrix>: Avalaible for plotting differantial aggregation.
-#'  The minimal value in color scale in the classsical aggregation plot.
-#'  If Null automaticaly find.
-#' @param colMaxCond <matrix>: Avalaible for plotting differantial aggregation.
-#'  The maxiaml value in color scale in the classsical aggregation plot.
-#'  If Null automaticaly find.
-#' @param extra_info <logical> do you want to have a recall of your arguments
-#' values? (Default FALSE)
+#' @param colMinCond <matrix>: Avalaible for plotting
+#' differential aggregation. The minimal value in color scale in the
+#' classsical aggregation plot. If `NULL` automaticaly find.
+#' @param colMaxCond <matrix>: Avalaible for plotting
+#' differantial aggregation. The maxiaml value in color scale in the
+#' classsical aggregation plot. If `NULL` automaticaly find.
+#' @param extra_info <logical> do you want to have a recall of
+#' your arguments values? (Default FALSE)
 #' @param ... additional arguments to [ggAPA()]
 #' @return None
 #' @export
@@ -466,19 +466,19 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #' @description Separates matrices based on interaction distance, performs
 #'  aggregation and plots Aggregated signal for each chunk of interaction
 #'  distances.
-#' @param submatrices <listmatrix>: The matrices list to separate using
-#'  interaction distances and aggregate.
+#' @param submatrices <listmatrix>: The matrices list to
+#' separate using interaction distances and aggregate.
 #' Chunks of distances are created with:
 #' `c(0,50000*2 ^ seq(0,5,by=1))`. 
 #' Other matrices with distances over 1.6 Mb are aggregated in the same
 #'  final chunk.
-#' @param ctrlSubmatrices <listmatrix>: The matrices list to use as control
-#'  condition for differential aggregation.
+#' @param ctrlSubmatrices <listmatrix>: The matrices list to use
+#' as control condition for differential aggregation.
 #' @param ... : Additional arguments to pass to [Aggregation()]
 #' For differential aggregation plot, `submatrices` will take the matrices
 #'  of the treated condition. 
 #' eg:
-#'  `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst,
+#' `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst,
 #' ctrlSubmatrices = interactions_Ctrl.mtx_lst)`
 #' @param plot.opts list of arguments to pass to [ggAPA()].
 #' @return A plot with separate APAs per distance and a list of aggregated
@@ -534,7 +534,8 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #'     plot.opts = list(colors = list("blue","white","red"))
 #' )
 #' 
-PlotAPA_byDistance <- function(submatrices = NULL,
+PlotAPA_byDistance <- function(
+    submatrices = NULL,
     ctrlSubmatrices=NULL,
     ...,
     plot.opts=NULL){

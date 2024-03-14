@@ -282,9 +282,10 @@ GaussBox <- function(
 #' GenomicSystem
 #' @description Convert numbers of base into string with order of magnitude
 #'  (Kbp, Mbp, Gbp) and vice versa.
-#' @param x <character or numeric>: The number to convert or string to convert.
-#' @param digits <integer>: The number of significant digits to be used.
-#'  See [signif()] for more informations. (Default 3)
+#' @param x <character or numeric>: The number
+#' to convert or string to convert.
+#' @param digits <integer>: The number of significant
+#' digits to be used. See [signif()] for more informations. (Default 3)
 #' @return The converted number or string.
 #' @export
 #' @examples
@@ -303,30 +304,35 @@ GenomicSystem <- function(x, digits = 3) {
             x >= 0 ~ paste0(signif(x * 10^(0), digits), "Bp"))
     } else if (is.character(x)) {
         x <- toupper(x)
-        dplyr::case_when(
+        tryCatch(as.numeric(x),
+        error = function(e){
+            message("An error occurred on GenomicSystem conversion:\n", e)
+        },
+        warning = function(w){
+            dplyr::case_when(
             grepl(x = x, pattern = "G") ~ (10^9) * 
                 as.numeric(gsub(
-                        x = x,
-                        pattern = "[a-z]",
-                        ignore.case = TRUE,
-                        replacement = ""
+                x = x,
+                pattern = "[a-z]",
+                ignore.case = TRUE,
+                replacement = ""
                 )),
             grepl(x = x, pattern = "M") ~ (10^6) * 
                 as.numeric(gsub(
-                    x = x,
-                    pattern = "[a-z]",
-                    ignore.case = TRUE,
-                    replacement = ""
+                x = x,
+                pattern = "[a-z]",
+                ignore.case = TRUE,
+                replacement = ""
                 )),
             grepl(x = x, pattern = "K") ~ (10^3) * 
                 as.numeric(gsub(
-                    x = x,
-                    pattern = "[a-z]",
-                    ignore.case = TRUE,
-                    replacement = ""
-                )),
-            suppressWarnings(!is.na(as.numeric(x))) ~
-                suppressWarnings(as.numeric(x)))
+                x = x,
+                pattern = "[a-z]",
+                ignore.case = TRUE,
+                replacement = ""
+                ))
+            )
+        })
     }
 }
 
@@ -513,16 +519,19 @@ Hsl2Rgb <- function(
 #' Hue
 #' @description Create an Hue palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param rotation <numeric>: If positive, rotates clockwise in the color
-#'  space, reversing if the number is negative. If is NULL compute rotation
-#'  according to hueRange parameter. (Default NULL)
-#' @param hueRange <numeric>: Degree range in color space between 0 and 360.
-#'  (Default c(0,360))
-#' @param saturation <numeric>: Saturation value between 0 and 1. (Default 0.65)
-#' @param lightness <numeric>: Lightness value between 0 and 1. (Default 0.65)
-#' @param alphaValue <numeric>: Opacity value between 0 and 1. (Default 1)
-#' @param alpha <logical>: Whether the alpha layer should be returned.
-#'  (Default FALSE)
+#' @param rotation <numeric>: If positive, rotates clockwise
+#' in the color space, reversing if the number is negative. If is NULL,
+#' compute rotation according to hueRange parameter. (Default NULL)
+#' @param hueRange <numeric>: Degree range in color space
+#' between 0 and 360. (Default c(0,360))
+#' @param saturation <numeric>: Saturation value between 0 and 1.
+#' (Default 0.65)
+#' @param lightness <numeric>: Lightness value between 0 and 1.
+#' (Default 0.65)
+#' @param alphaValue <numeric>: Opacity value between 0 and 1.
+#' (Default 1)
+#' @param alpha <logical>: Whether the alpha layer should be
+#' returned. (Default FALSE)
 #' @return A vector of color.
 #' @export
 #' @examples
@@ -860,7 +869,15 @@ Plus <- function(
 #' @param tails <character>: Bounds to return, "lower", "upper" or "both".
 #'  (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
-#' @noRd
+#' @export
+#' @examples
+#' set.seed(1111)
+#' x <- 0:100
+#' x <- sort(x)
+#' x
+#' QtlThreshold(x, prctThr = 5, tails = "lower")
+#' QtlThreshold(x, prctThr = 5, tails = "both")
+#' QtlThreshold(x, prctThr = 5, tails = "upper")
 QtlThreshold <- function(
     x = NULL, prctThr = 5, tails = "both"
 ) {
@@ -1141,7 +1158,8 @@ SeqEnds <- function(
 #' StrToGRanges
 #' @description Convert ranges describe with string 
 #' (i.e seqname:start-end:strand) in GRanges object.
-#' @param stringRanges <character>: Strings to convert on GRanges.
+#' @param stringRanges <character>: Strings to convert on
+#' GRanges.
 #' @return A GRanges object.
 #' @export
 #' @importFrom S4Vectors mcols
@@ -1275,14 +1293,15 @@ TrimOutliers <- function(
 #' viridis
 #' @description Create a viridis palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or
-#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
+#' @param space <numeric>: A character string; interpolation
+#' in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details.
 #'  (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
-#'  See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely
-#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
-#'  (Default 1)
+#' @param interpolationMethod <numeric>: Use spline or linear
+#' interpolation. See ?grDevices::colorRamp for more details.
+#' (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give
+#' more widely spaced colors at the high end. See ?grDevices::colorRamp
+#' for more details. (Default 1)
 #' @return A vector of color.
 #' @export
 #' @examples
@@ -1362,14 +1381,16 @@ WrapFunction <- function(
 #' YlGnBu
 #' @description Create a YlGnBu palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or
-#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
+#' @param space <numeric>: A character string; interpolation
+#' in RGB or CIE Lab color spaces. See ?grDevices::colorRamp for more details.
 #'  (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
-#'  See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely
-#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
-#'  (Default 1)
+#' @param interpolationMethod <numeric>: Use spline or linear
+#' interpolation. See ?grDevices::colorRamp for more details.
+#' (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give
+#' more widely spaced colors at the high end. See `?grDevices::colorRamp`
+#' for more details.
+#' (Default 1)
 #' @return A vector of color.
 #' @export
 #' @examples
@@ -1395,14 +1416,15 @@ YlGnBu <- function(
 #' YlOrRd
 #' @description Create a YlOrRd palette.
 #' @param paletteLength <numeric>: Color number.
-#' @param space <numeric>: A character string; interpolation in RGB or
-#'  CIE Lab color spaces. See ?grDevices::colorRamp for more details.
-#'  (Default "rgb")
-#' @param interpolationMethod <numeric>: Use spline or linear interpolation.
-#'  See ?grDevices::colorRamp for more details. (Default "linear")
-#' @param bias <numeric>: A positive number. Higher values give more widely
-#'  spaced colors at the high end. See ?grDevices::colorRamp for more details.
-#'  (Default 1)
+#' @param space <numeric>: A character string; interpolation
+#' in RGB or CIE Lab color spaces. See `?grDevices::colorRamp`
+#' for more details. (Default "rgb")
+#' @param interpolationMethod <numeric>: Use spline or linear
+#' interpolation. See `?grDevices::colorRamp` for more details.
+#' (Default "linear")
+#' @param bias <numeric>: A positive number. Higher values give
+#' more widely spaced colors at the high end. See `?grDevices::colorRamp`
+#' for more details. (Default 1)
 #' @return A vector of color.
 #' @export
 #' @examples

@@ -5,14 +5,16 @@
 #'  computed per genomic distance.
 #' @param hicLst <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
 #'  The HiC maps list.
-#' @param method <character> Options are "mean_non_zero", "mean_total",
-#'  or "lieberman". Look at details for more (Default: "mean_non_zero")
-#' @param cores <numerical> : Number of cores to be used. (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
+#' @param method <character> Options are "mean_non_zero",
+#' "mean_total", or "lieberman". Look at details for more.
+#' (Default: "mean_non_zero")
+#' @param cores <numerical> : Number of cores to be used.
+#' (Default 1)
+#' @param verbose <logical>: Show the progression in console?
 #'  (Default FALSE)
-#' @param plot_contact_vs_dist Whether to plot contact vs distance curve
-#'  per chromosome ("per_seq"), all chromosomes ("total") or not (NULL). 
-#'  (Default "per_seq")
+#' @param plot_contact_vs_dist Whether to plot
+#' contact vs distance curve per chromosome ("per_seq"),
+#' all chromosomes ("total") or not (NULL). (Default "per_seq")
 #' @return A matrices list.
 #' @export
 #' @importFrom rlang .data

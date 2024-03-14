@@ -4,8 +4,8 @@
 #' @description Cut a mega contactMatrix (joint from multiple chromosomic maps)
 #'  into a list of contactMatrix.
 #' @param megaHic <contactMatrix>: The HiC megamap.
-#' @param verbose <logical>: If TRUE show the progression in console.
-#'  (Default FALSE)
+#' @param verbose <logical>: If TRUE,
+#' show the progression in console. (Default FALSE)
 #' @return A matrices list.
 #' @export
 #' @examples

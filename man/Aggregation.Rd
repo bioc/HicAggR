@@ -20,16 +20,17 @@ control.}
 
 \item{matrices}{<list\link{matrix}>: The matrices list to aggregate.}
 
-\item{aggFun}{\if{html}{\out{<function or chracter>}}: The function use to aggregate
-each pixel in matrix. If the parameter is a character so:
+\item{aggFun}{\if{html}{\out{<function or chracter>}}: The function used
+to aggregate each pixel in matrix.
+If the parameter is a character so:
 \itemize{
 \item "50\%" or "median" apply the median
 \item "+" or "sum" apply the sum
 \item other (Default) apply the mean
 }}
 
-\item{diffFun}{\if{html}{\out{<function or chracter>}}: The function use to compute
-differential. If the parameter is character so:
+\item{diffFun}{\if{html}{\out{<function or chracter>}}: The function used
+to compute differential. If the parameter is character so:
 \itemize{
 \item "-", "substract" or "substraction" apply a substraction
 \item "/" or "ratio" apply a ratio
@@ -37,14 +38,15 @@ differential. If the parameter is character so:
 \item other (Default) apply a log2 on 1+ratio
 }}
 
-\item{scaleCorrection}{\if{html}{\out{<logical>}}: Whether a correction should be done
-on the median value take in ane noising area. (Default TRUE)}
+\item{scaleCorrection}{\if{html}{\out{<logical>}}: Whether a correction
+should be done on the median value take in ane noising area.
+(Default TRUE)}
 
-\item{correctionArea}{\if{html}{\out{<list>}}: Nested list of indice that define a noising
-area fore correction. List muste contain in first an element "i"
-(row indices) then an element called "j" (columns indices).
-If NULL automatically take in upper left part of aggregated matrices.
-(Default NULL)}
+\item{correctionArea}{\if{html}{\out{<list>}}: Nested list of indice
+that define a noising area fore correction. List must
+contain in first an element "i" (row indices) then an
+element called "j" (columns indices). If NULL automatically
+take in upper left part of aggregated matrices. (Default NULL)}
 
 \item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply to each
 pixel of the differential aggregated matrix.}

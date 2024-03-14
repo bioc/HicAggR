@@ -7,17 +7,20 @@
 #'  Extension should be .hic, .cool, .mcool, .h5, .hdf5, .HDF5 or .bedpe"
 #'  assuming .h5 and .hdf5 are only for cool (not mcool).
 #' @param hicResolution <numeric>: The HiC resolution.
-#' @param chromSizes <data.frame>: A data.frame where first colum correspond
-#'  to the chromosomes names, and the second column correspond to the
-#'  chromosomes lengths in base pairs.
-#' @param chrom_1 <numeric>: The seqnames of firsts chromosmes (rows in matrix).
-#' @param chrom_2 <numeric>: The seqnames of second chromosmes (col in matrix).
-#'  If is NULL is equal to chrom_1 (Defalt NULL)
-#' @param cores <numerical> : An integer to specify the number of cores.
-#'  (Default 1)
-#' @param verbose <logical>: If TRUE show the progression in console.
+#' @param chromSizes <data.frame>: A data.frame where first
+#' colum correspond to the chromosomes names, and the second column correspond
+#' to the chromosomes lengths in base pairs.
+#' @param chrom_1 <numeric>: The seqnames of first chromosmes
+#' (rows in matrix).
+#' @param chrom_2 <numeric>: The seqnames of second chromosmes
+#' (col in matrix).
+#' If `NULL` variable will be assigned value of chrom_1 (Defalt NULL).
+#' @param cores <numerical> : An integer to specify the number
+#' of cores. (Default 1)
+#' @param verbose <logical>: Show the progression in console?
 #'  (Default FALSE)
-#' @param hic_norm <character>: "norm" argument to supply to [strawr::straw()].
+#' @param hic_norm <character>: "norm" argument to supply to
+#' [strawr::straw()].
 #'  This argument is for .hic format data only. Available norms can be obtained
 #'  through [strawr::readHicNormTypes()].
 #'  (Default "NONE").
@@ -27,13 +30,14 @@
 #'  Other options can be: "oe", "expected". (Default "observed").
 #' @param cool_balanced <logical> Import already balanced matrix?
 #'  (Default: FALSE)
-#' @param cool_weight_name <character> Name of the correcter in the cool file.
-#'  (Default: weight). [rhdf5::h5ls()] to see the available correcters.
-#' @param cool_divisive_weights <logical> Does the correcter vector contain
-#'  divisive biases as in hicExplorer or multiplicative as in cooltools?
-#'  (Default: FALSE)
-#' @param h5_fill_upper <logical> Do the matrix in h5 format need to be
-#'  transposed? (Default: TRUE)
+#' @param cool_weight_name <character> Name of the correcter in
+#' the cool file. (Default: weight). [rhdf5::h5ls()] to see the available
+#' correctors.
+#' @param cool_divisive_weights <logical> Does the correcter
+#' vector contain divisive biases as in hicExplorer or multiplicative as in
+#' cooltools? (Default: FALSE)
+#' @param h5_fill_upper <logical> Do the matrix in h5 format
+#' need to be transposed? (Default: TRUE)
 #' 
 #' @details If you request "expected" values when importing .hic format data,
 #' you must do yourself the "oe" by importing manually the observed counts

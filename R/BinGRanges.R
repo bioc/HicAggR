@@ -5,21 +5,23 @@
 #'  'median', 'sum', 'max, 'min' ...) to a chosen numerical variable of ranges
 #'  in the same bin.
 #' @param gRange <GRanges>: A GRanges to bin.
-#' @param chromSizes <data.frame>: A data.frame where first colum corresponds to
-#'  the chromosomes names, and the second column corresponds to the chromosomes
-#'  lengths in base pairs.
+#' @param chromSizes <data.frame>: A data.frame 
+#' where first colum corresponds to the chromosomes names,
+#' and the second column corresponds to the chromosomes lengths in base pairs.
 #' @param binSize <numerical>: Width of the bins.
-#' @param method <character>: Name of a summary method as 'mean', 'median',
-#'  'sum', 'max, 'min'. (Default 'mean')
-#' @param metadataColName <character> : A character vector that specify the
-#'  metadata columns of GRanges on which apply the summary method.
-#' @param na.rm <logical> : A logical value indicating whether 'NA' values
-#'  should be stripped before the computation proceeds. (Default TRUE)
+#' @param method <character>: Name of a summary method
+#' as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')
+#' @param metadataColName <character> : A character vector
+#' that specify the metadata columns of GRanges on which
+#' to apply the summary method.
+#' @param na.rm <logical> : A logical value indicating
+#' whether `NA` values should be stripped before the computation proceeds.
+#' (Default TRUE)
 #' @param cores <numerical> : The number of cores. (Default 1)
-#' @param reduceRanges <logical> : Whether duplicated Bin must been reduced
-#'  with de summary method. (Default TRUE)
-#' @param verbose <logical>: If TRUE show the progression in console.
-#'  (Default FALSE)
+#' @param reduceRanges <logical> : Whether duplicated Bins must
+#' be reduced with the summary method (`method` arg). (Default TRUE)
+#' @param verbose <logical>: If TRUE,
+#' show the progression in console. (Default FALSE)
 #' @return A binned GRanges.
 #' @importFrom stats na.omit
 #' @importFrom S4Vectors mcols Rle

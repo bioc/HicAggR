@@ -16,15 +16,18 @@ PrepareMtxList(
 \arguments{
 \item{matrices}{<list\link{matrix}>: The matrices list to prepare.}
 
-\item{minDist}{\if{html}{\out{<numeric>}}: The minimal distance between anchor and bait.}
+\item{minDist}{\if{html}{\out{<numeric>}}: The minimal distance between anchor
+and bait.}
 
-\item{maxDist}{\if{html}{\out{<numeric>}}: The maximal distance between anchor and bait.}
+\item{maxDist}{\if{html}{\out{<numeric>}}: The maximal distance between anchor
+and bait.}
 
-\item{rm0}{\if{html}{\out{<logical>}}: Whether 0 should be replaced with NA. (Default FALSE)}
+\item{rm0}{\if{html}{\out{<logical>}}: Whether 0 should be replaced with NA.
+(Default FALSE)}
 
-\item{transFun}{\if{html}{\out{<function or chracter>}}: The function used to transform
-or scale values in each submatrix before aggregation. The following
-characters can be submitted:
+\item{transFun}{\if{html}{\out{<function or chracter>}}: The function used to
+transform or scale values in each submatrix before aggregation.
+The following characters can be submitted:
 \itemize{
 \item "quantile" or "qtl" apply function dplyr::ntile(x,500)
 \item "percentile" or "prct" apply percentile.
@@ -35,8 +38,8 @@ characters can be submitted:
 \item other or NULL don't apply transformation (Default).
 }}
 
-\item{orientate}{\if{html}{\out{<logical>}}: Whether matrices must be orientate
-before the aggregation.}
+\item{orientate}{\if{html}{\out{<logical>}}: Whether matrices must be
+corrected for orientatation before the aggregation.}
 }
 \value{
 A matrix list ready for aggregation of values extraction.

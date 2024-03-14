@@ -19,8 +19,8 @@ PlotAPA(
 \arguments{
 \item{aggregatedMtx}{\if{html}{\out{<matrix>}}: The aggregated matrix.}
 
-\item{trim}{\if{html}{\out{<numeric>}}: A number between 0 and 100 thaht give the percentage
-of triming in matrices.}
+\item{trim}{\if{html}{\out{<numeric>}}: A number between 0 and 100 that gives
+the percentage of triming in matrices.}
 
 \item{colMin}{\if{html}{\out{<matrix>}}: The minimal value in color scale.
 If Null automaticaly find.}
@@ -31,16 +31,16 @@ If Null automaticaly find.}
 \item{colMax}{\if{html}{\out{<matrix>}}: The mximal value in color scale.
 If Null automaticaly find.}
 
-\item{colMinCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation.
-The minimal value in color scale in the classsical aggregation plot.
-If Null automaticaly find.}
+\item{colMinCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting
+differential aggregation. The minimal value in color scale in the
+classsical aggregation plot. If \code{NULL} automaticaly find.}
 
-\item{colMaxCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting differantial aggregation.
-The maxiaml value in color scale in the classsical aggregation plot.
-If Null automaticaly find.}
+\item{colMaxCond}{\if{html}{\out{<matrix>}}: Avalaible for plotting
+differantial aggregation. The maxiaml value in color scale in the
+classsical aggregation plot. If \code{NULL} automaticaly find.}
 
-\item{extra_info}{\if{html}{\out{<logical>}} do you want to have a recall of your arguments
-values? (Default FALSE)}
+\item{extra_info}{\if{html}{\out{<logical>}} do you want to have a recall of
+your arguments values? (Default FALSE)}
 
 \item{...}{additional arguments to \code{\link[=ggAPA]{ggAPA()}}}
 }

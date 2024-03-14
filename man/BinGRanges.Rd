@@ -19,28 +19,30 @@ BinGRanges(
 \arguments{
 \item{gRange}{\if{html}{\out{<GRanges>}}: A GRanges to bin.}
 
-\item{chromSizes}{<data.frame>: A data.frame where first colum corresponds to
-the chromosomes names, and the second column corresponds to the chromosomes
-lengths in base pairs.}
+\item{chromSizes}{<data.frame>: A data.frame
+where first colum corresponds to the chromosomes names,
+and the second column corresponds to the chromosomes lengths in base pairs.}
 
 \item{binSize}{\if{html}{\out{<numerical>}}: Width of the bins.}
 
-\item{method}{\if{html}{\out{<character>}}: Name of a summary method as 'mean', 'median',
-'sum', 'max, 'min'. (Default 'mean')}
+\item{method}{\if{html}{\out{<character>}}: Name of a summary method
+as 'mean', 'median', 'sum', 'max, 'min'. (Default 'mean')}
 
-\item{metadataColName}{\if{html}{\out{<character>}} : A character vector that specify the
-metadata columns of GRanges on which apply the summary method.}
+\item{metadataColName}{\if{html}{\out{<character>}} : A character vector
+that specify the metadata columns of GRanges on which
+to apply the summary method.}
 
-\item{na.rm}{\if{html}{\out{<logical>}} : A logical value indicating whether 'NA' values
-should be stripped before the computation proceeds. (Default TRUE)}
+\item{na.rm}{\if{html}{\out{<logical>}} : A logical value indicating
+whether \code{NA} values should be stripped before the computation proceeds.
+(Default TRUE)}
 
 \item{cores}{\if{html}{\out{<numerical>}} : The number of cores. (Default 1)}
 
-\item{reduceRanges}{\if{html}{\out{<logical>}} : Whether duplicated Bin must been reduced
-with de summary method. (Default TRUE)}
+\item{reduceRanges}{\if{html}{\out{<logical>}} : Whether duplicated Bins must
+be reduced with the summary method (\code{method} arg). (Default TRUE)}
 
-\item{verbose}{\if{html}{\out{<logical>}}: If TRUE show the progression in console.
-(Default FALSE)}
+\item{verbose}{\if{html}{\out{<logical>}}: If TRUE,
+show the progression in console. (Default FALSE)}
 }
 \value{
 A binned GRanges.

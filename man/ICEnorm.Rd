@@ -9,8 +9,8 @@ ICEnorm(hic, qtlTh = 0.15, maxIter = 50)
 \arguments{
 \item{hic}{\if{html}{\out{<contactMatrix>}}: The HiC maps chunk to normalize.}
 
-\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which the bins
-will be ignored. (Default 0.15)}
+\item{qtlTh}{\if{html}{\out{<numerical>}}: The threshold quantile below which
+the bins will be ignored. (Default 0.15)}
 
 \item{maxIter}{\if{html}{\out{<numerical>}}: The maximum iteration number.}
 }

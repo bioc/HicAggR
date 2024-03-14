@@ -14,9 +14,9 @@ GetQuantif(
 \arguments{
 \item{matrices}{<List\link{matrix}>: A matrices list.}
 
-\item{areaFun}{\if{html}{\out{<character or function>}}: A character or function that allows
-to extract an area from each matrix that composes the matrices list
-(Default "center").
+\item{areaFun}{\if{html}{\out{<character or function>}}: A character or
+function that allows to extract an area from each matrix that composes
+the matrices list (Default "center").
 \itemize{
 \item "C" or "CENTER": 3x3 pixels at the intersection between anchor and
 bait.
@@ -31,8 +31,9 @@ bait.
 \item "D" or "DONUT": pixels that surrounds the center area
 }}
 
-\item{operationFun}{\if{html}{\out{<character or function>}}: A character or function
-specifying the operation applied to the selected area (Default "mean_rm0").
+\item{operationFun}{\if{html}{\out{<character or function>}}: A character or
+function specifying the operation applied to the selected area.
+(Default "mean_rm0")
 \itemize{
 \item "mean_rm0": apply a mean after replacing 0 with NA
 \item "median_rm0": apply a median after replacing 0 with NA
@@ -42,9 +43,9 @@ specifying the operation applied to the selected area (Default "mean_rm0").
 \item "mean" or other character: apply a mean
 }}
 
-\item{varName}{\if{html}{\out{<character>}}: The name of a column in GInteraction attributes
-of matrices used as named in the output vector (Default NULL). By default,
-sub-matrices IDs are used.}
+\item{varName}{\if{html}{\out{<character>}}: The name of a column in
+GInteraction attributes of matrices used as named in the output vector
+(Default NULL). By default, sub-matrices IDs are used.}
 }
 \value{
 A GRange object.
