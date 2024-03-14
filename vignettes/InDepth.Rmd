@@ -94,7 +94,7 @@ if(.Platform$OS.type == "windows"){
 
 ### Heat shock condition (.mcool File)
 ```{r, eval = TRUE, message = FALSE}
-Mcool.url <- PASTE0("https://4dn-open-data-public.s3.amazonaws.com/",
+Mcool.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
 "fourfront-webprod/wfoutput/4f1479a2-4226-4163-ba99-837f2c8f4ac0/",
 "4DNFI8DRD739.mcool")
 McoolOutput.pth <- file.path(temp.dir, "HeatShock_HIC.mcool")
