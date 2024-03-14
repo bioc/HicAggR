@@ -64,10 +64,10 @@
 #' Distance constraint applied correspond to the minimal distance of target
 #'  couples and
 #' maximal width of supplied TADs.
-#' \item "inter_compartment": If `secondaryConst.var` is not `NULL` and both 
-#' indexAnchor and indexBait objects contain the provided variable name, 
-#' then background couples are formed between anchors and baits located in 
-#' different compartments.
+#' \item "inter_compartment": If `secondaryConst.var` is not
+#' `NULL` and both indexAnchor and indexBait objects contain the
+#' provided variable name, then background couples are formed between anchors
+#' and baits located in different compartments.
 #' \item "NULL": If `NULL`, `random_anchors` are set by default.
 #' }
 #'

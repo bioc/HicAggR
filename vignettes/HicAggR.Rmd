@@ -80,7 +80,7 @@ HicOutput.pth <- file.path(temp.dir, "Control_HIC.hic")
 HicOutput.pth <- normalizePath(HicOutput.pth)
 if(.Platform$OS.type == "windows"){
     download.file(Hic.url, HicOutput.pth, method = 'auto',
-                  extra = '-k',mode="wb")
+        extra = '-k',mode="wb")
 }else{
     download.file(Hic.url, HicOutput.pth, method = 'auto', extra = '-k')
 }
@@ -201,7 +201,7 @@ aggregated matrix is plotted as a heatmap of contact frequencies
 ## Prepare matrices list
 ```{r, eval = TRUE, message = FALSE}
 Beaf.mtx_lst <- PrepareMtxList(
-     matrices = Beaf.mtx_lst
+    matrices = Beaf.mtx_lst
 )
 ```
 

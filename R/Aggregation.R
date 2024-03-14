@@ -32,8 +32,8 @@
 #' contain in first an element "i" (row indices) then an
 #' element called "j" (columns indices). If NULL automatically
 #' take in upper left part of aggregated matrices. (Default NULL)
-#' @param statCompare <logical>: Whether a t.test must be apply to each
-#'  pixel of the differential aggregated matrix.
+#' @param statCompare <logical>: Whether a t.test must be apply
+#' to each pixel of the differential aggregated matrix.
 #' @return A matrix
 #' @export
 #' @examples

@@ -35,9 +35,12 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
 ```
 
-This package provides a set of functions useful in the analysis of 3D genomic interactions.
-It includes the import of standard HiC data formats into R and HiC normalisation procedures.
-The main objective of this package is to improve the visualization and quantification of the analysis of HiC contacts through aggregation.
+This package provides a set of functions useful in the analysis of 3D
+genomic interactions.
+It includes the import of standard HiC data formats into R and HiC
+normalisation procedures. 
+The main objective of this package is to improve the visualization and
+quantification of the analysis of HiC contacts through aggregation.
 
 # Requirements
 
@@ -56,17 +59,21 @@ ___
 
 ## Description
 
-Data were obtained from *Drosophila melanogaster S2 cells*.  
-1. HiC test dataset Directly downloaded from the [4DN](https://data.4dnucleome.org) platform.  
+Data were obtained from *Drosophila melanogaster S2 cells*.
+1. HiC test dataset Directly downloaded from the 
+[4DN](https://data.4dnucleome.org) platform.
 * Control Condition  
 * Heat Shock Condition  
 2. Genomic coordinates:  
-* ChIPseq peaks of Beaf-32 protein in wild type cells ([GSM1278639](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1278639)).  
+* ChIPseq peaks of Beaf-32 protein in wild type cells
+([GSM1278639](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1278639)).
 * Reference annotation data for TSS from the UCSC database.  
-* Topologically associating domains (TAD) annotations were defined as described ([F. Ramirez, 2018](https://doi.org/10.1038/s41467-017-02525-w)).  
+* Topologically associating domains (TAD) annotations were defined as described
+([F. Ramirez, 2018](https://doi.org/10.1038/s41467-017-02525-w)).
 
 ## 1. Genomic 3D structure
-For a test, please download HiC data in .hic format (Juicer) and .mcool format (HiCExplorer). Examples for each format are provided below.
+For a test, please download HiC data in .hic format (Juicer) and .mcool format
+(HiCExplorer). Examples for each format are provided below.
 
 ### Temp directory preparation
 ```{r, eval = TRUE, message = FALSE}
@@ -192,8 +199,8 @@ It also supports the import of 'o/e' matrices in .hic format.
 
 ## Import
 HicAggR can import HiC data stored in the main formats: .hic, .cool, .mcool,
-.h5 (since version 0.99.2). The pacakage imports by default the raw counts in R. Therefore,
-it is necessary to perform the balancing and observed/expected
+.h5 (since version 0.99.2). The pacakage imports by default the raw counts.
+Therefore, it is necessary to perform the balancing and observed/expected
 correction steps.
 ```{r, eval = TRUE, message = FALSE}
 HiC_Ctrl.cmx_lst <- ImportHiC(
@@ -269,7 +276,8 @@ one chromosome (cis-interactions, ex: "2L_2L") or between two chromosomes
 (trans-interactions, ex: "2L_2R").
 HiC data format is based on 
 [InteractionSet](https://www.bioconductor.org/packages/release/bioc/vignettes/InteractionSet/inst/doc/interactions.html)
-and [Matrix](https://cran.r-project.org/web/packages/Matrix/Matrix.pdf) packages.
+and [Matrix](https://cran.r-project.org/web/packages/Matrix/Matrix.pdf)
+packages.
 ```{r, eval = TRUE}
 str(HiC_Ctrl.cmx_lst,max.level = 4)
 #>
@@ -611,7 +619,9 @@ knitr::kable(domains_Border_Bin.dtf[,c(1:4,7,5,6,8,9)],
     same information is needed in a GInteraction object class.  
 
 ```{r, eval = TRUE}
-domains_Border_Bin.gni <- InteractionSet::GInteractions(domains_Border_Bin.gnr,domains_Border_Bin.gnr)
+domains_Border_Bin.gni <- 
+    InteractionSet::GInteractions(
+        domains_Border_Bin.gnr,domains_Border_Bin.gnr)
 ```
 <details>  
 <summary>View</summary>  

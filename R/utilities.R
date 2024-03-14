@@ -285,7 +285,8 @@ GaussBox <- function(
 #' @param x <character or numeric>: The number
 #' to convert or string to convert.
 #' @param digits <integer>: The number of significant
-#' digits to be used. See [signif()] for more informations. (Default 3)
+#' digits to be used. See [signif()] for more informations.
+#' (Default 3)
 #' @return The converted number or string.
 #' @export
 #' @examples
@@ -305,34 +306,35 @@ GenomicSystem <- function(x, digits = 3) {
     } else if (is.character(x)) {
         x <- toupper(x)
         tryCatch(as.numeric(x),
-        error = function(e){
-            message("An error occurred on GenomicSystem conversion:\n", e)
-        },
-        warning = function(w){
-            dplyr::case_when(
-            grepl(x = x, pattern = "G") ~ (10^9) * 
-                as.numeric(gsub(
-                x = x,
-                pattern = "[a-z]",
-                ignore.case = TRUE,
-                replacement = ""
-                )),
-            grepl(x = x, pattern = "M") ~ (10^6) * 
-                as.numeric(gsub(
-                x = x,
-                pattern = "[a-z]",
-                ignore.case = TRUE,
-                replacement = ""
-                )),
-            grepl(x = x, pattern = "K") ~ (10^3) * 
-                as.numeric(gsub(
-                x = x,
-                pattern = "[a-z]",
-                ignore.case = TRUE,
-                replacement = ""
-                ))
-            )
-        })
+            error = function(e){
+                stop("An error occurred on GenomicSystem conversion:\n", e)
+            },
+            warning = function(w){
+                dplyr::case_when(
+                grepl(x = x, pattern = "G") ~ (10^9) * 
+                    as.numeric(gsub(
+                    x = x,
+                    pattern = "[a-z]",
+                    ignore.case = TRUE,
+                    replacement = ""
+                    )),
+                grepl(x = x, pattern = "M") ~ (10^6) * 
+                    as.numeric(gsub(
+                    x = x,
+                    pattern = "[a-z]",
+                    ignore.case = TRUE,
+                    replacement = ""
+                    )),
+                grepl(x = x, pattern = "K") ~ (10^3) * 
+                    as.numeric(gsub(
+                    x = x,
+                    pattern = "[a-z]",
+                    ignore.case = TRUE,
+                    replacement = ""
+                    ))
+                )
+            }
+        )
     }
 }
 
@@ -865,9 +867,10 @@ Plus <- function(
 #' @keywords internal
 #' @description Find threshold for outliers triming based on quantiles.
 #' @param x <numeric>: Numeric vector.
-#' @param prctThr <numeric>: Percentage (0-100) threshold. (Default 5)
-#' @param tails <character>: Bounds to return, "lower", "upper" or "both".
-#'  (Default "both")
+#' @param prctThr <numeric>: Percentage (0-100) threshold.
+#' (Default 5)
+#' @param tails <character>: Bounds to return, "lower", "upper"
+#' or "both". (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
 #' @export
 #' @examples
@@ -971,7 +974,8 @@ ReduceRun <- function(
 #' @keywords internal
 #' @description Resize a numericam matrix in new dimension.
 #' @param mtx <matrix>: A numerical matrix to resize.
-#' @param newDim <integer>: The number of rows and cols in resized matrix.
+#' @param newDim <integer>: The number of rows and cols in
+#' resized matrix.
 #' @return Resized matrix.
 ResizeMatrix <- function(
     mtx, newDim = dim(mtx)
@@ -1106,9 +1110,10 @@ Rise0 <- function(
 #' @keywords internal
 #' @description Find threshold to trim outliers based on standard deviation.
 #' @param x <numeric>: numeric vector.
-#' @param sdThr <numeric>: number of standard deviation. (Default 3)
-#' @param tails <character>: bounds to return, "lower", "upper" or "both".
-#'  (Default "both")
+#' @param sdThr <numeric>: number of standard deviation.
+#' (Default 3)
+#' @param tails <character>: bounds to return, "lower", "upper"
+#' or "both". (Default "both")
 #' @return numerical vector of thresholds values for outliers triming
 #' @noRd 
 SdThreshold <- function(
@@ -1266,12 +1271,13 @@ TransposeList <- function(
 #' @description Replace values of a numerical vector that are below a minimal
 #'  thresholds and/or above maximal thresholds.
 #' @param x <numeric>: Numeric vector.
-#' @param thr <numeric>: Numeric vector of length 2. first value is minimal
-#'  threshold, second value maximal threshold (Default find threshold based
-#'  on standarrd deviation. see `SdThreshold` function)
-#' @param clip <logical>: If TRUE the value out of bounds are replace with
-#'  threshodls values. If FALSE the Values out of bound are replace with NA
-#'  (Default FALSE).
+#' @param thr <numeric>: Numeric vector of length 2. first
+#' value is minimal threshold, second value maximal threshold
+#' (Default find threshold based on standarrd deviation.
+#' see `SdThreshold` function)
+#' @param clip <logical>: If TRUE the values out of bounds are
+#' replaced with thresholds values. If FALSE the Values out of bound are
+#' replaced with NA (Default FALSE).
 #' @return Trimed Numerical vector.
 TrimOutliers <- function(
     x,
@@ -1368,7 +1374,8 @@ viridis <- function(
 #' WrapFunction
 #' @keywords internal
 #' @description Wrap a string into a function.
-#' @param ... <character>: A string that could be parse and eval as a function.
+#' @param ... <character>: A string that could be parse and
+#' eval as a function.
 #' @return The result of the function or a function.
 WrapFunction <- function(
     ...

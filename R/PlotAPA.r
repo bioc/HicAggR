@@ -474,12 +474,15 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #'  final chunk.
 #' @param ctrlSubmatrices <listmatrix>: The matrices list to use
 #' as control condition for differential aggregation.
-#' @param ... : Additional arguments to pass to [Aggregation()]
+#' @param ... : Additional arguments to pass to
+#' [Aggregation()].
 #' For differential aggregation plot, `submatrices` will take the matrices
 #'  of the treated condition. 
 #' eg:
-#' `PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst,
-#' ctrlSubmatrices = interactions_Ctrl.mtx_lst)`
+#' ```
+#' PlotAPA_byDistance(
+#' submatrices = interactions_HS.mtx_lst,
+#' ctrlSubmatrices = interactions_Ctrl.mtx_lst)```
 #' @param plot.opts list of arguments to pass to [ggAPA()].
 #' @return A plot with separate APAs per distance and a list of aggregated
 #'  matrices as invisible output.

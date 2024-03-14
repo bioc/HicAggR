@@ -31,8 +31,8 @@
 #' @param cool_balanced <logical> Import already balanced matrix?
 #'  (Default: FALSE)
 #' @param cool_weight_name <character> Name of the correcter in
-#' the cool file. (Default: weight). [rhdf5::h5ls()] to see the available
-#' correctors.
+#' the cool file. (Default: weight).
+#' [rhdf5::h5ls()] to see the available correctors.
 #' @param cool_divisive_weights <logical> Does the correcter
 #' vector contain divisive biases as in hicExplorer or multiplicative as in
 #' cooltools? (Default: FALSE)

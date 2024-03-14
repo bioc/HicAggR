@@ -20,8 +20,8 @@
 #' @param colBreaks <numeric> : Repartition of colors.
 #'  If `NULL` automatically find. (Default NULL)
 #' @param blurPass <numeric> : Number of blur pass. (Default 0)
-#' @param boxKernel <numeric> : If `NULL` automatically compute
-#' for 3 Sd. (Default NULL)
+#' @param boxKernel <numeric> : If `NULL` automatically
+#' compute for 3 Sd. (Default NULL)
 #' @param kernSize <numeric> : Size of box applied to blurr.
 #' If `NULL` automatically compute for 3 Sd. (Default NULL)
 #' @param stdev <numeric> : SD of gaussian smooth. (Default 0.5)
