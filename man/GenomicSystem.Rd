@@ -11,7 +11,8 @@ GenomicSystem(x, digits = 3)
 to convert or string to convert.}
 
 \item{digits}{\if{html}{\out{<integer>}}: The number of significant
-digits to be used. See \code{\link[=signif]{signif()}} for more informations. (Default 3)}
+digits to be used. See \code{\link[=signif]{signif()}} for more informations.
+(Default 3)}
 }
 \value{
 The converted number or string.

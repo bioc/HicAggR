@@ -60,8 +60,8 @@ Other options can be: "oe", "expected". (Default "observed").}
 (Default: FALSE)}
 
 \item{cool_weight_name}{\if{html}{\out{<character>}} Name of the correcter in
-the cool file. (Default: weight). \code{\link[rhdf5:h5ls]{rhdf5::h5ls()}} to see the available
-correctors.}
+the cool file. (Default: weight).
+\code{\link[rhdf5:h5ls]{rhdf5::h5ls()}} to see the available correctors.}
 
 \item{cool_divisive_weights}{\if{html}{\out{<logical>}} Does the correcter
 vector contain divisive biases as in hicExplorer or multiplicative as in

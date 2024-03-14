@@ -22,11 +22,18 @@ final chunk.}
 \item{ctrlSubmatrices}{\if{html}{\out{<listmatrix>}}: The matrices list to use
 as control condition for differential aggregation.}
 
-\item{...}{: Additional arguments to pass to \code{\link[=Aggregation]{Aggregation()}}
+\item{...}{: Additional arguments to pass to
+[Aggregation()].
 For differential aggregation plot, \code{submatrices} will take the matrices
 of the treated condition.
 eg:
-\code{PlotAPA_byDistance(submatrices = interactions_HS.mtx_lst, ctrlSubmatrices = interactions_Ctrl.mtx_lst)}}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{PlotAPA_byDistance(
+submatrices = interactions_HS.mtx_lst,
+ctrlSubmatrices = interactions_Ctrl.mtx_lst)```
+
+[Aggregation()]: R:Aggregation()
+}\if{html}{\out{</div>}}}
 
 \item{plot.opts}{list of arguments to pass to \code{\link[=ggAPA]{ggAPA()}}.}
 }

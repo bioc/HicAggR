@@ -9,10 +9,11 @@ QtlThreshold(x = NULL, prctThr = 5, tails = "both")
 \arguments{
 \item{x}{\if{html}{\out{<numeric>}}: Numeric vector.}
 
-\item{prctThr}{\if{html}{\out{<numeric>}}: Percentage (0-100) threshold. (Default 5)}
+\item{prctThr}{\if{html}{\out{<numeric>}}: Percentage (0-100) threshold.
+(Default 5)}
 
-\item{tails}{\if{html}{\out{<character>}}: Bounds to return, "lower", "upper" or "both".
-(Default "both")}
+\item{tails}{\if{html}{\out{<character>}}: Bounds to return, "lower", "upper"
+or "both". (Default "both")}
 }
 \value{
 Numerical vector of thresholds values for outliers triming.

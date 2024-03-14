@@ -54,8 +54,8 @@ If \code{NULL} automatically find. (Default NULL)}
 
 \item{blurPass}{\if{html}{\out{<numeric>}} : Number of blur pass. (Default 0)}
 
-\item{boxKernel}{\if{html}{\out{<numeric>}} : If \code{NULL} automatically compute
-for 3 Sd. (Default NULL)}
+\item{boxKernel}{\if{html}{\out{<numeric>}} : If \code{NULL} automatically
+compute for 3 Sd. (Default NULL)}
 
 \item{kernSize}{\if{html}{\out{<numeric>}} : Size of box applied to blurr.
 If \code{NULL} automatically compute for 3 Sd. (Default NULL)}

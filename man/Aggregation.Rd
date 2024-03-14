@@ -48,8 +48,8 @@ contain in first an element "i" (row indices) then an
 element called "j" (columns indices). If NULL automatically
 take in upper left part of aggregated matrices. (Default NULL)}
 
-\item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply to each
-pixel of the differential aggregated matrix.}
+\item{statCompare}{\if{html}{\out{<logical>}}: Whether a t.test must be apply
+to each pixel of the differential aggregated matrix.}
 }
 \value{
 A matrix

@@ -89,7 +89,8 @@ if(.Platform$OS.type == "windows"){
 
 ## Genomic location and annotation data
 These kind of data can be imported in R with
-[rtracklayer](https://bioconductor.org/packages/release/bioc/html/rtracklayer.html)
+[rtracklayer](
+    https://bioconductor.org/packages/release/bioc/html/rtracklayer.html)
 package.
 ```{r, eval = TRUE}
 data("Beaf32_Peaks.gnr")
