@@ -329,7 +329,7 @@ ggAPA <- function(
             labels_x <- colnames(aggregatedMtx)
         }
         plot.ggp <- plot.ggp+
-            ggplot2::scale_y_continuous(
+            ggplot2::scale_y_reverse(
                 breaks = breaks_y,
                 labels = labels_y
             ) +
@@ -352,7 +352,7 @@ ggAPA <- function(
         breaks_x <- seq_along(colnames(aggregatedMtx))
         labels_x <- colnames(aggregatedMtx)
         plot.ggp <- plot.ggp+
-            ggplot2::scale_y_continuous(
+            ggplot2::scale_y_reverse(
                 breaks = breaks_y,
                 labels = labels_y
             ) +
