@@ -603,7 +603,9 @@ PlotAPA_byDistance <- function(
             plotList <- append(plotList,chunk.plot)
         }else{
             plotList <- append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
-                ggplot2::labs(title=paste0("distance < ",vector_dist[p+1],
+                ggplot2::labs(title=paste0(
+                    "[",GenomicSystem(as.numeric(vector_dist[p])),"-",
+                    GenomicSystem(as.numeric(vector_dist[p+1])),")",
                 "\nn = ",n_cples[p]))))
         }
     }

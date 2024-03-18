@@ -302,6 +302,7 @@ IndexFeatures <- function(
     # When indexing a GRangeList seqinfo gets lost somehow
     chromSizes <- chromSizes[which(chromSizes[,1]!="All"),]
     GenomeInfoDb::seqinfo(binnedIndex.gnr) <- GenomeInfoDb::Seqinfo(
-        seqnames = chromSizes[,1], seqlengths = chromSizes[,2])
+        seqnames = as.character(chromSizes[,1]),
+        seqlengths = as.numeric(chromSizes[,2]))
     return(sort(binnedIndex.gnr))
 }
