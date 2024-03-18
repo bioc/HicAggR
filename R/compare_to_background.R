@@ -165,12 +165,12 @@ compare_to_background <- function(hicList = NULL,
         }
         if (is.null(genomicConstraint)) {
         genomicConstraint <- GenomicRanges::GRanges(
-            seqnames = chromSizes[, 1],
+            seqnames = as.character(chromSizes[, 1]),
             ranges = IRanges::IRanges(
             start = rep(1, length(chromSizes[, 2])),
-            end = chromSizes[, 2]
+            end = as.numeric(chromSizes[, 2])
             ),
-            strand = "*", name = chromSizes[, 1]
+            strand = "*", name = as.character(chromSizes[, 1])
         )
         }
         binned_constraint <- BinGRanges(genomicConstraint,
@@ -344,8 +344,8 @@ compare_to_background <- function(hicList = NULL,
     }
     
     GenomeInfoDb::seqinfo(bg_couples) <- 
-        GenomeInfoDb::Seqinfo(seqnames = chromSizes[[1]],
-                                    seqlengths = chromSizes[[2]])
+        GenomeInfoDb::Seqinfo(seqnames = as.character(chromSizes[[1]]),
+                                    seqlengths = as.numeric(chromSizes[[2]]))
     bg_counts <- ExtractSubmatrix(genomicFeature = bg_couples,
                     hicLst = hicList,
                     hicResolution = resolution,
