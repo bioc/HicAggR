@@ -1119,14 +1119,14 @@ Rise0 <- function(
 SdThreshold <- function(
     x = NULL, sdThr = 3, tails = "both"
 ) {
-    mu.num <- mean(x, na.rm = TRUE)
-    sdev.num <- stats::sd(x, na.rm = TRUE)
-    upper.num <- mu.num + (sdThr * sdev.num)
-    lower.num <- mu.num - (sdThr * sdev.num)
     thr <- dplyr::case_when(
-        tails == "both" ~ c(lower.num, upper.num),
-        tails == "upper" ~ c(NA, upper.num),
-        tails == "lower" ~ c(lower.num, NA)
+        tails == "both" ~ c(
+            (mean(x, na.rm = TRUE) - (sdThr * stats::sd(x, na.rm = TRUE))),
+            (mean(x, na.rm = TRUE) + (sdThr * stats::sd(x, na.rm = TRUE)))),
+        tails == "upper" ~ c(NA, 
+            (mean(x, na.rm = TRUE) + (sdThr * stats::sd(x, na.rm = TRUE)))),
+        tails == "lower" ~ c((
+            mean(x, na.rm = TRUE) - (sdThr * stats::sd(x, na.rm = TRUE))), NA)
     )
     return(thr)
 }

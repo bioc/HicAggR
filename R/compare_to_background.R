@@ -1,3 +1,200 @@
+#' removes from background couples those found
+#' in target couples
+#' @keywords internal
+#' @param bg_couples GInteractions object with
+#' background couples
+#' @param matrices hic matrices list with target couples
+#' @return GInteractions object with clean background couples
+#' @noRd
+.cleanCouples <- function(
+    bg_couples,
+    matrices){
+    # discard couples that are in target couples
+    bg_couples <- bg_couples[
+    which(!attr(bg_couples,"NAMES")%in%attr(matrices,"names"))]
+    return(bg_couples)
+}
+
+#' generates background couples between
+#' randomly picked bins and baits from
+#' target couples
+#' @keywords internal
+#' @param targetCouples GInteractions object with
+#' target couples
+#' @param genomicConstraint GRanges object with
+#' constraint coordinates
+#' @param indexAnchor indexed anchors
+#' @param indexBait indexed baits
+#' @param chromSizes data.frame with chromosome
+#' names and lengths
+#' @param resolution numeric of hic resolution
+#' @param N number of background pairs to keep
+#' @param cores number of cores
+#' @param verbose verbosity
+#' @importFrom GenomicRanges GRanges width trim
+#' @importFrom IRanges IRanges subsetByOverlaps
+#' @return GInteractions object with background couples
+#' @noRd
+.findRandomBins <- function(
+    targetCouples,
+    genomicConstraint=NULL,
+    indexAnchor=NULL,
+    indexBait=NULL,
+    chromSizes,
+    resolution,
+    N = NULL,
+    cores = cores,
+    verbose = FALSE){
+    
+    if(verbose){
+        message("random bins")
+    }
+    if(!is.null(genomicConstraint)){
+    dist_const <- c(min(targetCouples$distance),
+        max(GenomicRanges::width(genomicConstraint)))
+    }else{
+    dist_const <- c(min(targetCouples$distance),max(targetCouples$distance))
+    }
+    if (is.null(genomicConstraint)) {
+    genomicConstraint <- GenomicRanges::GRanges(
+        seqnames = as.character(chromSizes[, 1]),
+        ranges = IRanges::IRanges(
+        start = rep(1, length(chromSizes[, 2])),
+        end = as.numeric(chromSizes[, 2])
+        ),
+        strand = "*", name = as.character(chromSizes[, 1])
+    )
+    }
+    binned_constraint <- BinGRanges(genomicConstraint,
+                                chromSizes,
+                                binSize = resolution)
+    binned_constraint$name <- paste0("random_",
+        seq(1,length(binned_constraint)))
+    binned_constraint <- IRanges::subsetByOverlaps(
+    binned_constraint,
+    (GenomicRanges::trim(unique(indexBait)+(resolution*2))),
+    invert = TRUE)
+    
+    binned_constraint <- IRanges::subsetByOverlaps(
+    binned_constraint,
+    (GenomicRanges::trim(unique(indexAnchor)+(resolution*2))),
+    invert = TRUE)
+    
+    binned_constraint.idx <- IndexFeatures(binned_constraint,
+                genomicConstraint,
+                chromSizes,
+                binSize = resolution,cores=cores)
+    bait.idx <- IndexFeatures(unique(anchors(targetCouples,type="second")),
+                                        genomicConstraint,
+                                        chromSizes,
+                                        binSize = resolution,cores=cores)
+    if(dist_const[1]==0){dist_const[1]<-resolution+1}
+    background_pairs <- SearchPairs(binned_constraint.idx,
+                                bait.idx,
+                                minDist = dist_const[1],
+                                maxDist = dist_const[2],cores=cores)
+    if(!is.null(N)){
+    background_pairs <- background_pairs[
+        sample(seq(1,length(background_pairs)),size = N)]
+    }
+    if(verbose){
+        message("Number of background pairs: ",
+        length(background_pairs))
+    }
+    return(background_pairs)
+}
+
+#' generate inter-TAD couples
+#' 
+#' @keywords internal
+#' @param targetCouples GInteractions object with
+#' target couples
+#' @param genomicConstraint GRanges object with
+#' TAD coordinates
+#' @param indexAnchor indexed anchors
+#' @param indexBait indexed baits
+#' @param chromSizes data.frame with chromosome
+#' names and lengths
+#' @param resolution numeric of hic resolution
+#' @param N number of background pairs to keep
+#' @param secondaryConst.var column name
+#' of secondary variable, such as compartiment
+#' info
+#' @param cores number of cores
+#' @param verbose verbosity
+#' @importFrom GenomeInfoDb seqlevels GRanges
+#' @importFrom GenomicRanges width
+#' @importFrom dplyr mutate filter
+#' @importFrom S4Vectors mcols
+#' @return GInteractions object with background couples
+#' @noRd
+.interTads <- function(
+    targetCouples,
+    genomicConstraint = NULL,
+    indexAnchor = NULL,
+    indexBait = NULL,
+    chromSizes,
+    resolution,
+    N = NULL,
+    secondaryConst.var = NULL,
+    cores = cores,
+    verbose = FALSE){
+    if(verbose){
+        message("inter-TADs")
+    }
+    if(!is.null(genomicConstraint) && 
+    !all(unique(indexAnchor$constraint)%in%
+        GenomeInfoDb::seqlevels(indexAnchor)) && 
+    !all(unique(indexBait$constraint)%in%
+        GenomeInfoDb::seqlevels(indexBait))){
+    dist_const <- c(min(targetCouples$distance),
+        max(GenomicRanges::width(genomicConstraint)))
+    }else{
+    stop("Inter-TAD background couples require TADs info!
+        Anchor and Bait coordinates should be indexed with TADs info!")
+    }
+    indexAnchor.tmp <- indexAnchor |>
+    as.data.frame() |>
+    dplyr::mutate(tad_name = .data$constraint) |>
+    dplyr::mutate(constraint = .data$seqnames)|>
+    GenomicRanges::GRanges()
+    
+    indexBait.tmp <- indexBait |>
+    as.data.frame() |>
+    dplyr::mutate(tad_name = .data$constraint) |>
+    dplyr::mutate(constraint = .data$seqnames)|>
+    GenomicRanges::GRanges()
+    
+    bg_couples <- SearchPairs(
+    indexAnchor = indexAnchor.tmp,
+    indexBait = indexBait.tmp,
+    minDist = dist_const[1],
+    maxDist = dist_const[2],
+    verbose = FALSE,
+    cores = cores)
+    
+    diff.tad.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
+    dplyr::filter(.data$anchor.tad_name!=.data$bait.tad_name) |>
+    rownames()
+    bg_couples <- bg_couples[
+    which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
+    ]
+    if(verbose){
+        message("Number of inter-TAD couples ",length(bg_couples))
+    }
+    if(!is.null(secondaryConst.var)){
+    # discard couples in the same compartment
+    # names of compartment info in couples
+    compart.var1 <- paste0("anchor.",secondaryConst.var)
+    compart.var2 <- paste0("bait.",secondaryConst.var)
+    diff.compart.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
+        dplyr::filter(compart.var1!=compart.var2) |>
+        rownames()
+    bg_couples <- bg_couples[
+        which(attr(bg_couples,"names")%in%diff.compart.couples)]
+    }
+    return(bg_couples)
+}
 
 #' Computes z.test for each target couple over background couples.
 #'
@@ -125,171 +322,26 @@
 #'    seqlengths = c(23513712)),
 #'  bg_type="inter_TAD"
 #' )
-#' 
-compare_to_background <- function(hicList = NULL,
-                    matrices = NULL,
-                    indexAnchor = NULL,
-                    indexBait = NULL,
-                    genomicConstraint = NULL,
-                    secondaryConst.var = NULL,
-                    chromSizes = NULL,
-                    n_background = NULL,
-                    areaFun="center",
-                    operationFun="mean",
-                    bg_type = NULL,
-                    cores = 1,
-                    verbose = FALSE,
-                    z_score_per_dist_group = TRUE,
-                    ...){
+compare_to_background <- function(
+    hicList = NULL,
+    matrices = NULL,
+    indexAnchor = NULL,
+    indexBait = NULL,
+    genomicConstraint = NULL,
+    secondaryConst.var = NULL,
+    chromSizes = NULL,
+    n_background = NULL,
+    areaFun="center",
+    operationFun="mean",
+    bg_type = NULL,
+    cores = 1,
+    verbose = FALSE,
+    z_score_per_dist_group = TRUE,
+    ...){
 
     targetCouples <- attributes(matrices)$interactions
     resolution <- attributes(matrices)$resolution
-    .findRandomBins <- function(
-        targetCouples,
-        genomicConstraint=NULL,
-        indexAnchor=NULL,
-        indexBait=NULL,
-        chromSizes,
-        resolution,
-        N=n_background,
-        cores=cores){
-        
-        if(verbose){
-            message("random bins")
-        }
-        if(!is.null(genomicConstraint)){
-        dist_const <- c(min(targetCouples$distance),
-            max(GenomicRanges::width(genomicConstraint)))
-        }else{
-        dist_const <- c(min(targetCouples$distance),max(targetCouples$distance))
-        }
-        if (is.null(genomicConstraint)) {
-        genomicConstraint <- GenomicRanges::GRanges(
-            seqnames = as.character(chromSizes[, 1]),
-            ranges = IRanges::IRanges(
-            start = rep(1, length(chromSizes[, 2])),
-            end = as.numeric(chromSizes[, 2])
-            ),
-            strand = "*", name = as.character(chromSizes[, 1])
-        )
-        }
-        binned_constraint <- BinGRanges(genomicConstraint,
-                                    chromSizes,
-                                    binSize = resolution)
-        binned_constraint$name <- paste0("random_",
-            seq(1,length(binned_constraint)))
-        binned_constraint <- IRanges::subsetByOverlaps(
-        binned_constraint,
-        (GenomicRanges::trim(unique(indexBait)+(resolution*2))),
-        invert = TRUE)
-        
-        binned_constraint <- IRanges::subsetByOverlaps(
-        binned_constraint,
-        (GenomicRanges::trim(unique(indexAnchor)+(resolution*2))),
-        invert = TRUE)
-        
-        binned_constraint.idx <- IndexFeatures(binned_constraint,
-                    genomicConstraint,
-                    chromSizes,
-                    binSize = resolution,cores=cores)
-        bait.idx <- IndexFeatures(unique(anchors(targetCouples,type="second")),
-                                            genomicConstraint,
-                                            chromSizes,
-                                            binSize = resolution,cores=cores)
-        if(dist_const[1]==0){dist_const[1]<-resolution+1}
-        background_pairs <- SearchPairs(binned_constraint.idx,
-                                    bait.idx,
-                                    minDist = dist_const[1],
-                                    maxDist = dist_const[2],cores=cores)
-        if(!is.null(n_background)){
-        background_pairs <- background_pairs[
-            sample(seq(1,length(background_pairs)),size = N)]
-        }
-        if(verbose){
-            message("Number of background pairs: ",
-            length(background_pairs))
-        }
-        return(background_pairs)
-    }
-    
-    .cleanCouples <- function(bg_couples,
-                            matrices){
-        # discard couples that are in target couples
-        bg_couples <- bg_couples[
-        which(!attr(bg_couples,"NAMES")%in%attr(matrices,"names"))]
-        return(bg_couples)
-    }
-    
-    
-    .interTads <- function(targetCouples,
-                            genomicConstraint=NULL,
-                            indexAnchor=NULL,
-                            indexBait=NULL,
-                            chromSizes,
-                            resolution,
-                            N=n_background,
-                            secondaryConst.var = NULL,
-                            cores=cores){
-        if(verbose){
-            message("inter-TADs")
-        }
-        if(!is.null(genomicConstraint) && 
-        !all(unique(indexAnchor$constraint)%in%
-            GenomeInfoDb::seqlevels(indexAnchor)) && 
-        !all(unique(indexBait$constraint)%in%
-            GenomeInfoDb::seqlevels(indexBait))){
-        dist_const <- c(min(targetCouples$distance),
-            max(GenomicRanges::width(genomicConstraint)))
-        }else{
-        stop("Inter-TAD background couples require TADs info!
-            Anchor and Bait coordinates should be indexed with TADs info!")
-        }
-        indexAnchor.tmp <- indexAnchor |>
-        as.data.frame() |>
-        dplyr::mutate(tad_name = .data$constraint) |>
-        dplyr::mutate(constraint = .data$seqnames)|>
-        GenomicRanges::GRanges()
-        
-        indexBait.tmp <- indexBait |>
-        as.data.frame() |>
-        dplyr::mutate(tad_name = .data$constraint) |>
-        dplyr::mutate(constraint = .data$seqnames)|>
-        GenomicRanges::GRanges()
-        
-        bg_couples <- SearchPairs(
-        indexAnchor = indexAnchor.tmp,
-        indexBait = indexBait.tmp,
-        minDist = dist_const[1],
-        maxDist = dist_const[2],
-        verbose = FALSE,
-        cores = cores)
-        
-        diff.tad.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
-        dplyr::filter(.data$anchor.tad_name!=.data$bait.tad_name) |>
-        rownames()
-        bg_couples <- bg_couples[
-        which(attr(bg_couples,"NAMES")%in%diff.tad.couples)
-        ]
-        if(verbose){
-            message("Number of inter-TAD couples ",length(bg_couples))
-        }
-        if(!is.null(secondaryConst.var)){
-        # discard couples in the same compartment
-        # names of compartment info in couples
-        compart.var1 <- paste0("anchor.",secondaryConst.var)
-        compart.var2 <- paste0("bait.",secondaryConst.var)
-        diff.compart.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
-            dplyr::filter(compart.var1!=compart.var2) |>
-            rownames()
-        bg_couples <- bg_couples[
-            which(attr(bg_couples,"names")%in%diff.compart.couples)]
-        }
-        
-        bg_couples <- .cleanCouples(bg_couples,matrices)
-        return(bg_couples)
-    }
-    
-    
+
     if(bg_type == "random_anchors" || is.null(bg_type)){
         bg_couples <- .findRandomBins(targetCouples,
                         genomicConstraint = genomicConstraint,
@@ -310,6 +362,8 @@ compare_to_background <- function(hicList = NULL,
                                 N=n_background,
                                 secondaryConst.var = NULL,
                                 cores=cores)
+
+        bg_couples <- .cleanCouples(bg_couples,matrices)
         }
         if(bg_type == "inter_compartment"){
         bg_couples <- .interTads(targetCouples,
@@ -321,9 +375,10 @@ compare_to_background <- function(hicList = NULL,
                                 N=n_background,
                                 secondaryConst.var = secondaryConst.var,
                                 cores=cores)
+        bg_couples <- .cleanCouples(bg_couples,matrices)
         }
     }
-    
+
     bg_couples <- .cleanCouples(bg_couples,matrices)
     if(length(bg_couples) < 500){
         # If no tad is given just use random bins
@@ -342,7 +397,7 @@ compare_to_background <- function(hicList = NULL,
             message(length(bg_couples))
         }
     }
-    
+
     GenomeInfoDb::seqinfo(bg_couples) <- 
         GenomeInfoDb::Seqinfo(seqnames = as.character(chromSizes[[1]]),
                                     seqlengths = as.numeric(chromSizes[[2]]))

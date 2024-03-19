@@ -598,8 +598,10 @@ PlotAPA_byDistance <- function(
             chunk.plot <- list(do.call(ggAPA,c(list(
                 aggregatedMtx = by_dist_vec_list[[p]]),
                 as.list(plot.opts)))+
-                ggplot2::labs(title=paste0("distance < ",
-                vector_dist[p+1],"\nn = ",n_cples[p])))
+                ggplot2::labs(title=paste0(
+                    "[",GenomicSystem(as.numeric(vector_dist[p])),"-",
+                    GenomicSystem(as.numeric(vector_dist[p+1])),")",
+                "\nn = ",n_cples[p])))
             plotList <- append(plotList,chunk.plot)
         }else{
             plotList <- append(plotList,list(ggAPA(by_dist_vec_list[[p]])+
