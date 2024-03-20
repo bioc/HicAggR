@@ -40,6 +40,10 @@
 #' palette. (Default 51)
 #' @param annotate <logical> : Should there be axis ticks?
 #' (Default: TRUE)
+#' @param anchor.name <character> Name of anchor for
+#' annotation. (Default "Anchor")
+#' @param bait.name <character> Name of bait for
+#' annotation. (Default "Bait")
 #' @return A ggplot object.
 #' @export
 #' @examples
@@ -175,7 +179,9 @@ ggAPA <- function(
     na.value = "#F2F2F2",
     colorScale = "linear",
     bias = 1, paletteLength = 51,
-    annotate = TRUE
+    annotate = TRUE,
+    anchor.name = "Anchor",
+    bait.name = "Bait"
 ) {
     # Trimming
     if (!is.null(colBreaks)) {
@@ -317,10 +323,10 @@ ggAPA <- function(
             breaks_x <- c(1,ceiling(ncol(aggregatedMtx)/2),
                 ncol(aggregatedMtx))
             labels_y <- c(paste0("-",
-                extent, "KB"),"Anchor",paste0("+",
+                extent, "KB"), anchor.name, paste0("+",
                 extent, "KB"))
             labels_x <- c(paste0("-",
-                extent, "KB"),"Bait",paste0("+",
+                extent, "KB"), bait.name, paste0("+",
                 extent, "KB"))
         }else{
             breaks_y <- seq_along(rownames(aggregatedMtx))
