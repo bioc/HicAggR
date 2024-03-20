@@ -160,5 +160,4 @@ output_bgInterTAD = compare_to_background(hicList = hicLst,
    seqlengths = c(23513712)),
  bg_type="inter_TAD"
 )
-
 }

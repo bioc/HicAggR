@@ -23,7 +23,9 @@ ggAPA(
   colorScale = "linear",
   bias = 1,
   paletteLength = 51,
-  annotate = TRUE
+  annotate = TRUE,
+  anchor.name = "Anchor",
+  bait.name = "Bait"
 )
 }
 \arguments{
@@ -83,6 +85,12 @@ palette. (Default 51)}
 
 \item{annotate}{\if{html}{\out{<logical>}} : Should there be axis ticks?
 (Default: TRUE)}
+
+\item{anchor.name}{\if{html}{\out{<character>}} Name of anchor for
+annotation. (Default "Anchor")}
+
+\item{bait.name}{\if{html}{\out{<character>}} Name of bait for
+annotation. (Default "Bait")}
 }
 \value{
 A ggplot object.
