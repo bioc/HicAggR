@@ -122,8 +122,8 @@
 #' info
 #' @param cores number of cores
 #' @param verbose verbosity
-#' @importFrom GenomeInfoDb seqlevels GRanges
-#' @importFrom GenomicRanges width
+#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom GenomicRanges width GRanges
 #' @importFrom dplyr mutate filter
 #' @importFrom S4Vectors mcols
 #' @return GInteractions object with background couples
