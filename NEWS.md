@@ -1,7 +1,9 @@
 # HicAggR 0.99.3
 
 * NAMESPACE was generated with roxygen2 to define exportable functions.
-* compare_to_background: added option to correct for o/e values skewedness towards very long distance couples.
+* compare_to_background: to correct the skewedness of o/e values towards long distances,
+    computation of z.scores is now calculated using residuals from a polynomial
+    model that fits the background couples (log(counts)~distance).
 * SearchPairs: added option to remove self interacting bins.
 * all internal functions are now in utilities.R.
 * Docs were reviewed.

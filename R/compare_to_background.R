@@ -195,6 +195,60 @@
     }
     return(bg_couples)
 }
+#' Fit a polynomial model with 2 degrees on the background couples
+#' log(counts)~distance. Get residuals mean and sd for the background,
+#' predict target couples, calculate residuals for targets and compute
+#' z.scores to perform z.test. Adjust p.values.
+#'
+#' @param df_bg data.frame of distance
+#' to counts for the background couples.
+#' @param df_target data.frame of distance
+#' to counts for the target couples.
+#' @param method_adjust method used to adjust
+#' p.values. (Default: "BH")
+#'
+#' @return data.frame with interactions id, z.score, p.value and adjusted
+#' p.values for each target couple
+#' @importFrom stats residuals lm poly sd predict pnorm p.adjust as.formula
+#' @importFrom dplyr mutate
+#' @importFrom rlang .data
+#' @noRd
+.compute_zscore <- function(
+    df_bg = NULL,
+    df_target = NULL,
+    method_adjust = "BH"
+){
+    model_poly_df2 <- stats::lm(formula = stats::as.formula(
+        "log(counts)~stats::poly(distance,df=2)"),
+        data = df_bg,
+        subset = (df_bg$counts > 0))
+    avg_residuals <- mean(stats::residuals(model_poly_df2))
+    sd_residuals <- stats::sd(stats::residuals(model_poly_df2))
+    target_predictions <- stats::predict(
+        object = model_poly_df2,
+        newdata = data.frame(
+            distance = df_target$distance
+        )
+    )
+    target_residuals <- df_target$counts - exp(target_predictions)
+    z_output <- data.frame(
+        name = df_target$names,
+        z.score = (
+            (target_residuals - avg_residuals)/sd_residuals)
+        )|> dplyr::mutate(
+            p.value = stats::pnorm(
+                q = .data$z.score,
+                lower.tail = FALSE
+            )
+        )|>
+        dplyr::mutate(
+            adj.p_val = stats::p.adjust(
+                p = .data$p.value,
+                method = method_adjust
+            )
+        )
+    return(z_output)
+}
 
 #' Computes z.test for each target couple over background couples.
 #'
@@ -229,9 +283,8 @@
 #' "inter_compartment", NULL (Defaults to "random_anchors").
 #' More information in details...
 #' @param verbose <logical> details on progress? (Default: FALSE)
-#' @param z_score_per_dist_group <logical> Should z-scores
-#' and p.values for target couples be calculated in separate groups
-#' based on distances? Look at details for more. (Default: TRUE)
+#' @param p_adj_method <character> method used
+#' to adjust p.values. More from `stats::p.adjust()`. (Default: "BH")
 #' @param ... arguments to pass to [PrepareMtxList], inorder to treat
 #' background matrices.
 #' @return returns a <list> object with the z.test output for each
@@ -241,7 +294,6 @@
 #' @export
 #' @importFrom GenomeInfoDb seqlevels
 #' @importFrom IRanges subsetByOverlaps
-#' @importFrom stats p.adjust sd pnorm
 #' @importFrom rlang .data
 #' @importFrom dplyr group_by mutate summarise left_join
 #' @importFrom S4Vectors mcols
@@ -268,16 +320,16 @@
 #' \item "NULL": If `NULL`, `random_anchors` are set by default.
 #' }
 #'
-#' On the matter of `z_score_per_dist_group`:
-#' This option was included because we noticed that o/e values tend to be
+#' Notes on the comparison between bg and target couples:
+#' We noticed that o/e values tend to be
 #' skewed towards very long distance interactions. As a result, long
-#' distance background couples tend to influence to mean and sd, resulting
-#' in only long distance target couples being significant.
-#' This option would allow the user to perform z-score computation on
-#' couples grouped into chunks of couples with comparative distances
-#' choosen as such: `c(0,50000 * 2^seq(1,15))`.
-#' This option is recommended when the target couples have a wide range
-#' of distance values.
+#' distance background couples tend to influence strongly mean and sd,
+#' resulting in more long distance target couples being significant.
+#' So rather than computing z.score over all background couples,
+#' we've chosen to fit a polynomial with 2 degrees on the log(counts)
+#' vs distance data of the background couples. Z.scores are then
+#' computed per target couple by comparing residuals of the target counts
+#' as predicted by the model and the residuals of the background couples.
 #' @examples
 #' h5_path <- system.file("extdata",
 #'     "Control_HIC_10k_2L.h5",
@@ -336,7 +388,7 @@ compare_to_background <- function(
     bg_type = NULL,
     cores = 1,
     verbose = FALSE,
-    z_score_per_dist_group = TRUE,
+    p_adj_method = 'BH',
     ...){
 
     targetCouples <- attributes(matrices)$interactions
@@ -420,40 +472,19 @@ compare_to_background <- function(
         operationFun = operationFun
     ) |> as.numeric() |> 
         `names<-`(attr(matrices,"names"))
-    if(z_score_per_dist_group){
-        summary_bg_pergrp <- data.frame(
-        name = attributes(bg_counts)$names,
-        distance = attributes(bg_counts)$interactions$distance,
-        counts = bg_quantifs) |>
-        # chop background couples into separate groups with distance
-        dplyr::mutate(group=cut(.data$distance,
-                                breaks = c(0,50000 * 2^seq(1,15)),
-                                right = TRUE)) |>
-        dplyr::group_by(.data$group)|>
-        dplyr::summarise("avg" = mean(.data$counts),
-                        "sd" = stats::sd(.data$counts))
-
-        target_df <- data.frame(
-            name = attributes(matrices)$names,
+    z_output <- .compute_zscore(
+        df_bg = data.frame(
+            names = attributes(bg_counts)$interactions$name,
+            distance = attributes(bg_counts)$interactions$distance,
+            counts = as.numeric(bg_quantifs)
+        ),
+        df_target = data.frame(
+            names = attributes(matrices)$interactions$name,
             distance = attributes(matrices)$interactions$distance,
-            counts = target_quantifs) |>
-            # chop target couples into separate groups with distance
-            dplyr::mutate(group = cut(.data$distance,
-                                        breaks = c(0,50000 * 2^seq(1,15)),
-                                        right = TRUE))
-        z_output <- dplyr::left_join(x = target_df, y = summary_bg_pergrp,
-                        by = 'group') |>
-                    dplyr::mutate(
-                        z.score = ((.data$counts-.data$avg)/.data$sd)) |>
-                    dplyr::mutate(
-                        p.value=pnorm(q = .data$z.score, lower.tail = FALSE))
-    } else {
-        z_scores <- (target_quantifs-mean(bg_quantifs))-stats::sd(bg_quantifs)
-        pval_vector <- stats::pnorm(q = z_scores, lower.tail = FALSE)
-        z_output <- data.frame(names = names(target_quantifs),
-                            z.score = z_scores,
-                            p.value = pval_vector)
-    }
+            counts = as.numeric(target_quantifs)
+        ),
+        method_adjust = p_adj_method
+    )
 
     return(list(z.test = z_output, target_quantifs = target_quantifs,
         bg_quantifs = bg_quantifs))
