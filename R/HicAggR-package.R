@@ -21,7 +21,7 @@
 #' It also allows to identify couples with significantly signal-enriched
 #' pixels at specific positions (such as the central pixel) relative to
 #' background less plausible couples.
-#' 
+#'
 #' @author Nicolas Chanard
 #' @author David Depierre
 #' @author Robel A Tesfaye
@@ -30,6 +30,6 @@
 #' @author Pascal Martin
 #' @author Stéphane Schaack
 #' @author Olivier Cuvier
-#' 
+#'
 #' @keywords internal
 "_PACKAGE"
