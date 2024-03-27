@@ -462,7 +462,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 
 #' Draw aggregation plots for interactions with different distances.
 #' 
-#' PlotAPA_byDistance
+#' plotMultiAPA
 #' @description Separates matrices based on interaction distance, performs
 #'  aggregation and plots Aggregated signal for each chunk of interaction
 #'  distances.
@@ -480,7 +480,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #'  of the treated condition. 
 #' eg:
 #' ```
-#' PlotAPA_byDistance(
+#' plotMultiAPA(
 #' submatrices = interactions_HS.mtx_lst,
 #' ctrlSubmatrices = interactions_Ctrl.mtx_lst)```
 #' @param plot.opts list of arguments to pass to [ggAPA()].
@@ -522,7 +522,7 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #' )
 #'
 #' # Aggregate matrices in one matrix
-#' PlotAPA_byDistance(submatrices = interactions_Ctrl.mtx_lst)
+#' plotMultiAPA(submatrices = interactions_Ctrl.mtx_lst)
 #'
 #'
 #' interactions_HS.mtx_lst <- PrepareMtxList(
@@ -530,14 +530,14 @@ PlotAPA <- function(aggregatedMtx = NULL, trim=0, colMin=NULL, colMid=NULL,
 #' )
 #'
 #' # Differential Aggregation
-#' PlotAPA_byDistance(
+#' plotMultiAPA(
 #'     submatrices = interactions_HS.mtx_lst,
 #'     ctrlSubmatrices = interactions_Ctrl.mtx_lst,
 #'     diffFun = "ratio",
 #'     plot.opts = list(colors = list("blue","white","red"))
 #' )
 #' 
-PlotAPA_byDistance <- function(
+plotMultiAPA <- function(
     submatrices = NULL,
     ctrlSubmatrices=NULL,
     ...,

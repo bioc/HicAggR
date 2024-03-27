@@ -213,7 +213,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom rlang .data
 #' @noRd
-.compute_zscore <- function(
+.computeZscore <- function(
     df_bg = NULL,
     df_target = NULL,
     method_adjust = "BH"
@@ -250,7 +250,9 @@
     return(z_output)
 }
 
-#' Computes z.test for each target couple over background couples.
+#' compareToBackground
+#'
+#' @description Computes z.test for each target couple over background couples.
 #'
 #' @param hicList <List[ContactMatrix][InteractionSet::ContactMatrix()]>:
 #' The HiC maps list.
@@ -365,7 +367,7 @@
 #' interactions_Ctrl.mtx_lst <- PrepareMtxList(
 #'  matrices = interactions_Ctrl.mtx_lst
 #' )
-#' output_bgInterTAD = compare_to_background(hicList = hicLst,
+#' output_bgInterTAD = compareToBackground(hicList = hicLst,
 #'  matrices = interactions_Ctrl.mtx_lst,
 #'  indexAnchor = Beaf32_Index.gnr,
 #'  indexBait = Beaf32_Index.gnr,
@@ -374,7 +376,7 @@
 #'    seqlengths = c(23513712)),
 #'  bg_type="inter_TAD"
 #' )
-compare_to_background <- function(
+compareToBackground <- function(
     hicList = NULL,
     matrices = NULL,
     indexAnchor = NULL,
@@ -472,7 +474,7 @@ compare_to_background <- function(
         operationFun = operationFun
     ) |> as.numeric() |> 
         `names<-`(attr(matrices,"names"))
-    z_output <- .compute_zscore(
+    z_output <- .computeZscore(
         df_bg = data.frame(
             names = attributes(bg_counts)$interactions$name,
             distance = attributes(bg_counts)$interactions$distance,

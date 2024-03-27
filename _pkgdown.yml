@@ -55,13 +55,13 @@ reference:
   - YlGnBu
   - YlOrRd
   - PlotAPA
-  - PlotAPA_byDistance
+  - plotMultiAPA
 
 - title: Additional Helpful Functions
   desc: "Function to import loops in bedpe format and to compare your couples values with background less plausible couples"
   contents:
-  - import_loops
-  - compare_to_background
+  - importLoops
+  - compareToBackground
 
 articles:
 - title: Tutorials
