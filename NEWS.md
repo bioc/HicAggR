@@ -1,3 +1,7 @@
+# HicAggR 0.99.4
+
+* removed CITATION file
+
 # HicAggR 0.99.3
 
 * NAMESPACE was generated with roxygen2 to define exportable functions.
