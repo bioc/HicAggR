@@ -46,4 +46,4 @@ rhdf5::h5closeAll()
 ImportHiC("inst/extdata/Control_HIC_10k_2L.h5",
     hicResolution = 100000,
     chrom_1 = "2L")
-getInfos("inst/extdata/Control_HIC_10k_2L.h5")
+GetInfo("inst/extdata/Control_HIC_10k_2L.h5")

@@ -1,6 +1,6 @@
 #' get some basic information about your hic file
 #' 
-#' getInfos
+#' GetInfo
 #'
 #' @param file <character> path to your file.
 #' @param printInfos <logical> print info on console?
@@ -19,10 +19,10 @@
 #'     "Control_HIC_10k_2L.h5",
 #'     package = "HicAggR", mustWork = TRUE
 #' )
-#' getInfos(h5_path)
+#' GetInfo(h5_path)
 #'
 
-getInfos <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
+GetInfo <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
     options(scipen = 999)
     #
     if(file.exists(file)){

@@ -15,7 +15,7 @@ reference:
 - title: HiC
   desc: "Functions for HiC data preprocessing."
   contents:
-  - getInfos
+  - GetInfo
   - BalanceHiC
   - CutHiC
   - ImportHiC
@@ -60,8 +60,8 @@ reference:
 - title: Additional Helpful Functions
   desc: "Function to import loops in bedpe format and to compare your couples values with background less plausible couples"
   contents:
-  - importLoops
-  - compareToBackground
+  - ImportLoops
+  - CompareToBackground
 
 articles:
 - title: Tutorials

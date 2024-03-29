@@ -9,6 +9,7 @@ SearchPairs(
   indexBait = NULL,
   minDist = NULL,
   maxDist = NULL,
+  exclude_duplicates = TRUE,
   exclude_self_interactions = TRUE,
   verbose = FALSE,
   cores = 1
@@ -27,6 +28,10 @@ and baits. (Default NULL)}
 
 \item{maxDist}{\if{html}{\out{<numeric>}}: Maximal distance between anchors
 and baits. (Default NULL)}
+
+\item{exclude_duplicates}{\if{html}{\out{<logical>}} Should duplicated
+pairs ("2L:100_2L:150" & "2L:150_2L:100") be removed?
+(Default: TRUE)}
 
 \item{exclude_self_interactions}{\if{html}{\out{<logical>}} Should pairs
 between the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)}

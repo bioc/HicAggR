@@ -1,4 +1,4 @@
-#' importLoops: import called loops in .bedpe format to use in HicAggR
+#' ImportLoops: import called loops in .bedpe format to use in HicAggR
 #'
 #' @description Imports bedpe file formats as GInteractions object usable
 #' to perform submatrix extraction with `ExtractSubmatrix()`
@@ -35,14 +35,14 @@
 #'     "postprocessed_pixels_5000.bedpe",
 #'     package = "HicAggR", mustWork = TRUE
 #' )
-#' loops <- importLoops(
+#' loops <- ImportLoops(
 #'     file_bedpe = bedpe_path,
 #'     chromSizes = data.frame(c("1","2"),
 #'         c(249250621,243199373)),
 #'     binSize = 5000, minDist = 105000
 #' )
 #'
-importLoops <- function(
+ImportLoops <- function(
     file_bedpe = NULL,
     genomicConstraint = NULL,
     discard_trans = FALSE,

@@ -12,6 +12,9 @@
 #' and baits. (Default NULL)
 #' @param maxDist <numeric>: Maximal distance between anchors
 #' and baits. (Default NULL)
+#' @param exclude_duplicates <logical> Should duplicated
+#' pairs ("2L:100_2L:150" & "2L:150_2L:100") be removed?
+#' (Default: TRUE)
 #' @param exclude_self_interactions <logical> Should pairs
 #' between the same bin ("2L:100_2L:100") be excluded? (Default: TRUE)
 #' @param cores <integer> : Number of cores to use. (Default 1)
@@ -20,6 +23,7 @@
 #' @return A GInteractions object.
 #' @export
 #' @importFrom S4Vectors mcols
+#' @importFrom dplyr select
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)
@@ -37,7 +41,8 @@
 #'
 SearchPairs <- function(
     indexAnchor = NULL, indexBait = NULL, minDist = NULL,
-    maxDist = NULL, exclude_self_interactions = TRUE,
+    maxDist = NULL, exclude_duplicates = TRUE,
+    exclude_self_interactions = TRUE,
     verbose = FALSE, cores = 1
 ) {
     if (is.character(minDist)) {
@@ -148,6 +153,16 @@ SearchPairs <- function(
         data.frame(S4Vectors::mcols(pairs.gni)),
         columOrder.chr
     )
+    if(exclude_duplicates){
+        dupSubMatrices <- which(
+            duplicated(apply(
+                X = (S4Vectors::mcols(pairs.gni) |> 
+                as.data.frame() |>
+                dplyr::select(c("anchor.bin","bait.bin"))),
+                MARGIN = 1,
+                FUN = function(x) paste(sort(x),collapse = "-"))))
+        if(length(dupSubMatrices) > 0) pairs.gni <- pairs.gni[-dupSubMatrices]
+    }
     names(pairs.gni) <- S4Vectors::mcols(pairs.gni)$name
     ## To avoid error when using interactions built 
     ## with grangeslist for both the anchor and bait. eg:

@@ -28,7 +28,6 @@
 #' @param chromSizes data.frame with chromosome
 #' names and lengths
 #' @param resolution numeric of hic resolution
-#' @param N number of background pairs to keep
 #' @param cores number of cores
 #' @param verbose verbosity
 #' @importFrom GenomicRanges GRanges width trim
@@ -42,7 +41,6 @@
     indexBait=NULL,
     chromSizes,
     resolution,
-    N = NULL,
     cores = cores,
     verbose = FALSE){
     
@@ -93,10 +91,6 @@
                                 bait.idx,
                                 minDist = dist_const[1],
                                 maxDist = dist_const[2],cores=cores)
-    if(!is.null(N)){
-    background_pairs <- background_pairs[
-        sample(seq(1,length(background_pairs)),size = N)]
-    }
     if(verbose){
         message("Number of background pairs: ",
         length(background_pairs))
@@ -116,7 +110,6 @@
 #' @param chromSizes data.frame with chromosome
 #' names and lengths
 #' @param resolution numeric of hic resolution
-#' @param N number of background pairs to keep
 #' @param secondaryConst.var column name
 #' of secondary variable, such as compartiment
 #' info
@@ -135,7 +128,6 @@
     indexBait = NULL,
     chromSizes,
     resolution,
-    N = NULL,
     secondaryConst.var = NULL,
     cores = cores,
     verbose = FALSE){
@@ -183,8 +175,8 @@
         message("Number of inter-TAD couples ",length(bg_couples))
     }
     if(!is.null(secondaryConst.var)){
-    # discard couples in the same compartment
-    # names of compartment info in couples
+    ## discard couples in the same compartment
+    ## names of compartment info in couples
     compart.var1 <- paste0("anchor.",secondaryConst.var)
     compart.var2 <- paste0("bait.",secondaryConst.var)
     diff.compart.couples <- as.data.frame(S4Vectors::mcols(bg_couples)) |>
@@ -250,7 +242,7 @@
     return(z_output)
 }
 
-#' compareToBackground
+#' CompareToBackground
 #'
 #' @description Computes z.test for each target couple over background couples.
 #'
@@ -266,7 +258,8 @@
 #' @param chromSizes <data.frame>: A data.frame containing chromosomes
 #' names and lengths in base pairs.
 #' @param n_background <integer> : Number of background
-#' couples to keep. (Default NULL)
+#' couples to keep. We recommend to use `set.seed` prior to launching
+#' this function with non null n_background. (Default NULL)
 #' @param indexAnchor <GRanges>: A first indexed GRanges object
 #' used as pairs anchor (must be indexed using `IndexFeatures()`).
 #' @param indexBait <GRanges>: A second indexed GRanges object
@@ -332,6 +325,7 @@
 #' vs distance data of the background couples. Z.scores are then
 #' computed per target couple by comparing residuals of the target counts
 #' as predicted by the model and the residuals of the background couples.
+#'
 #' @examples
 #' h5_path <- system.file("extdata",
 #'     "Control_HIC_10k_2L.h5",
@@ -367,7 +361,7 @@
 #' interactions_Ctrl.mtx_lst <- PrepareMtxList(
 #'  matrices = interactions_Ctrl.mtx_lst
 #' )
-#' output_bgInterTAD = compareToBackground(hicList = hicLst,
+#' output_bgInterTAD = CompareToBackground(hicList = hicLst,
 #'  matrices = interactions_Ctrl.mtx_lst,
 #'  indexAnchor = Beaf32_Index.gnr,
 #'  indexBait = Beaf32_Index.gnr,
@@ -376,7 +370,7 @@
 #'    seqlengths = c(23513712)),
 #'  bg_type="inter_TAD"
 #' )
-compareToBackground <- function(
+CompareToBackground <- function(
     hicList = NULL,
     matrices = NULL,
     indexAnchor = NULL,
@@ -403,7 +397,6 @@ compareToBackground <- function(
                         indexBait=indexBait,
                         chromSizes=chromSizes,
                         resolution=resolution,
-                        N=n_background,
                         cores=cores)
     }else{
         if(bg_type == "inter_TAD"){
@@ -413,7 +406,6 @@ compareToBackground <- function(
                                 indexBait=indexBait,
                                 chromSizes=chromSizes,
                                 resolution=resolution,
-                                N=n_background,
                                 secondaryConst.var = NULL,
                                 cores=cores)
 
@@ -426,7 +418,6 @@ compareToBackground <- function(
                                 indexBait=indexBait,
                                 chromSizes=chromSizes,
                                 resolution=resolution,
-                                N=n_background,
                                 secondaryConst.var = secondaryConst.var,
                                 cores=cores)
         bg_couples <- .cleanCouples(bg_couples,matrices)
@@ -435,21 +426,25 @@ compareToBackground <- function(
 
     bg_couples <- .cleanCouples(bg_couples,matrices)
     if(length(bg_couples) < 500){
-        # If no tad is given just use random bins
-        # using indexAnchor with the same distance constraints
-        # would result in having the same couples as target logically
-        # couples with random
+        ## If no tad is given just use random bins
+        ## using indexAnchor with the same distance constraints
+        ## would result in having the same couples as target logically
         bg_couples <- .findRandomBins(targetCouples,
                                     genomicConstraint=NULL,
                                     indexAnchor,
                                     indexBait,
                                     chromSizes,
-                                    resolution,
-                                    n_background)
+                                    resolution)
         bg_couples <- .cleanCouples(bg_couples,matrices)
         if(verbose){
             message(length(bg_couples))
         }
+    }
+
+    if(!is.null(n_background) && n_background < length(bg_couples)){
+        to_keep <- sample(seq(1,length(bg_couples)),
+            size = n_background)
+        bg_couples <- bg_couples[to_keep]
     }
 
     GenomeInfoDb::seqinfo(bg_couples) <- 
