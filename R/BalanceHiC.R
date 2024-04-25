@@ -20,6 +20,7 @@
 #' @param verbose <logical>: If TRUE show the progression
 #' in console. (Default FALSE)
 #' @return A matrices list.
+#' @importFrom checkmate assert checkNumeric checkChoice
 #' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
@@ -43,6 +44,30 @@ BalanceHiC <- function(
     hicLst, method = "ICE", interactionType = NULL, maxIter = 50,
     qtlTh = 0.15, cores = 1, verbose = FALSE
 ) {
+    .validHicMatrices(matrices = hicLst)
+    checkmate::assert(
+        checkmate::checkChoice(
+            x = method,
+            choices = c("ICE", "VC", "VC_SQRT"), null.ok = FALSE
+        ),
+        checkmate::checkChoice(
+            x = interactionType,
+            choices = c("cis", "trans", "all"),
+            null.ok = TRUE
+        ),
+        checkmate::checkNumeric(
+            x = cores,
+            lower = 1, null.ok = FALSE
+        ),
+        checkmate::checkNumeric(
+            x = maxIter,
+            lower = 2, null.ok = FALSE
+        ),
+        checkmate::checkNumeric(
+            x = qtlTh,
+            lower = 0, null.ok = FALSE
+        )
+    )
     if (!is.null(interactionType) &&
         "all" %in% interactionType
     ) {

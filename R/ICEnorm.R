@@ -7,14 +7,22 @@
 #' the bins will be ignored. (Default 0.15)
 #' @param maxIter <numerical>: The maximum iteration number.
 #' @return A normalized contactMatrix
+#' @importFrom checkmate assertNumeric assertClass
 #' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
 #' HiC_Ctrl_ICE.cmx <- ICEnorm(HiC_Ctrl.cmx_lst[['2L_2L']])
 #'
 ICEnorm <- function(hic, qtlTh = 0.15, maxIter = 50) {
+    checkmate::assertClass(
+        x = hic,
+        classes = "ContactMatrix",
+        null.ok = FALSE)
+    checkmate::assertNumeric(x = maxIter, lower = 1, null.ok = FALSE)
     # Removed Low counts bins
     if (qtlTh) {
+        checkmate::assertNumeric(x = qtlTh, upper = 1, lower = 0, 
+            null.ok = TRUE)
         if (hic@metadata$symmetric) {
             rowBias.num <- Matrix::rowSums(hic@matrix, na.rm = TRUE) +
                 Matrix::colSums(hic@matrix, na.rm = TRUE) -

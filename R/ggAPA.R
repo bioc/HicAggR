@@ -44,7 +44,10 @@
 #' annotation. (Default "Anchor")
 #' @param bait.name <character> Name of bait for
 #' annotation. (Default "Bait")
+#' @param fixCoord <logical> Fix axes coordinates?
+#' (Default TRUE)
 #' @return A ggplot object.
+#' @importFrom checkmate assertMatrix
 #' @export
 #' @examples
 #' # Data
@@ -61,7 +64,8 @@
 #'
 #' # Beaf32 <-> Beaf32 Pairing
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for exemple
+#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for
+#' exemple
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(
@@ -181,8 +185,13 @@ ggAPA <- function(
     bias = 1, paletteLength = 51,
     annotate = TRUE,
     anchor.name = "Anchor",
-    bait.name = "Bait"
+    bait.name = "Bait",
+    fixCoord = TRUE
 ) {
+    checkmate::assertMatrix(
+        x = aggregatedMtx,
+        null.ok = FALSE
+    )
     # Trimming
     if (!is.null(colBreaks)) {
         colMin <- min(colBreaks)
@@ -314,25 +323,42 @@ ggAPA <- function(
     ) +
     ggplot2::theme_classic()
     if(annotate){
-        if(is.null(colnames(aggregatedMtx))){
-            extent <- (floor(
-                nrow(aggregatedMtx)/2) * attributes(
-                    aggregatedMtx)$resolution)/1000
-            breaks_y <- c(1,ceiling(nrow(aggregatedMtx)/2),
-                nrow(aggregatedMtx))
-            breaks_x <- c(1,ceiling(ncol(aggregatedMtx)/2),
-                ncol(aggregatedMtx))
+        if(attributes(aggregatedMtx)$referencePoint == "rf"){
+            regionSize <- attributes(
+                aggregatedMtx)$matriceDim/(
+                    (attributes(aggregatedMtx)$shift*2)+1)
+            breaks_y <- c(1,floor(
+                (attributes(aggregatedMtx)$matriceDim-regionSize)/2),
+                    floor(
+                (attributes(aggregatedMtx)$matriceDim+regionSize)/2),
+                attributes(aggregatedMtx)$matriceDim)
+            breaks_x <- breaks_y
             labels_y <- c(paste0("-",
-                extent, "KB"), anchor.name, paste0("+",
-                extent, "KB"))
-            labels_x <- c(paste0("-",
-                extent, "KB"), bait.name, paste0("+",
-                extent, "KB"))
-        }else{
-            breaks_y <- seq_along(rownames(aggregatedMtx))
-            labels_y <- rownames(aggregatedMtx)
-            breaks_x <- seq_along(colnames(aggregatedMtx))
-            labels_x <- colnames(aggregatedMtx)
+                    attributes(aggregatedMtx)$shift, " x ROI\nwidth"),
+                    anchor.name, bait.name, paste0("+",
+                    attributes(aggregatedMtx)$shift, " x ROI\nwidth"))
+            labels_x <- labels_y
+        } else {
+           if(is.null(colnames(aggregatedMtx))){
+                extent <- (floor(
+                    nrow(aggregatedMtx)/2) * attributes(
+                        aggregatedMtx)$resolution)/1000
+                breaks_y <- c(1,ceiling(nrow(aggregatedMtx)/2),
+                    nrow(aggregatedMtx))
+                breaks_x <- c(1,ceiling(ncol(aggregatedMtx)/2),
+                    ncol(aggregatedMtx))
+                labels_y <- c(paste0("-",
+                    extent, "KB"), anchor.name, paste0("+",
+                    extent, "KB"))
+                labels_x <- c(paste0("-",
+                    extent, "KB"), bait.name, paste0("+",
+                    extent, "KB"))
+            } else{
+                breaks_y <- seq_along(rownames(aggregatedMtx))
+                labels_y <- rownames(aggregatedMtx)
+                breaks_x <- seq_along(colnames(aggregatedMtx))
+                labels_x <- colnames(aggregatedMtx)
+            }
         }
         plot.ggp <- plot.ggp+
             ggplot2::scale_y_reverse(
@@ -374,5 +400,6 @@ ggAPA <- function(
                 legend.title = ggplot2::element_blank()
             )
     }
+    if(fixCoord) plot.ggp <- plot.ggp+ggplot2::coord_fixed(ratio = 1)
     return(plot.ggp)
 }

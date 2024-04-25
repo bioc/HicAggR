@@ -7,6 +7,8 @@
 #'  The HiC maps list.
 #' @param matrixKind <character>: The kind of matrix you want.
 #' @return A ContactMatrix list.
+#' @importFrom purrr map
+#' @importFrom dplyr case_when
 #' @export
 #' @examples
 #' # Data
@@ -30,6 +32,7 @@ SwitchMatrix <- function(
     hicLst,
     matrixKind = c("obs", "norm", "o/e", "exp")
 ) {
+    .validHicMatrices(matrices = hicLst)
     if (!(matrixKind %in% c("obs", "norm", "o/e", "exp"))) {
         err.chr <- paste0(
             "matrixKind must be one of",
@@ -38,24 +41,25 @@ SwitchMatrix <- function(
         stop(err.chr)
     }
     if (attributes(hicLst)$mtx != matrixKind) {
-        # https://stackoverflow.com/questions/26228625/
-        # updating-columns-using-lapply
-        # this is to avoid the use <<-
-        list2env(lapply(hicLst, function(hicName.chr) {
-        hicName.chr@matrix@x <- dplyr::case_when(
-            matrixKind == "obs" ~
-            (hicName.chr@metadata$observed),
-            matrixKind == "norm" ~
-            (hicName.chr@metadata$observed *
-                hicName.chr@metadata$normalizer),
-            matrixKind == "o/e" ~
-            (hicName.chr@metadata$observed *
-                hicName.chr@metadata$normalizer /
-                hicName.chr@metadata$expected),
-            matrixKind == "exp" ~
-            (hicName.chr@metadata$expected)
-        )
-        }),envir = .GlobalEnv)
+        ## this is to avoid the use of <<-
+        ## replaced lapply by map
+        hicLst <- purrr::map(
+            .x = hicLst,
+            .f =~{
+                .x@matrix@x <- dplyr::case_when(
+                    matrixKind == "obs" ~
+                        (.x@metadata$observed),
+                    matrixKind == "norm" ~
+                        (.x@metadata$observed *
+                        .x@metadata$normalizer),
+                    matrixKind == "o/e" ~
+                        ((.x@metadata$observed *
+                        .x@metadata$normalizer) /
+                        .x@metadata$expected),
+                    matrixKind == "exp" ~
+                        (.x@metadata$expected)
+                ); .x}) |>
+            `attributes<-`(attributes(hicLst))
         attributes(hicLst)$mtx <- matrixKind
         return(hicLst)
     } else {

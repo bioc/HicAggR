@@ -35,6 +35,7 @@
 #' @param statCompare <logical>: Whether a t.test must be apply
 #' to each pixel of the differential aggregated matrix.
 #' @return A matrix
+#' @importFrom checkmate assert assertFunction checkChoice assertList
 #' @export
 #' @examples
 #' # Data
@@ -88,12 +89,35 @@ Aggregation <- function(
     ctrlMatrices = NULL, matrices = NULL, aggFun = "mean",
     diffFun = "substraction", scaleCorrection = FALSE,
     correctionArea = NULL, statCompare = FALSE
-) {    
+) {
     # Put list on correct variable
     if (!is.null(ctrlMatrices) && is.null(matrices)) {
+        .validSubmatrices(ctrlMatrices)
         matrices <- ctrlMatrices
         ctrlMatrices <- NULL
     }
+    .validSubmatrices(matrices)
+    if(!is.null(ctrlMatrices)){
+        .validSubmatrices(ctrlMatrices)
+    }
+    # checkmate::assert(
+    #     checkmate::checkFunction(
+    #         x = diffFun
+    #     ),
+    #     checkmate::checkChoice(
+    #         x = diffFun,
+    #         choices = c("-", "substract", "substraction",
+    #             "/", "ratio", "log2","log2-","log2/",
+    #             "log2ratio", "other")
+    #     ), combine = "or"
+    # )
+    
+    checkmate::assertList(
+        x = correctionArea,
+        types = "numeric",
+        min.len = 2,max.len = 2,
+        null.ok = TRUE
+    )
     # Get attributes
     matDim <- attributes(matrices)$matriceDim
     totMtx <- attributes(matrices)$totalMatrixNumber
@@ -130,6 +154,10 @@ Aggregation <- function(
         )
         aggFun <- WrapFunction(aggFun)
     }
+    checkmate::assertFunction(
+        x = aggFun,
+        null.ok = FALSE
+    )
     # Aggregate
     agg.mtx <- apply(
         simplify2array(matrices),
@@ -224,6 +252,9 @@ Aggregation <- function(
             pval.mtx[pval.mtx < 1e-16] <- 1e-16
             pval.mtx <- -log10(pval.mtx)
         }
+        checkmate::assertFunction(
+            x = aggFun,null.ok = FALSE
+        )
         # Differential at submatrix and aggregated scale
         diffmatrices <- lapply(
             seq_along(ctrlMatrices),

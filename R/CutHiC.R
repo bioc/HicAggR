@@ -7,6 +7,7 @@
 #' @param verbose <logical>: If TRUE,
 #' show the progression in console. (Default FALSE)
 #' @return A matrices list.
+#' @importFrom checkmate assertClass
 #' @export
 #' @examples
 #' data(HiC_Ctrl.cmx_lst)
@@ -16,6 +17,9 @@
 CutHiC <- function(
 megaHic, verbose = FALSE
 ) {
+    checkmate::assertClass(
+        x = megaHic,  classes = "ContactMatrix",
+        null.ok = FALSE)
     hicResolution <- megaHic@metadata$resolution
     mtx.chr <- megaHic@metadata$mtx
     chromSizes <- megaHic@metadata$chromSize

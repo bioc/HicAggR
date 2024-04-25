@@ -27,6 +27,7 @@
 #' @import InteractionSet
 #' @importFrom GenomeInfoDb seqinfo
 #' @importFrom data.table as.data.table setkey foverlaps
+#' @importFrom checkmate assertFileExists assertDataFrame
 #' @export
 #'
 #' @examples
@@ -52,6 +53,19 @@ ImportLoops <- function(
     maxDist = NULL,
     verbose = FALSE,
     cores = 1) {
+    checkmate::assertFileExists(
+        x = file_bedpe,
+        access = "r",
+        .var.name = "file_bedpe")
+    .validGranges(
+        gRanges = genomicConstraint,
+        testForList = FALSE,
+        nullValid = TRUE)
+    checkmate::assertDataFrame(
+        x = chromSizes,
+        min.cols = 2,
+        null.ok = FALSE
+    )
     loops <- rtracklayer::import(file_bedpe, format = "bedpe")
     if ("ALL" %in% toupper(chromSizes[[1]])){
         chromSizes <- chromSizes[-which(toupper(chromSizes[[1]]) == "ALL"), ]

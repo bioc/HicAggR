@@ -19,13 +19,14 @@
 #' \item "percentile" or "prct" apply percentile.
 #' \item "rank" apply a ranking.
 #' \item "zscore" apply a scaling.
-#' \item "minmax" apply a HicAggR::MinMaxScale.
-#' \item "mu" apply a HicAggR::MeanScale.
+#' \item "minmax" scales on a min to max range.
+#' \item "mu" scales on mean: `(x-mean(x))/(max(x)-min(x))`.
 #' \item other or NULL don't apply transformation (Default).
 #' }
 #' @param orientate <logical>: Whether matrices must be
 #' corrected for orientatation before the aggregation.
 #' @return A matrix list ready for aggregation of values extraction.
+#' @importFrom checkmate assertFunction assertNumeric
 #' @export
 #' @importFrom S4Vectors mcols
 #' @examples
@@ -79,6 +80,7 @@ PrepareMtxList <- function(
     matrices, minDist = NULL, maxDist = NULL, rm0 = FALSE,
     transFun = NULL, orientate=FALSE
 ) {
+    .validSubmatrices(submatrices = matrices)
     # Get attributes
     attributes.lst <- attributes(matrices)
     # Transformation Function
@@ -142,6 +144,10 @@ PrepareMtxList <- function(
         )
         transFun <- WrapFunction(transFun)
     }
+    checkmate::assertFunction(
+        x = transFun,
+        null.ok = TRUE
+    )
     # Prepare Matrix List
     if (is.null(minDist)) {
         minDist <- NA
@@ -172,6 +178,10 @@ PrepareMtxList <- function(
             )]
         ]
     }
+    checkmate::assertNumeric(minDist,
+        null.ok=TRUE)
+    checkmate::assertNumeric(maxDist,
+        null.ok=TRUE)
     # Here changed order between the filtering in line 169 with orientation
     # because somehow the filtering removes the attributes. This is a cause
     #  for error in OrientateMatrix

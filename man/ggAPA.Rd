@@ -25,7 +25,8 @@ ggAPA(
   paletteLength = 51,
   annotate = TRUE,
   anchor.name = "Anchor",
-  bait.name = "Bait"
+  bait.name = "Bait",
+  fixCoord = TRUE
 )
 }
 \arguments{
@@ -91,6 +92,9 @@ annotation. (Default "Anchor")}
 
 \item{bait.name}{\if{html}{\out{<character>}} Name of bait for
 annotation. (Default "Bait")}
+
+\item{fixCoord}{\if{html}{\out{<logical>}} Fix axes coordinates?
+(Default TRUE)}
 }
 \value{
 A ggplot object.

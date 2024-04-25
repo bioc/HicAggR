@@ -1,3 +1,103 @@
+#' .GInteractionFormatting
+#' Correcting the genomic features for which to extract
+#' hic contacts. adding distance, anchor.bin, bait.bin, submatrix name
+#' 
+#' @keywords internal
+#' @param genomicFeature GRanges, GInteractions object to format
+#' @param hicResolution resolution
+#'
+#' @return returns A GInteraction object
+#' @noRd
+.GInteractionFormatting <- function(
+        genomicFeature, hicResolution
+    ) {
+    if (inherits(genomicFeature, "GRanges")) {
+        feature.gni <- InteractionSet::GInteractions(
+            GenomicRanges::resize(genomicFeature, 1, "start"),
+            GenomicRanges::resize(genomicFeature, 1, "end")
+        )
+    } else if (inherits(genomicFeature, "Pairs") &&
+        inherits(genomicFeature@first, "GRanges") &&
+        inherits(genomicFeature@second, "GRanges")) {
+        feature.gni <- InteractionSet::GInteractions(
+            genomicFeature@first,
+            genomicFeature@second
+        )
+    } else if (inherits(genomicFeature, "GInteractions")) {
+        feature.gni <- genomicFeature
+    } else {
+        stop("genomicFeature object is not a GRanges, Pairs
+        or GInteractions object!")
+    }
+    S4Vectors::mcols(feature.gni) <- S4Vectors::mcols(genomicFeature)
+    if (is.null(GenomeInfoDb::seqinfo(feature.gni))) {
+        GenomeInfoDb::seqinfo(feature.gni) <-
+            GenomeInfoDb::seqinfo(genomicFeature)
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$distance)) {
+        S4Vectors::mcols(feature.gni)$distance <-
+        InteractionSet::pairdist(feature.gni)
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$orientation)) {
+        S4Vectors::mcols(feature.gni)$orientation <-
+            (feature.gni == InteractionSet::swapAnchors(feature.gni))
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$anchor.bin)) {
+        S4Vectors::mcols(feature.gni)$anchor.bin <- paste0(
+            GenomeInfoDb::seqnames(
+                InteractionSet::anchors(feature.gni)$first
+            ), ":",
+            ceiling(
+                InteractionSet::anchors(feature.gni)$first@ranges@start/
+                hicResolution
+            )
+        )
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$bait.bin)) {
+        S4Vectors::mcols(feature.gni)$bait.bin <- paste0(
+            GenomeInfoDb::seqnames(
+                InteractionSet::anchors(feature.gni)$second
+            ), ":",
+            ceiling(
+                InteractionSet::anchors(feature.gni)$second@ranges@start/
+                hicResolution
+            )
+        )
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$name)) {
+        S4Vectors::mcols(feature.gni)$name <- paste0(
+            S4Vectors::mcols(feature.gni)$anchor.bin, "_",
+            S4Vectors::mcols(feature.gni)$bait.bin
+        )
+    }
+    if (is.null(S4Vectors::mcols(feature.gni)$submatrix.name)) {
+        S4Vectors::mcols(feature.gni)$submatrix.name <- paste0(
+            S4Vectors::mcols(feature.gni)$anchor.bin, "_",
+            S4Vectors::mcols(feature.gni)$bait.bin
+        )
+        S4Vectors::mcols(feature.gni)$submatrix.name[
+            !S4Vectors::mcols(feature.gni)$orientation
+            ] <- paste0(
+                S4Vectors::mcols(feature.gni)$bait.bin[
+                    !S4Vectors::mcols(feature.gni)$orientation
+                ], "_",
+                S4Vectors::mcols(feature.gni)$anchor.bin[
+                    !S4Vectors::mcols(feature.gni)$orientation
+                ]
+            )
+    }
+    if (!sum(
+        S4Vectors::mcols(feature.gni)$anchor.bin !=
+        S4Vectors::mcols(feature.gni)$bait.bin
+    )) {
+        S4Vectors::mcols(feature.gni)$bait.bin <- NULL
+        S4Vectors::mcols(feature.gni)$bin <-
+            S4Vectors::mcols(feature.gni)$anchor.bin
+        S4Vectors::mcols(feature.gni)$anchor.bin <- NULL
+    }
+    return(feature.gni)
+}
+
 #' Submatrix extraction.
 #'
 #' ExtractSubmatrix
@@ -30,8 +130,9 @@
 #' @param verbose <logical>: If TRUE, 
 #' show the progression in console. (Default FALSE)
 #' @return A matrices list.
-#' @export
+#' @importFrom checkmate assertLogical assertChoice assert checkNumeric
 #' @importFrom S4Vectors mcols runValue runLength metadata
+#' @export
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)
@@ -72,92 +173,25 @@ ExtractSubmatrix <- function(
     hicResolution = NULL, matriceDim = 21, shift = 1, 
     remove_duplicates = TRUE, cores = 1,verbose = FALSE
 ) {
-    .GInteractionFormatting <- function(
-        genomicFeature, hicResolution
-    ) {
-        if (inherits(genomicFeature, "GRanges")) {
-            feature.gni <- InteractionSet::GInteractions(
-                GenomicRanges::resize(genomicFeature, 1, "start"),
-                GenomicRanges::resize(genomicFeature, 1, "end")
-            )
-        } else if (inherits(genomicFeature, "Pairs") &&
-            inherits(genomicFeature@first, "GRanges") &&
-            inherits(genomicFeature@second, "GRanges")) {
-            feature.gni <- InteractionSet::GInteractions(
-                genomicFeature@first,
-                genomicFeature@second
-            )
-        } else if (inherits(genomicFeature, "GInteractions")) {
-            feature.gni <- genomicFeature
-        }
-        S4Vectors::mcols(feature.gni) <- S4Vectors::mcols(genomicFeature)
-        if (is.null(GenomeInfoDb::seqinfo(feature.gni))) {
-            GenomeInfoDb::seqinfo(feature.gni) <-
-                GenomeInfoDb::seqinfo(genomicFeature)
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$distance)) {
-            S4Vectors::mcols(feature.gni)$distance <-
-            InteractionSet::pairdist(feature.gni)
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$orientation)) {
-            S4Vectors::mcols(feature.gni)$orientation <-
-                (feature.gni == InteractionSet::swapAnchors(feature.gni))
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$anchor.bin)) {
-            S4Vectors::mcols(feature.gni)$anchor.bin <- paste0(
-                GenomeInfoDb::seqnames(
-                    InteractionSet::anchors(feature.gni)$first
-                ), ":",
-                ceiling(
-                    InteractionSet::anchors(feature.gni)$first@ranges@start/
-                    hicResolution
-                )
-            )
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$bait.bin)) {
-            S4Vectors::mcols(feature.gni)$bait.bin <- paste0(
-                GenomeInfoDb::seqnames(
-                    InteractionSet::anchors(feature.gni)$second
-                ), ":",
-                ceiling(
-                    InteractionSet::anchors(feature.gni)$second@ranges@start/
-                    hicResolution
-                )
-            )
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$name)) {
-            S4Vectors::mcols(feature.gni)$name <- paste0(
-                S4Vectors::mcols(feature.gni)$anchor.bin, "_",
-                S4Vectors::mcols(feature.gni)$bait.bin
-            )
-        }
-        if (is.null(S4Vectors::mcols(feature.gni)$submatrix.name)) {
-            S4Vectors::mcols(feature.gni)$submatrix.name <- paste0(
-                S4Vectors::mcols(feature.gni)$anchor.bin, "_",
-                S4Vectors::mcols(feature.gni)$bait.bin
-            )
-            S4Vectors::mcols(feature.gni)$submatrix.name[
-                !S4Vectors::mcols(feature.gni)$orientation
-                ] <- paste0(
-                    S4Vectors::mcols(feature.gni)$bait.bin[
-                        !S4Vectors::mcols(feature.gni)$orientation
-                    ], "_",
-                    S4Vectors::mcols(feature.gni)$anchor.bin[
-                        !S4Vectors::mcols(feature.gni)$orientation
-                    ]
-                )
-        }
-        if (!sum(
-            S4Vectors::mcols(feature.gni)$anchor.bin !=
-            S4Vectors::mcols(feature.gni)$bait.bin
-        )) {
-            S4Vectors::mcols(feature.gni)$bait.bin <- NULL
-            S4Vectors::mcols(feature.gni)$bin <-
-                S4Vectors::mcols(feature.gni)$anchor.bin
-            S4Vectors::mcols(feature.gni)$anchor.bin <- NULL
-        }
-        return(feature.gni)
-    }
+    .validHicMatrices(matrices = hicLst)
+    checkmate::assertLogical(
+        x = remove_duplicates
+    )
+    checkmate::assertChoice(
+        x = referencePoint,
+        choices = c('rf','pf'),
+        null.ok = FALSE)
+    checkmate::assert(
+        checkmate::checkNumeric(
+            matriceDim, lower = 5,
+            any.missing = FALSE),
+        checkmate::checkNumeric(
+            shift, lower = 1,
+            any.missing = FALSE),
+        checkmate::checkNumeric(
+            cores, lower = 1,
+            any.missing = FALSE),
+        combine = "and")
 
     # Run Check Resolution
     if (!is.null(attr(hicLst, "resolution"))) {
@@ -165,10 +199,11 @@ ExtractSubmatrix <- function(
     } else if (is.character(hicResolution)) {
         hicResolution <- GenomicSystem(hicResolution)
     }
-    # Check Dimension
-    if (matriceDim < 5) {
-        matriceDim <- 5
-    }
+    checkmate::assertNumeric(
+        x = hicResolution,
+        lower = 1, null.ok = FALSE,
+        .var.name = "hicResolution"
+    )
     # Formatting
     genomicFeature <- .GInteractionFormatting(
         genomicFeature = genomicFeature,
@@ -269,19 +304,19 @@ ExtractSubmatrix <- function(
         )[,"end"] <=
         SeqEnds(InteractionSet::anchors(featureResize.gni)$second)
     )]
-    # Filt Duplicated Submatrix before extraction
+    ## Filt Duplicated Submatrix before extraction
     featureNoDup.gni <-
         featureFilt.gni[!duplicated(featureFilt.gni$submatrix.name)]
-    # Order according Chromosomes combinaison
-    chromosomesCombinaison.rle <- ReduceRun(
+    ## Order according Chromosomes combinaison
+    ## ReduceRun takes longer than just paste
+    chromosomesCombinaison.rle <- S4Vectors::Rle(paste(
         GenomeInfoDb::seqnames(
             InteractionSet::anchors(featureNoDup.gni)$first
         ),
         GenomeInfoDb::seqnames(
             InteractionSet::anchors(featureNoDup.gni)$second
-        ),
-        reduceMethod = "paste", sep = "_"
-    )
+        ),sep = "_"
+    ))
     order.num <- unlist(
         lapply(
             unique(S4Vectors::runValue(chromosomesCombinaison.rle)),

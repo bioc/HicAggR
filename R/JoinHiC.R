@@ -14,6 +14,7 @@
 JoinHiC <- function(
     hicLst
 ) {
+    .validHicMatrices(matrices = hicLst)
     chromSizes <- attributes(hicLst)$chromSize
     mapNames <- names(hicLst)
     mapPosition <- data.frame(apply(

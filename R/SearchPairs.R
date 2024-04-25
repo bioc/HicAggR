@@ -45,6 +45,7 @@ SearchPairs <- function(
     exclude_self_interactions = TRUE,
     verbose = FALSE, cores = 1
 ) {
+    .validGranges(indexAnchor)
     if (is.character(minDist)) {
         minDist <- GenomicSystem(minDist)
     }
@@ -53,7 +54,21 @@ SearchPairs <- function(
     }
     if (is.null(indexBait)) {
         indexBait <- indexAnchor
+    }else {
+       .validGranges(indexBait)
     }
+    checkmate::assertLogical(
+        x = c(exclude_duplicates,exclude_self_interactions,verbose),
+        any.missing = FALSE, null.ok = FALSE
+    )
+    checkmate::assertNumeric(
+        x = c(minDist, maxDist),
+        null.ok = TRUE
+    )
+    checkmate::assertNumeric(
+        x = cores,
+        lower = 1, null.ok = FALSE
+    )
     commonConstraint.lst <- intersect(
         indexAnchor$constraint,
         indexBait$constraint

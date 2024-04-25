@@ -9,6 +9,7 @@
 #' @param reduceRanges <logical>: Whether the result should be
 #' reduced. See GenomicRanges::reduce for more details. (Default FALSE)
 #' @return a GRange object.
+#' @importFrom checkmate assert checkLogical
 #' @export
 #' @examples
 #' GRange_1.grn <- GenomicRanges::GRanges(
@@ -39,6 +40,14 @@ MergeGRanges <- function(
     reduceRanges = FALSE
 ) {
     mergedGrange.grn <- unlist(GenomicRanges::GRangesList(...))
+    checkmate::assert(
+        checkmate::checkLogical(
+            x = sortRanges, null.ok = FALSE
+        ),
+        checkmate::checkLogical(
+            x = reduceRanges, null.ok = FALSE
+        )
+    )
     if (sortRanges) {
         mergedGrange.grn <- sort(mergedGrange.grn)
     }

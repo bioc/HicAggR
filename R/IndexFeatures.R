@@ -27,6 +27,7 @@
 #' @return A GRanges object.
 #' @export
 #' @importFrom S4Vectors mcols
+#' @importFrom checkmate assert assertChoice assertCharacter assertNumeric
 #' @examples
 #' data(Beaf32_Peaks.gnr)
 #' Beaf32_Index.gnr <- IndexFeatures(
@@ -43,6 +44,29 @@ IndexFeatures <- function(
     binSize = NULL, method = "mean", metadataColName = NULL,
     cores = 1, verbose = FALSE
 ) {
+    .validGranges(
+        gRanges = gRangeList, 
+        testForList = TRUE, 
+        nullValid = FALSE)
+    checkmate::assert(
+        checkmate::checkChoice(
+            x = method,
+            choices = c("mean", "median", "sum", "max", "min"),
+            null.ok = FALSE
+        ),
+        checkmate::checkCharacter(
+            x = metadataColName,
+            any.missing = FALSE,
+            all.missing = FALSE,
+            null.ok = TRUE
+        ),
+        checkmate::checkNumeric(
+            x = cores, lower = 1, null.ok = FALSE
+        ),
+        checkmate::checkNumeric(
+            x = binSize, lower = 1, null.ok = FALSE
+        )
+    )
     # Constraint Informations
     if (is.null(genomicConstraint)) {
         genomicConstraint <- GenomicRanges::GRanges(
@@ -54,6 +78,10 @@ IndexFeatures <- function(
             strand = "*", name = chromSizes[, 1]
         )
     } else {
+        .validGranges(
+            gRanges = genomicConstraint,
+            testForList = FALSE,
+            nullValid = FALSE)
         if (is.null(genomicConstraint$name) ||
             length(which(!is.na(genomicConstraint$name))) == 0) {
             genomicConstraint$name <- paste0(

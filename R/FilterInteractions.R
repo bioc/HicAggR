@@ -15,6 +15,7 @@
 #' (Default intersection of all targets)
 #' @return A list of elements index or a filtred matrices list with attributes
 #'  updates.
+#' @importFrom checkmate assertClass assertList assertFunction
 #' @export
 #' @importFrom S4Vectors mcols
 #' @examples
@@ -118,8 +119,19 @@ FilterInteractions <- function(
 ) {
     if (!is.null(matrices) &&
         !is.null(attributes(matrices)$interactions)) {
+        .validSubmatrices(submatrices = matrices)
         genomicInteractions <- attributes(matrices)$interactions
     }
+    checkmate::assertClass(
+        x = genomicInteractions,
+        classes = "GInteractions",
+        null.ok = FALSE
+    )
+    checkmate::assertList(
+        x = targets,
+        names = "named",
+        null.ok = FALSE
+    )
     interarctions.ndx_lst <- lapply(
         seq_along(targets),
         function(target.ndx) {
@@ -164,6 +176,10 @@ FilterInteractions <- function(
     if (length(targets) == 1) {
         interarctions.ndx <- unlist(interarctions.ndx_lst)
     } else if (!is.null(selectionFun)) {
+        checkmate::assertFunction(
+            x = selectionFun,
+            null.ok = FALSE
+        )
         for (target.ndx in seq_along(interarctions.ndx_lst)) {
             assign(
                 names(interarctions.ndx_lst)[target.ndx],

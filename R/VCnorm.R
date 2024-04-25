@@ -9,6 +9,7 @@
 #' @param vcsqrt <logical>: Whether the square root should be
 #' applied. (Default TRUE)
 #' @return A matrices list.
+#' @importFrom checkmate assertClass
 #' @export
 #' @examples
 #' # Data
@@ -22,6 +23,11 @@ VCnorm <- function(
     qtlTh = 0.15,
     vcsqrt = TRUE
 ) {
+    checkmate::assertClass(
+        x = hic,
+        classes = "ContactMatrix",
+        null.ok = FALSE
+    )
     pow.num <- ifelse(vcsqrt, 0.5, 1)
     hic.spm <- hic@matrix
     # Removed Low counts bins

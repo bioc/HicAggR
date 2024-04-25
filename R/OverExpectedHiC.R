@@ -20,6 +20,7 @@
 #' @importFrom rlang .data
 #' @import ggplot2
 #' @importFrom reshape melt
+#' @importFrom checkmate checkChoice
 #' @details
 #' Methods to calculate expected values per distance:
 #' \itemize{
@@ -40,6 +41,12 @@ OverExpectedHiC <- function(
     verbose = FALSE, cores = 1, 
     plot_contact_vs_dist="per_seq"
 ) {
+    .validHicMatrices(matrices = hicLst)
+    checkmate::checkChoice(
+        x = method,
+        choices = c("mean_non_zero", "mean_total", "lieberman"),
+        null.ok = FALSE
+    )
     resolution.num <- attributes(hicLst)$resolution
     matricesNames.chr <- names(hicLst)
     multicoreParam <- MakeParallelParam(

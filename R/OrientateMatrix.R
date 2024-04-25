@@ -45,6 +45,7 @@ OrientateMatrix <- function(
     if (is.list(mtx) &&
         !is.null(attributes(mtx)$interactions)
     ) {
+        .validSubmatrices(submatrices = mtx)
         orientedMatrice.mtx <- mtx
         if(verbose){
             message(
@@ -71,10 +72,14 @@ OrientateMatrix <- function(
             attributes(orientedMatrice.mtx)$interactions$name
         return(orientedMatrice.mtx)
     } else {
+        checkmate::assertMatrix(
+            x = mtx,
+            null.ok = FALSE
+        )
         return(t(apply(
             as.data.frame(apply(mtx, 1, rev)),
             1,
             rev
-        )))
+        )) |> `colnames<-`(NULL))
     }
 }

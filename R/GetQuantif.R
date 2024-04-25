@@ -37,6 +37,7 @@
 #' @return A GRange object.
 #' @export
 #' @importFrom S4Vectors mcols
+#' @importFrom checkmate assertCharacter
 #' @examples
 #' # Data
 #' data(Beaf32_Peaks.gnr)
@@ -96,6 +97,7 @@ GetQuantif <- function(
         )
         operationFun <- WrapFunction(operationFun)
     }
+    .validSubmatrices(submatrices = matrices)
     # Define extraction function
     matriceDim <- attributes(matrices)$matriceDim
     if (!is.function(areaFun) &&
@@ -334,6 +336,7 @@ GetQuantif <- function(
     )
     # Get Names
     if (!is.null(varName)) {
+        checkmate::assertCharacter(varName, any.missing = FALSE)
         interactions.dtf <- data.frame(
             S4Vectors::mcols(attributes(matrices)$interactions)
             )

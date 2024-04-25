@@ -54,6 +54,8 @@
 #' 
 #' @return A matrices list.
 #' @export
+#' @importFrom checkmate checkChoice assertCharacter assertFileExists
+#' @importFrom withr local_options
 #' @examples
 #' \donttest{
 #'
@@ -125,13 +127,18 @@
 
 ImportHiC <- function(
     file = NULL, hicResolution = NULL, chromSizes = NULL, chrom_1 = NULL,
-    chrom_2 = NULL, verbose = FALSE, cores = 1, 
+    chrom_2 = NULL, verbose = FALSE, cores = 1,
     hic_norm="NONE", hic_matrix = "observed", cool_balanced = FALSE,
-    cool_weight_name = "weight", cool_divisive_weights= FALSE, 
+    cool_weight_name = "weight", cool_divisive_weights= FALSE,
     h5_fill_upper = TRUE
 ) {
     # Resolution Format
-    options(scipen = 999)
+    withr::local_options(list(scipen = 999))
+
+    checkmate::assertFileExists(
+        x = file,
+        access = "r",
+        .var.name = "Hic_file")
     if (inherits(hicResolution, "character")) {
         hicResolution <- GenomicSystem(hicResolution)
     }
@@ -170,14 +177,14 @@ ImportHiC <- function(
         i.group <- "/matrix/indices"
         p.group <- "/matrix/indptr"
         x.group <- "/matrix/data"
-        # got the structure from these
-        # https://github.com/deeptools/HiCMatrix/blob/master/
-        # hicmatrix/lib/h5.py lines 38:39
-        # https://docs.scipy.org/doc/scipy/reference/
-        # generated/scipy.sparse.csc_matrix.html
-        # https://github.com/rstudio/reticulate/blob/main/R/conversion.R
-        # lines 499-507
-        # indices in csr_matrix correspond to i, indptr to p and data to x
+        ## got the structure from these
+        ## https://github.com/deeptools/HiCMatrix/blob/master/
+        ## hicmatrix/lib/h5.py lines 38:39
+        ## https://docs.scipy.org/doc/scipy/reference/
+        ## generated/scipy.sparse.csc_matrix.html
+        ## https://github.com/rstudio/reticulate/blob/main/R/conversion.R
+        ## lines 499-507
+        ## indices in csr_matrix correspond to i, indptr to p and data to x
         hic_spm_full_h5 <- Matrix::sparseMatrix(
             i=as.vector(rhdf5::h5read(
             file,
@@ -221,20 +228,7 @@ ImportHiC <- function(
     # for tibble is deprecated
     chromSizes <- as.data.frame(chromSizes)
     rownames(chromSizes) <- chromSizes$name
-    # vignette building throws error InDepth.Rmd (177-183), 
-    # data is in UCSC chrom_1 in Ensembl
-    # gives a void chromSizes table
-    # # Standardize chromSizes and chrom.chr
-    # chromSizes <- dplyr::filter(
-    #     chromSizes,
-    #     chromSizes$name %in% chrom.chr
-    # )
-    # Standardize seqlevelsStyle of chromSizes according to
-    # chrom.chr
-    # This brings a problem when GetFileExtension(file) == "hic", 
-    # sometimes it adds a first chrom called "All" with out chr, 
-    # So I changed rownames(chromSizes)[1] to 
-    # rownames(chromSizes)[length(rownames(chromSizes))]
+    
     if(is.null(chrom_1) && is.null(chrom_2)){
         if(verbose){
             message("chrom_1 and chrom_2 are NULL,
@@ -338,6 +332,23 @@ ImportHiC <- function(
                 ) |>
                 unlist()
             if (GetFileExtension(file) == "hic") {
+
+                if(!checkmate::checkChoice(
+                    x = hic_norm,
+                    choices = c("NONE", "VC", "VCSQRT", "KR", "ICE")
+                )){
+                    warning("hic_norm has unusual value,
+                        please make sure norm type exists
+                        in your .hic file")
+                }
+                if(!checkmate::checkChoice(
+                    x = hic_matrix,
+                    choices = c("observed", "oe", "expected")
+                )){
+                    warning("hic_matrix has unusual value,
+                        please make sure matrix type exists
+                        in your .hic file")
+                }
                 # Read .hic file
                 hic.dtf <- strawr::straw(
                     hic_norm,
@@ -400,6 +411,8 @@ ImportHiC <- function(
                     ))
                 )
                 if(cool_balanced){
+                    checkmate::assertCharacter(
+                        x = cool_weight_name, null.ok = FALSE)
                     bins.group <- ifelse(
                         GetFileExtension(file) %in%
                             c("cool", "HDF5", "hdf5"),

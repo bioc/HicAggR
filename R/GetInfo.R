@@ -23,7 +23,6 @@
 #'
 
 GetInfo <- function(file=NULL, printInfos = TRUE, returnInfos = FALSE) {
-    options(scipen = 999)
     #
     if(file.exists(file)){
         # strawr doesn't like the tildes, this line will correct that.

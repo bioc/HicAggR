@@ -25,6 +25,8 @@
 #' @return A binned GRanges.
 #' @importFrom stats na.omit
 #' @importFrom S4Vectors mcols Rle
+#' @importFrom checkmate makeAssertCollection assertDataFrame assertChoice
+#' assertNumeric reportAssertions
 #' @export
 #' @examples
 #' GRange.gnr <- GenomicRanges::GRanges(
@@ -52,9 +54,30 @@ BinGRanges <- function(
     method = "mean", metadataColName = NULL, na.rm = TRUE,
     cores = 1, reduceRanges = TRUE, verbose = FALSE
 ) {
+    .validGranges(gRanges = gRange,
+        testForList = FALSE, nullValid = FALSE)
+    .argsChecks <- checkmate::makeAssertCollection()
+    checkmate::assertChoice(
+        x = method,
+        choices = c('mean', 'median', 'sum', "max", 'min'),
+        null.ok = FALSE, .var.name = "method",
+        add = .argsChecks
+    )
+    checkmate::assertNumeric(x = cores, lower = 1, null.ok = FALSE,
+    add = .argsChecks)
+    if(!.argsChecks$isEmpty()){
+        .argsChecks$push("Unsupported arguments to BinGranges()")
+        checkmate::reportAssertions(.argsChecks)
+    }
+
     if (is.null(chromSizes)) {
         seqlengths.lst <- GenomeInfoDb::seqlengths(gRange)
     } else {
+        checkmate::assertDataFrame(
+            x = chromSizes,
+            min.cols = 2,
+            min.rows = 1, .var.name = "chromSizes"
+        )
         seqlengths.lst <- dplyr::pull(chromSizes, 2) |>
             stats::setNames(dplyr::pull(chromSizes, 1))
         seqlengths.lst <- seqlengths.lst[stats::na.omit(match(

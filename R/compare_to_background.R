@@ -292,6 +292,7 @@
 #' @importFrom rlang .data
 #' @importFrom dplyr group_by mutate summarise left_join
 #' @importFrom S4Vectors mcols
+#' @importFrom checkmate assertNumeric assertChoice assertCharacter
 #' @details
 #' Types of background couples possible:
 #' \itemize{
@@ -386,6 +387,43 @@ CompareToBackground <- function(
     verbose = FALSE,
     p_adj_method = 'BH',
     ...){
+
+    .validHicMatrices(matrices = hicList)
+    .validGranges(
+        gRanges = indexAnchor,
+        testForList = FALSE, nullValid = FALSE)
+    .validGranges(
+        gRanges = indexBait,
+        testForList = FALSE, nullValid = FALSE)
+    .validGranges(
+        gRanges = genomicConstraint,
+        testForList = FALSE, nullValid = TRUE)
+    checkmate::assertNumeric(
+        x = cores, lower = 1, null.ok = FALSE
+    )
+    checkmate::assertChoice(
+        x = bg_type,
+        choices = c("random_anchors", "inter_TAD", 
+            "inter_compartment"),
+        null.ok = TRUE
+    )
+    checkmate::assertChoice(
+        x = p_adj_method,
+        c("holm", "hochberg", "hommel", "bonferroni",
+            "BH", "BY", "fdr", "none"),
+            null.ok = FALSE
+    )
+    checkmate::assertNumeric(
+        x = n_background, lower = 1,
+        null.ok = TRUE
+    )
+    checkmate::assertNumeric(
+        x = cores, lower = 1,
+        null.ok = FALSE
+    )
+    checkmate::assertCharacter(
+        x = secondaryConst.var, null.ok = TRUE
+    )
 
     targetCouples <- attributes(matrices)$interactions
     resolution <- attributes(matrices)$resolution

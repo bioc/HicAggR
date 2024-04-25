@@ -33,8 +33,8 @@ The following characters can be submitted:
 \item "percentile" or "prct" apply percentile.
 \item "rank" apply a ranking.
 \item "zscore" apply a scaling.
-\item "minmax" apply a HicAggR::MinMaxScale.
-\item "mu" apply a HicAggR::MeanScale.
+\item "minmax" scales on a min to max range.
+\item "mu" scales on mean: \code{(x-mean(x))/(max(x)-min(x))}.
 \item other or NULL don't apply transformation (Default).
 }}
 

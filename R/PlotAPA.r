@@ -551,7 +551,7 @@ plotMultiAPA <- function(
     if(is.null(submatrices) && is.null(ctrlSubmatrices)){
         stop("Argument submatrices is null")
     }
-
+    .validSubmatrices(submatrices)
     maxCol <- log2(max(attributes(submatrices)$interactions$distance)/50000)
     if(maxCol>5){
         vector_dist <- c(c(0,50000*2 ^ seq(0,5,by=1)),
@@ -569,6 +569,7 @@ plotMultiAPA <- function(
         filtered <- FilterInteractions(submatrices,targets=list(name=samples))
 
         if(!is.null(ctrlSubmatrices) && two_conditions){
+            .validSubmatrices(ctrlSubmatrices)
             filtered_ctrl <- FilterInteractions(ctrlSubmatrices,targets=
                 list(name=samples))
             if(length(filtered)>0 && length(filtered_ctrl)){

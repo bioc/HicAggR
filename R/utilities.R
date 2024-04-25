@@ -1,3 +1,95 @@
+#' .validHicMatrices
+#' check the validity of hic matrices
+#'
+#' @param matrices list of hic matrices
+#' @keywords internal
+#' @return raises error or returns nothing
+#' @noRd
+#' @importFrom checkmate assertList assertCount assertDataFrame
+#' @importFrom checkmate makeAssertCollection reportAssertions
+.validHicMatrices <- function(matrices){
+    matricesFails <- checkmate::makeAssertCollection()
+    checkmate::assertList(
+        x = matrices,
+        types = "ContactMatrix",
+        add = matricesFails)
+    checkmate::assertCount(
+        x = attr(matrices,"resolution"),
+        na.ok = FALSE,
+        add = matricesFails
+    )
+    checkmate::assertDataFrame(
+        x = attr(matrices,"chromSize"),
+        add = matricesFails
+    )
+    if(!matricesFails$isEmpty()){
+        matricesFails$push("Unsupported HiC matrices list object")
+        checkmate::reportAssertions(matricesFails)
+    }
+}
+
+#' .validGranges
+#' check the validity of GRanges objects
+#' @keywords internal
+#' @param gRanges object to test
+#' @param testForList are GRanges in a list?
+#' @param nullValid is null value permitted?
+#'
+#' @return raises error or returns nothing
+#' @noRd
+#' @importFrom checkmate assertClass assert checkClass checkList
+.validGranges <- function(
+    gRanges, testForList = FALSE,
+    nullValid = FALSE){
+    if(!testForList){
+        checkmate::assertClass(
+            x = gRanges,
+            classes = "GRanges",
+            null.ok = nullValid
+        )
+    }else{
+        checkmate::assert(
+            checkmate::checkClass(
+                x = gRanges,
+                classes = "GRanges",
+                null.ok = nullValid
+            ),
+            checkmate::checkList(
+                x = gRanges,
+                types = "GRanges",
+                null.ok = nullValid
+            ),
+            checkmate::checkClass(
+                x = gRanges,
+                classes = "GRangesList",
+                null.ok = nullValid
+            ), combine = "or"
+        )
+    }
+}
+
+#' .validSubmatrices
+#' check the validity of submatrices
+#' @keywords internal
+#' @param submatrices list of submatrices
+#'
+#' @return raises error or returns nothing
+#' @noRd
+#' @importFrom checkmate checkClass assert checkList
+.validSubmatrices <- function(submatrices){
+    checkmate::assert(
+        checkmate::checkList(
+            x = submatrices,
+            types = "matrix",
+            null.ok = FALSE
+        ),
+        checkmate::checkClass(
+            x = attr(submatrices, "interactions"),
+            classes = "GInteractions",
+            null.ok = FALSE
+        )
+    )
+}
 #' Add list as attributes.
 #'
 #' AddAttr
@@ -872,6 +964,7 @@ Plus <- function(
 #' @param tails <character>: Bounds to return, "lower", "upper"
 #' or "both". (Default "both")
 #' @return Numerical vector of thresholds values for outliers triming.
+#' @importFrom checkmate assertChoice assertNumeric
 #' @export
 #' @examples
 #' set.seed(1111)
@@ -884,6 +977,20 @@ Plus <- function(
 QtlThreshold <- function(
     x = NULL, prctThr = 5, tails = "both"
 ) {
+    checkmate::assertChoice(
+        x = tails,
+        choices = c('lower', 'upper', 'both'),
+        null.ok = FALSE
+    )
+    checkmate::assertNumeric(
+        x = prctThr,
+        lower = 0, upper = 100,
+        null.ok = FALSE
+    )
+    checkmate::assertNumeric(
+        x = x,
+        null.ok = FALSE
+    )
     probs.num <- dplyr::case_when(
         tails == "both" ~ c(prctThr / 200, 1 - (prctThr / 200)),
         tails == "upper" ~ c(NA, 1 - (prctThr / 100)),
