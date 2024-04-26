@@ -1,3 +1,10 @@
+# HicAggR 0.99.6
+
+* default set column names in OrientateMatrix are now removed,
+this is for ggAPA
+* ggAPA: "rf" mode has it's own customized axes labels now
+* added introduction to the package's vignette
+
 # HicAggR 0.99.5
 
 * added option to remove duplicated submatrices in SearchPairs

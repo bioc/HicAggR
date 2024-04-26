@@ -64,8 +64,8 @@
 #'
 #' # Beaf32 <-> Beaf32 Pairing
 #' Beaf_Beaf.gni <- SearchPairs(indexAnchor = Beaf32_Index.gnr)
-#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] # subset 2000 first for
-#' exemple
+#' Beaf_Beaf.gni <- Beaf_Beaf.gni[seq_len(2000)] 
+#' # subset 2000 first for exemple
 #'
 #' # Matrices extractions center on Beaf32 <-> Beaf32 point interaction
 #' interactions_PF.mtx_lst <- ExtractSubmatrix(

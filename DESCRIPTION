@@ -69,10 +69,10 @@ Imports:
     data.table,
     reshape,
     checkmate,
-    purrr
+    purrr,
+    withr
 Suggests:
     covr,
-    withr,
     BiocFileCache,
     kableExtra (>= 1.3.4),
     knitr (>= 1.45),
