@@ -58,24 +58,24 @@ called loops.
 
 The straight-forward workflow with this package would be:
 
-    1) to import genomic coordinates of features of interest
+1. to import genomic coordinates of features of interest
     (such as, enhancers, CTCF binding sites, genes) as `GRanges`
-    2) apply distance constraints or 3D structural constraints (like TADs)
+2. apply distance constraints or 3D structural constraints (like TADs)
     to form all potential couples between features of interest under the
     applied contraints. (Enhancer-promoter, CTCF-CTCF etc.)
-    3) import 3D-genomics data (.hic, bedpe, h5, cool/mcool formats).
-    4) perform matrix balancing and distance normalization if necessary.
-    5) extract submatrices of the pre-formed potential couples from the
+3. import 3D-genomics data (.hic, bedpe, h5, cool/mcool formats).
+4. perform matrix balancing and distance normalization if necessary.
+5. extract submatrices of the pre-formed potential couples from the
     3D-genomics Data.
-    6) perform corrections per-submatrix
-        i) orientation correction: i.e. set one feature
+6. perform corrections per-submatrix
+    i. orientation correction: i.e. set one feature
         of interest per axe which is to capture a uniform pattern for
         interactions that are towards upstream or downstream.
-        ii) ranking pixels per submatrix to highligt the most significant
+    ii. ranking pixels per submatrix to highligt the most significant
         interaction signals per submatrix.
-    7) summarize visually the genome-wide interactions between features of
+7. summarize visually the genome-wide interactions between features of
     interest graphically through APA
-    8) and/or get individual values of selected zones from each submatrix
+8. and/or get individual values of selected zones from each submatrix
     for comparison between conditions
 
 We also propose (since version 0.99.3) a function to find couples that
@@ -84,10 +84,10 @@ The function performs z.test to compare target couples to less-plausible or
 background couples to identify target couples with significantly higher
 interaction values than the background signal (`compareToBackground`).
 
-## Quaickstart and tutorials:
+## Quickstart and tutorials:
 
-Please visit dedicated (github pages)[https://cuvierlab.github.io/HicAggR/]
-and the (github repository)[https://github.com/cuvierlab/HicAggR/].
+Please visit dedicated [github pages](https://cuvierlab.github.io/HicAggR/)
+and the [github repository](https://github.com/cuvierlab/HicAggR/).
 
 ## Aim:
 
@@ -155,21 +155,8 @@ bfc <- BiocFileCache::BiocFileCache(cache.dir,ask = FALSE)
 Hic.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
 "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
 "4DNFIOTPSS3L.hic")
-if(length(BiocFileCache::bfcinfo(bfc)$rname)==0){
-    if(.Platform$OS.type == "windows"){
-        bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
-            fpath = Hic.url,
-            download = TRUE,
-            config = list(method="auto",mode="wb"))
-    }else{
-        bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
-            fpath = Hic.url,
-            download = TRUE,
-            config = list(method="auto"))
-    }
-}else if(!"Control_HIC.hic"%in%BiocFileCache::bfcinfo(bfc)$rname){
+if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
+    !"Control_HIC.hic"%in%BiocFileCache::bfcinfo(bfc)$rname){
     if(.Platform$OS.type == "windows"){
         bfc <- BiocFileCache::bfcadd(
             bfc,"Control_HIC.hic",
@@ -193,21 +180,8 @@ HicOutput.pth <- as.character(BiocFileCache::bfcpath(bfc)[
 Mcool.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
 "fourfront-webprod/wfoutput/4f1479a2-4226-4163-ba99-837f2c8f4ac0/",
 "4DNFI8DRD739.mcool")
-if(length(BiocFileCache::bfcinfo(bfc)$rname)==0){
-    if(.Platform$OS.type == "windows"){
-        bfc <- BiocFileCache::bfcadd(
-            bfc,"HeatShock_HIC.mcool",
-            fpath = Mcool.url,
-            download = TRUE,
-            config = list(method="auto",mode="wb"))
-    }else{
-        bfc <- BiocFileCache::bfcadd(
-            bfc,"HeatShock_HIC.mcool",
-            fpath = Mcool.url,
-            download = TRUE,
-            config = list(method="auto"))
-    }
-}else if(!"HeatShock_HIC.mcool"%in%BiocFileCache::bfcinfo(bfc)$rname){
+if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
+    !"HeatShock_HIC.mcool"%in%BiocFileCache::bfcinfo(bfc)$rname){
     if(.Platform$OS.type == "windows"){
         bfc <- BiocFileCache::bfcadd(
             bfc,"HeatShock_HIC.mcool",
