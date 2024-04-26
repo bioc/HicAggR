@@ -117,7 +117,7 @@ remotes::install_github("CuvierLab/HicAggR")
 
 ## Load library
 ```{r, eval = TRUE, message = FALSE}
-devtools::load_all("~/mount/NAS_CUVIER/grpCuvier/rtesfaye/HicAggR_public/HicAggR-1")
+library("HicAggR")
 ```  
 
 ___
