@@ -71,7 +71,7 @@ For a test, please download HiC data in .hic format (Juicer).
 ```{r, eval = TRUE, message = FALSE}
 withr::local_options(list(timeout = 3600))
 cache.dir <- paste0(tools::R_user_dir("", which="cache"),".HicAggR_HIC_DATA")
-bfc <- BiocFileCache::BiocFileCache(cache.dir,ask = FALSE)
+bfc <- BiocFileCache::BiocFileCache(cache.dir, ask = FALSE)
 
 Hic.url <- paste0("https://4dn-open-data-public.s3.amazonaws.com/",
 "fourfront-webprod/wfoutput/7386f953-8da9-47b0-acb2-931cba810544/",
@@ -80,13 +80,13 @@ if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
 !"Control_HIC.hic"%in%BiocFileCache::bfcinfo(bfc)$rname){
     if(.Platform$OS.type == "windows"){
         bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
+            x = bfc,rname = "Control_HIC.hic",
             fpath = Hic.url,
             download = TRUE,
             config = list(method="auto",mode="wb"))
     }else{
         bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
+            x = bfc,rname = "Control_HIC.hic",
             fpath = Hic.url,
             download = TRUE,
             config = list(method="auto"))

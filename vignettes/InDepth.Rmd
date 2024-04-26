@@ -117,7 +117,7 @@ remotes::install_github("CuvierLab/HicAggR")
 
 ## Load library
 ```{r, eval = TRUE, message = FALSE}
-library(HicAggR)
+devtools::load_all("~/mount/NAS_CUVIER/grpCuvier/rtesfaye/HicAggR_public/HicAggR-1")
 ```  
 
 ___
@@ -159,13 +159,13 @@ if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
     !"Control_HIC.hic"%in%BiocFileCache::bfcinfo(bfc)$rname){
     if(.Platform$OS.type == "windows"){
         bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
+            x = bfc,rname = "Control_HIC.hic",
             fpath = Hic.url,
             download = TRUE,
             config = list(method="auto",mode="wb"))
     }else{
         bfc <- BiocFileCache::bfcadd(
-            bfc,"Control_HIC.hic",
+            x = bfc, rname = "Control_HIC.hic",
             fpath = Hic.url,
             download = TRUE,
             config = list(method="auto"))
@@ -184,13 +184,13 @@ if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
     !"HeatShock_HIC.mcool"%in%BiocFileCache::bfcinfo(bfc)$rname){
     if(.Platform$OS.type == "windows"){
         bfc <- BiocFileCache::bfcadd(
-            bfc,"HeatShock_HIC.mcool",
+            x = bfc, rname = "HeatShock_HIC.mcool",
             fpath = Mcool.url,
             download = TRUE,
             config = list(method="auto",mode="wb"))
     }else{
         bfc <- BiocFileCache::bfcadd(
-            bfc,"HeatShock_HIC.mcool",
+            x = bfc, rname = "HeatShock_HIC.mcool",
             fpath = Mcool.url,
             download = TRUE,
             config = list(method="auto"))
@@ -272,10 +272,10 @@ chromSizes  <- data.frame(
     seqnames   = names(seqlengths.num ), 
     seqlengths = seqlengths.num
     )
-binSize <- 1000
+binSize <- 5000
 ```
 
-___
+
 # Import HiC
 
 The package supports the import and normalization of HiC data.
@@ -292,7 +292,7 @@ correction steps.
 ```{r, eval = TRUE, message = FALSE}
 HiC_Ctrl.cmx_lst <- ImportHiC(
         file    = HicOutput.pth,
-        hicResolution     = 1000,
+        hicResolution     = 5000,
         chrom_1 = c("2L", "2L", "2R"),
         chrom_2 = c("2L", "2R", "2R")
 )
@@ -301,7 +301,7 @@ HiC_Ctrl.cmx_lst <- ImportHiC(
 ```{r, eval = TRUE, message = FALSE}
 HiC_HS.cmx_lst <- ImportHiC(
         file    = McoolOutput.pth,
-        hicResolution     = 1000,
+        hicResolution     = 5000,
         chrom_1 = c("2L", "2L", "2R"),
         chrom_2 = c("2L", "2R", "2R")
 )
@@ -838,19 +838,19 @@ In this example, Pairs will be filtered on anchor.Beaf.name, bait.Tss.name,
 name (which correponds to the submatrix IDs) and distance.
 The aim of the example is to filter Pairs or submatrices that have:  
 
-1. "Beaf32_8" and "Beaf32_15" in **anchor.Beaf.name**  
-2. "FBgn0031214" and "FBgn0005278" in **bait.Tss.name**  
-3. **distance** exactly equal to 14000 or 3000  
+1. "Beaf32_62" and "Beaf32_204" in **anchor.Beaf.name**  
+2. "FBgn0015924" and "FBgn0264943" in **bait.Tss.name**  
+3. **distance** exactly equal to 20000 or 40000
 And to exclude Pairs or submatrices that have:
-4. "2L:74_2L:77" in **name**  
+4. "2L:25_2L:22" in **name**  
 
 ```{r, eval = TRUE}
 targets <- list(
-    anchor.Beaf.name = c("Beaf32_8","Beaf32_15"),
-    bait.Tss.name    = c("FBgn0031214","FBgn0005278"),
-    name             = c("2L:74_2L:77"),
+    anchor.Beaf.name = c("Beaf32_62","Beaf32_204"),
+    bait.Tss.name    = c("FBgn0015924","FBgn0264943"),
+    name             = c("2L:25_2L:22"),
     distance         = function(columnElement){
-        return(14000==columnElement || columnElement == 3000)
+        return(20000==columnElement || columnElement == 40000)
         }
     )
 ```
@@ -1446,13 +1446,16 @@ ggAPA(
         title = "APA"
 )
 ```
+
 #### With Orientation
+
 ```{r, fig.dim = c(7,7)}
 ggAPA(
         aggregatedMtx   = orientedAggreg.mtx,
         title = "APA"
 )
 ```
+
 ### Further visualisation parameters:
 
 #### Trimming aggregated values for visualisation:
@@ -1461,19 +1464,19 @@ a percentage of values using upper tail, lower tail or both tails of the
 distribution.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx      = aggreg.mtx,
+        aggregatedMtx      = orientedAggreg.mtx,
         title    = "APA 30% trimmed on upper side",
         trim = 30,
         tails   = "upper"
 )
 ggAPA(
-        aggregatedMtx      = aggreg.mtx,
+        aggregatedMtx      = orientedAggreg.mtx,
         title    = "APA 30% trimmed on upper side",
         trim = 30,
         tails   = "lower"
 )
 ggAPA(
-        aggregatedMtx      = aggreg.mtx,
+        aggregatedMtx      = orientedAggreg.mtx,
         title    = "APA 30% trimmed",
         trim = 30,
         tails   = "both"
@@ -1486,7 +1489,7 @@ Example of user-defined min and max color scale
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx         = aggreg.mtx,
+        aggregatedMtx         = orientedAggreg.mtx,
         title       = "APA [0-1]",
         colMin = 0,
         colMax = 1
@@ -1498,7 +1501,7 @@ Example of user-defined color scale center
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx    = aggreg.mtx,
+        aggregatedMtx    = orientedAggreg.mtx,
         title  = "APA center on 0.2",
         colMid = 0.5
 )
@@ -1509,17 +1512,17 @@ ggAPA(
 Examples of user-defined color breaks
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx       = aggreg.mtx,
+        aggregatedMtx       = orientedAggreg.mtx,
         title     = "APA [0, .25, .50, .30, .75, 1]",
         colBreaks = c(0,0.25,0.5,0.75,1)
 )
 ggAPA(
-        aggregatedMtx       = aggreg.mtx,
+        aggregatedMtx       = orientedAggreg.mtx,
         title     = "APA [0, .15, .20, .25, 1]",
         colBreaks = c(0,0.15,0.20,0.25,1)
 )
 ggAPA(
-        aggregatedMtx       = aggreg.mtx,
+        aggregatedMtx       = orientedAggreg.mtx,
         title     = "APA [0, .5, .6, .8, 1]",
         colBreaks = c(0,0.4,0.5,0.7,1)
 )
@@ -1529,17 +1532,17 @@ ggAPA(
 Examples of different color scaled bias.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx    = aggreg.mtx,
+        aggregatedMtx    = orientedAggreg.mtx,
         title  = "APA",
         colorScale = "density"
 )
 ggAPA(
-        aggregatedMtx     = aggreg.mtx,
+        aggregatedMtx     = orientedAggreg.mtx,
         title   = "APA",
         bias    = 2
 )
 ggAPA(
-        aggregatedMtx     = aggreg.mtx,
+        aggregatedMtx     = orientedAggreg.mtx,
         title   = "APA",
         bias    = 0.5
 )
@@ -1550,10 +1553,10 @@ ggAPA(
 Here is an option to change the color of heatmap and color of NA values.
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx     = aggreg.mtx,
-        title   = "APA",
-        colors = viridis(6),
-        na.value      = "black"
+    aggregatedMtx     = orientedAggreg.mtx,
+    title   = "APA",
+    colors = viridis(6),
+    na.value      = "black"
 )
 ```
 
@@ -1562,11 +1565,11 @@ ggAPA(
 Option to apply a blurr on the heatmap to reduce noise. 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx           = aggreg.mtx,
-        title         = "APA",
-        blurPass      = 1,
-        stdev        = 0.5,
-        loTri      = NA
+    aggregatedMtx           = orientedAggreg.mtx,
+    title         = "APA",
+    blurPass      = 1,
+    stdev        = 0.5,
+    loTri      = NA
 )
 ```
 
@@ -1576,7 +1579,7 @@ the ggplot2 grammar
 
 ```{r, fig.dim = c(7,7)}
 ggAPA(
-        aggregatedMtx     = aggreg.mtx,
+        aggregatedMtx     = orientedAggreg.mtx,
         title   = "APA",
 ) + 
 ggplot2::labs(

@@ -38,7 +38,7 @@ Description:
 biocViews: Software, HiC, DataImport, DataRepresentation, Normalization, 
     Visualization, DNA3DStructure, ATACSeq, ChIPSeq, DNaseSeq, RNASeq
 License: MIT + file LICENSE
-URL: https://cuvierlab.github.io/HicAggR/,
+URL: https://bioconductor.org/packages/HicAggR,https://cuvierlab.github.io/HicAggR/,
     https://github.com/CuvierLab/HicAggR
 BugReports: https://github.com/CuvierLab/HicAggR/issues
 Depends:
@@ -74,7 +74,7 @@ Imports:
 Suggests:
     covr,
     tools,
-    BiocFileCache,
+    BiocFileCache (>= 2.6.1),
     kableExtra (>= 1.3.4),
     knitr (>= 1.45),
     rmarkdown,

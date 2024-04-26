@@ -248,7 +248,7 @@ ggAPA <- function(
                 stdev = stdev,
                 boxKernel = boxKernel,
                 kernSize = kernSize
-            )
+            )|> `attributes<-`(attributes(aggregatedMtx))
         }
         if (!is.null(loTri)) {
             aggregatedMtx[lower.tri(
@@ -377,7 +377,7 @@ ggAPA <- function(
                 axis.ticks.x = ggplot2::element_line(colour="black"),
                 legend.title = ggplot2::element_blank()
             )
-    
+
     }else{
         breaks_y <- seq_along(rownames(aggregatedMtx))
         labels_y <- rownames(aggregatedMtx)
