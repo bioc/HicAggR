@@ -55,7 +55,7 @@ SearchPairs <- function(
     if (is.null(indexBait)) {
         indexBait <- indexAnchor
     }else {
-       .validGranges(indexBait)
+        .validGranges(indexBait)
     }
     checkmate::assertLogical(
         x = c(exclude_duplicates,exclude_self_interactions,verbose),
