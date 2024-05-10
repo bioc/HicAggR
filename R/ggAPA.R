@@ -339,7 +339,7 @@ ggAPA <- function(
                     attributes(aggregatedMtx)$shift, " x ROI\nwidth"))
             labels_x <- labels_y
         } else {
-           if(is.null(colnames(aggregatedMtx))){
+            if(is.null(colnames(aggregatedMtx))){
                 extent <- (floor(
                     nrow(aggregatedMtx)/2) * attributes(
                         aggregatedMtx)$resolution)/1000
