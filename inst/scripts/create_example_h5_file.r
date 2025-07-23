@@ -23,7 +23,7 @@ rhdf5::h5write(dim(HiC_Ctrl.cmx_lst[["2L_2L"]]@matrix),
 
 ## Write itervals iformation
 rhdf5::h5write(as.character(
-    GenomeInfoDb::seqnames(HiC_Ctrl.cmx_lst[["2L_2L"]]@regions)),
+    Seqinfo::seqnames(HiC_Ctrl.cmx_lst[["2L_2L"]]@regions)),
     file = "inst/extdata/Control_HIC_10k_2L.h5",
     name = "/intervals/chr_list")
 

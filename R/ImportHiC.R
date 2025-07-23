@@ -290,9 +290,9 @@ ImportHiC <- function(
             tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
-    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
+    Seqinfo::seqlengths(binnedGenome.grn) <- chromSizes$length |>
         stats::setNames(chromSizes$name)
-    binnedGenome.grn <- GenomeInfoDb::sortSeqlevels(binnedGenome.grn)
+    binnedGenome.grn <- Seqinfo::sortSeqlevels(binnedGenome.grn)
     
     chromComb.lst <- paste(chrom_1, chrom_2, sep = "_")
     matrixSymmetric.bln <- strsplit(chromComb.lst, "_") |>

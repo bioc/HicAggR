@@ -182,8 +182,8 @@ SearchPairs <- function(
     ## To avoid error when using interactions built 
     ## with grangeslist for both the anchor and bait. eg:
     ## Error in new_Rle(values, lengths) : Rle of type 'NULL' is not supported
-    if(is.null(GenomeInfoDb::seqinfo(pairs.gni))){
-        GenomeInfoDb::seqinfo(pairs.gni) <- GenomeInfoDb::seqinfo(indexAnchor)
+    if(is.null(Seqinfo::seqinfo(pairs.gni))){
+        Seqinfo::seqinfo(pairs.gni) <- Seqinfo::seqinfo(indexAnchor)
     }
     
     return(pairs.gni)

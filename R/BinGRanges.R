@@ -71,7 +71,7 @@ BinGRanges <- function(
     }
 
     if (is.null(chromSizes)) {
-        seqlengths.lst <- GenomeInfoDb::seqlengths(gRange)
+        seqlengths.lst <- Seqinfo::seqlengths(gRange)
     } else {
         checkmate::assertDataFrame(
             x = chromSizes,
@@ -81,14 +81,14 @@ BinGRanges <- function(
         seqlengths.lst <- dplyr::pull(chromSizes, 2) |>
             stats::setNames(dplyr::pull(chromSizes, 1))
         seqlengths.lst <- seqlengths.lst[stats::na.omit(match(
-            levels(GenomeInfoDb::seqnames(gRange)@values),
+            levels(Seqinfo::seqnames(gRange)@values),
             names(seqlengths.lst)
         ))]
-        gRange <- GenomeInfoDb::keepSeqlevels(
+        gRange <- Seqinfo::keepSeqlevels(
             gRange, value = names(seqlengths.lst),
             "coarse"
         )
-        GenomeInfoDb::seqlengths(gRange) <- seqlengths.lst
+        Seqinfo::seqlengths(gRange) <- seqlengths.lst
     }
     binnedGenome.gnr <- GenomicRanges::tileGenome(
         seqlengths.lst, tilewidth = binSize, cut.last.tile.in.chrom = TRUE
@@ -98,7 +98,7 @@ BinGRanges <- function(
     S4Vectors::mcols(binnedGRanges.gnr) <- S4Vectors::mcols(
         gRange[ovlp.dtf@to])
     binnedGRanges.gnr$bin <- paste0(
-        GenomeInfoDb::seqnames(binnedGRanges.gnr), ":",
+        Seqinfo::seqnames(binnedGRanges.gnr), ":",
         ceiling(BiocGenerics::start(binnedGRanges.gnr)/binSize)
     )
     dupplicated.lgk <- duplicated(binnedGRanges.gnr$bin)
@@ -175,8 +175,8 @@ BinGRanges <- function(
         binnedGRanges.gnr <- methods::as(binnedGRange.tbl, "GRanges")
     }
     binnedGRanges.gnr <- sort(binnedGRanges.gnr)
-    GenomeInfoDb::seqinfo(binnedGRanges.gnr) <- GenomeInfoDb::seqinfo(
-        sort(GenomeInfoDb::sortSeqlevels(gRange))
+    Seqinfo::seqinfo(binnedGRanges.gnr) <- Seqinfo::seqinfo(
+        sort(Seqinfo::sortSeqlevels(gRange))
     )
     return(binnedGRanges.gnr)
 }

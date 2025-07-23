@@ -115,7 +115,7 @@
 #' info
 #' @param cores number of cores
 #' @param verbose verbosity
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom Seqinfo seqlevels
 #' @importFrom GenomicRanges width GRanges
 #' @importFrom dplyr mutate filter
 #' @importFrom S4Vectors mcols
@@ -136,9 +136,9 @@
     }
     if(!is.null(genomicConstraint) && 
     !all(unique(indexAnchor$constraint)%in%
-        GenomeInfoDb::seqlevels(indexAnchor)) && 
+        Seqinfo::seqlevels(indexAnchor)) && 
     !all(unique(indexBait$constraint)%in%
-        GenomeInfoDb::seqlevels(indexBait))){
+        Seqinfo::seqlevels(indexBait))){
     dist_const <- c(min(targetCouples$distance),
         max(GenomicRanges::width(genomicConstraint)))
     }else{
@@ -287,7 +287,7 @@
 #' background couples.
 #' 
 #' @export
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom Seqinfo seqlevels
 #' @importFrom IRanges subsetByOverlaps
 #' @importFrom rlang .data
 #' @importFrom dplyr group_by mutate summarise left_join
@@ -485,9 +485,9 @@ CompareToBackground <- function(
         bg_couples <- bg_couples[to_keep]
     }
 
-    GenomeInfoDb::seqinfo(bg_couples) <- 
-        GenomeInfoDb::Seqinfo(seqnames = as.character(chromSizes[[1]]),
-                                    seqlengths = as.numeric(chromSizes[[2]]))
+    Seqinfo::seqinfo(bg_couples) <- 
+        Seqinfo::Seqinfo(seqnames = as.character(chromSizes[[1]]),
+                         seqlengths = as.numeric(chromSizes[[2]]))
     bg_counts <- ExtractSubmatrix(genomicFeature = bg_couples,
                     hicLst = hicList,
                     hicResolution = resolution,

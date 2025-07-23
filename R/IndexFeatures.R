@@ -90,10 +90,10 @@ IndexFeatures <- function(
             )
         }
     }
-    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(genomicConstraint)
+    seqLevelsStyle.chr <- Seqinfo::seqlevelsStyle(genomicConstraint)
     if (length(seqLevelsStyle.chr) > 1) {
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
-        GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
+        Seqinfo::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
     binnedConstraint.gnr <- BinGRanges(
         gRange = genomicConstraint,
@@ -142,7 +142,7 @@ IndexFeatures <- function(
                             1,length(feature.gnr)))
                 }
             }
-            GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
+            Seqinfo::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
                 gRange = feature.gnr, chromSizes = chromSizes,
                 binSize = binSize, method = method,
@@ -329,7 +329,7 @@ IndexFeatures <- function(
         dplyr::select(dplyr::all_of(columOrder.chr))
     # When indexing a GRangeList seqinfo gets lost somehow
     chromSizes <- chromSizes[which(chromSizes[,1]!="All"),]
-    GenomeInfoDb::seqinfo(binnedIndex.gnr) <- GenomeInfoDb::Seqinfo(
+    Seqinfo::seqinfo(binnedIndex.gnr) <- Seqinfo::Seqinfo(
         seqnames = as.character(chromSizes[,1]),
         seqlengths = as.numeric(chromSizes[,2]))
     return(sort(binnedIndex.gnr))

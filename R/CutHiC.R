@@ -30,7 +30,7 @@ megaHic, verbose = FALSE
             tilewidth = hicResolution,
             cut.last.tile.in.chrom = TRUE
         )
-    GenomeInfoDb::seqlengths(binnedGenome.grn) <- chromSizes$length |>
+    Seqinfo::seqlengths(binnedGenome.grn) <- chromSizes$length |>
         stats::setNames(chromSizes$name)
     attributes.tbl <- megaHic@metadata$matricesKind
     chromComb.lst <- attributes.tbl$name

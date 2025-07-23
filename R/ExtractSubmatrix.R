@@ -30,9 +30,9 @@
         or GInteractions object!")
     }
     S4Vectors::mcols(feature.gni) <- S4Vectors::mcols(genomicFeature)
-    if (is.null(GenomeInfoDb::seqinfo(feature.gni))) {
-        GenomeInfoDb::seqinfo(feature.gni) <-
-            GenomeInfoDb::seqinfo(genomicFeature)
+    if (is.null(Seqinfo::seqinfo(feature.gni))) {
+        Seqinfo::seqinfo(feature.gni) <-
+            Seqinfo::seqinfo(genomicFeature)
     }
     if (is.null(S4Vectors::mcols(feature.gni)$distance)) {
         S4Vectors::mcols(feature.gni)$distance <-
@@ -44,7 +44,7 @@
     }
     if (is.null(S4Vectors::mcols(feature.gni)$anchor.bin)) {
         S4Vectors::mcols(feature.gni)$anchor.bin <- paste0(
-            GenomeInfoDb::seqnames(
+            Seqinfo::seqnames(
                 InteractionSet::anchors(feature.gni)$first
             ), ":",
             ceiling(
@@ -55,7 +55,7 @@
     }
     if (is.null(S4Vectors::mcols(feature.gni)$bait.bin)) {
         S4Vectors::mcols(feature.gni)$bait.bin <- paste0(
-            GenomeInfoDb::seqnames(
+            Seqinfo::seqnames(
                 InteractionSet::anchors(feature.gni)$second
             ), ":",
             ceiling(
@@ -209,14 +209,14 @@ ExtractSubmatrix <- function(
         genomicFeature = genomicFeature,
         hicResolution = hicResolution
     )
-    if (is.null(GenomeInfoDb::seqinfo(genomicFeature)) ||
-    any(is.na(GenomeInfoDb::seqlengths(
-        GenomeInfoDb::seqinfo(genomicFeature))))) {
-        GenomeInfoDb::seqlevels(genomicFeature,
+    if (is.null(Seqinfo::seqinfo(genomicFeature)) ||
+    any(is.na(Seqinfo::seqlengths(
+        Seqinfo::seqinfo(genomicFeature))))) {
+        Seqinfo::seqlevels(genomicFeature,
             pruning.mode="coarse") <-
             as.character(attributes(attributes(hicLst)$chromSize[[1]]))
-        GenomeInfoDb::seqinfo(genomicFeature) <-
-            GenomeInfoDb::Seqinfo(
+        Seqinfo::seqinfo(genomicFeature) <-
+            Seqinfo::Seqinfo(
                 seqnames = attributes(attributes(hicLst)$chromSize[[1]]),
                 seqlengths = attributes(attributes(hicLst)$chromSize[[2]]))
     }
@@ -227,9 +227,9 @@ ExtractSubmatrix <- function(
     referencePoint <- tolower(referencePoint)
     if (referencePoint == "rf") {
         cis.lgk <- ReduceRun(
-            GenomeInfoDb::seqnames(
+            Seqinfo::seqnames(
                 InteractionSet::anchors(genomicFeature)$first),
-            GenomeInfoDb::seqnames(
+            Seqinfo::seqnames(
                 InteractionSet::anchors(genomicFeature)$second),
             reduceMethod = "paste", sep = "_"
             ) |>
@@ -267,15 +267,15 @@ ExtractSubmatrix <- function(
             end = pmax(ranges.dtf$first.end, ranges.dtf$second.end)
         )
         feature.gnr <- GenomicRanges::GRanges(
-            seqnames = GenomeInfoDb::seqnames(
+            seqnames = Seqinfo::seqnames(
                 InteractionSet::anchors(genomicFeature)$first
             ),
             ranges = IRanges::IRanges(
                 start = ranges.dtf$start,
                 end = ranges.dtf$end
             ),
-            seqlengths = GenomeInfoDb::seqlengths(genomicFeature),
-            seqinfo = GenomeInfoDb::seqinfo(genomicFeature)
+            seqlengths = Seqinfo::seqlengths(genomicFeature),
+            seqinfo = Seqinfo::seqinfo(genomicFeature)
         )
         featureResize.gnr <- GenomicRanges::resize(
             feature.gnr,
@@ -321,10 +321,10 @@ ExtractSubmatrix <- function(
     ## Order according Chromosomes combinaison
     ## ReduceRun takes longer than just paste
     chromosomesCombinaison.rle <- S4Vectors::Rle(paste(
-        GenomeInfoDb::seqnames(
+        Seqinfo::seqnames(
             InteractionSet::anchors(featureNoDup.gni)$first
         ),
-        GenomeInfoDb::seqnames(
+        Seqinfo::seqnames(
             InteractionSet::anchors(featureNoDup.gni)$second
         ),sep = "_"
     ))

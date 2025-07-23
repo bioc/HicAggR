@@ -25,7 +25,7 @@
 #' @return A GInteractions object.
 #' @importFrom S4Vectors first second mcols
 #' @import InteractionSet
-#' @importFrom GenomeInfoDb seqinfo
+#' @importFrom Seqinfo seqinfo
 #' @importFrom data.table as.data.table setkey foverlaps
 #' @importFrom checkmate assertFileExists assertDataFrame
 #' @export
@@ -106,12 +106,12 @@ ImportLoops <- function(
             )
         }
     }
-    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(genomicConstraint)
+    seqLevelsStyle.chr <- Seqinfo::seqlevelsStyle(genomicConstraint)
     if (length(seqLevelsStyle.chr) > 1) {
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
-        GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
+        Seqinfo::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
-    genomicConstraint <- GenomeInfoDb::sortSeqlevels(genomicConstraint)
+    genomicConstraint <- Seqinfo::sortSeqlevels(genomicConstraint)
     binned_constraint <- BinGRanges(
         gRange = genomicConstraint,
         chromSizes = chromSizes,
@@ -220,13 +220,13 @@ ImportLoops <- function(
         dplyr::all_of(colum_order)
     )
     names(loops_gni) <- S4Vectors::mcols(loops_gni)$name
-    GenomeInfoDb::seqlevels(loops_gni)<-
-    GenomeInfoDb::seqlevels(GenomeInfoDb::Seqinfo(
+    Seqinfo::seqlevels(loops_gni)<-
+    Seqinfo::seqlevels(Seqinfo::Seqinfo(
             seqnames = as.character(chromSizes[[1]]),
             seqlengths = as.numeric(chromSizes[[2]])
         ))
-    GenomeInfoDb::seqinfo(loops_gni) <-
-        GenomeInfoDb::Seqinfo(
+    Seqinfo::seqinfo(loops_gni) <-
+        Seqinfo::Seqinfo(
             seqnames = as.character(chromSizes[[1]]),
             seqlengths = as.numeric(chromSizes[[2]])
         )

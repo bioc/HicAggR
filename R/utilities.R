@@ -1260,8 +1260,8 @@ SdThreshold <- function(
 SeqEnds <- function(
     gRanges
 ) {
-    GenomeInfoDb::seqlengths(gRanges)[
-        as.character(GenomeInfoDb::seqnames(gRanges))
+    Seqinfo::seqlengths(gRanges)[
+        as.character(Seqinfo::seqnames(gRanges))
     ]
 }
 
