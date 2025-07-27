@@ -84,10 +84,8 @@ BinGRanges <- function(
             levels(Seqinfo::seqnames(gRange)@values),
             names(seqlengths.lst)
         ))]
-        gRange <- Seqinfo::keepSeqlevels(
-            gRange, value = names(seqlengths.lst),
-            "coarse"
-        )
+	Seqinfo::seqlevels(gRange, pruning.mode="coarse") <-
+            names(seqlengths.lst)
         Seqinfo::seqlengths(gRange) <- seqlengths.lst
     }
     binnedGenome.gnr <- GenomicRanges::tileGenome(

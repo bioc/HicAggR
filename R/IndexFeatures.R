@@ -3,6 +3,8 @@
 #' IndexFeatures
 #' @description Function that indexes a GRanges object on binned genome and
 #'  constraints. Needed prior HicAggR::SearchPairs() function.
+#'  Uses \code{GenomeInfoDb::\link[GenomeInfoDb]{seqlevelsStyle}} internally
+#'  so make sure you have the \pkg{GenomeInfoDb} package installed.
 #' @param gRangeList <GRanges or GRangesList or list[GRanges]>:
 #' GRanges object, list of GRanges or GRangesList containing coordinates
 #' to index.
@@ -90,10 +92,10 @@ IndexFeatures <- function(
             )
         }
     }
-    seqLevelsStyle.chr <- Seqinfo::seqlevelsStyle(genomicConstraint)
+    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(genomicConstraint)
     if (length(seqLevelsStyle.chr) > 1) {
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
-        Seqinfo::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
+        GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
     binnedConstraint.gnr <- BinGRanges(
         gRange = genomicConstraint,
@@ -142,7 +144,7 @@ IndexFeatures <- function(
                             1,length(feature.gnr)))
                 }
             }
-            Seqinfo::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
+            GenomeInfoDb::seqlevelsStyle(feature.gnr) <- seqLevelsStyle.chr
             binnedFeature.gnr <- BinGRanges(
                 gRange = feature.gnr, chromSizes = chromSizes,
                 binSize = binSize, method = method,

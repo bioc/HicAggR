@@ -166,7 +166,7 @@ if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
             x = bfc, rname = "Control_HIC.hic",
             fpath = Hic.url,
             download = TRUE,
-            config = list(method="auto"))
+            config = list())
     }
 }else{
     HicOutput.pth <- BiocFileCache::bfcpath(bfc)[
@@ -192,7 +192,7 @@ if(length(BiocFileCache::bfcinfo(bfc)$rname)==0 ||
             x = bfc, rname = "HeatShock_HIC.mcool",
             fpath = Mcool.url,
             download = TRUE,
-            config = list(method="auto"))
+            config = list())
     }
 }else{
     McoolOutput.pth <- as.character(BiocFileCache::bfcpath(bfc)[

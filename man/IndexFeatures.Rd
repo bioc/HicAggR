@@ -51,6 +51,8 @@ A GRanges object.
 \description{
 Function that indexes a GRanges object on binned genome and
 constraints. Needed prior HicAggR::SearchPairs() function.
+Uses \code{GenomeInfoDb::\link[GenomeInfoDb]{seqlevelsStyle}} internally
+so make sure you have the \pkg{GenomeInfoDb} package installed.
 }
 \details{
 IndexFeatures

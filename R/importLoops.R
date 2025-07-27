@@ -2,6 +2,8 @@
 #'
 #' @description Imports bedpe file formats as GInteractions object usable
 #' to perform submatrix extraction with `ExtractSubmatrix()`
+#' Uses \code{GenomeInfoDb::\link[GenomeInfoDb]{seqlevelsStyle}} internally
+#' so make sure you have the \pkg{GenomeInfoDb} package installed.
 #' @param file_bedpe bedpe file path (Default NULL)
 #' @param genomicConstraint <GRanges>: GRanges object of
 #' constraint regions. If NULL chromosomes in chromSizes are used as
@@ -106,10 +108,10 @@ ImportLoops <- function(
             )
         }
     }
-    seqLevelsStyle.chr <- Seqinfo::seqlevelsStyle(genomicConstraint)
+    seqLevelsStyle.chr <- GenomeInfoDb::seqlevelsStyle(genomicConstraint)
     if (length(seqLevelsStyle.chr) > 1) {
         seqLevelsStyle.chr <- seqLevelsStyle.chr[[1]]
-        Seqinfo::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
+        GenomeInfoDb::seqlevelsStyle(genomicConstraint) <- seqLevelsStyle.chr
     }
     genomicConstraint <- Seqinfo::sortSeqlevels(genomicConstraint)
     binned_constraint <- BinGRanges(
